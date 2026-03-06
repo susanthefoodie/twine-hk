@@ -403,6 +403,19 @@ export default function OnboardingPage() {
         return;
       }
 
+      // Ensure profile row exists BEFORE preferences (preferences has a FK to profiles)
+      const { error: profileErr } = await supabase
+        .from('profiles')
+        .upsert(
+          {
+            id:           user.id,
+            display_name: (user.user_metadata?.full_name as string | undefined) ?? null,
+            avatar_url:   (user.user_metadata?.avatar_url  as string | undefined) ?? null,
+          },
+          { onConflict: 'id', ignoreDuplicates: true }
+        );
+      if (profileErr) console.error('[onboarding] profiles upsert error:', profileErr.message);
+
       // Save preferences (upsert — re-doing onboarding is allowed)
       const { error: prefErr } = await supabase
         .from('preferences')
@@ -420,14 +433,6 @@ export default function OnboardingPage() {
         );
 
       if (prefErr) throw prefErr;
-
-      // Ensure profile row exists
-      await supabase
-        .from('profiles')
-        .upsert(
-          { id: user.id, email: user.email ?? '' },
-          { onConflict: 'id', ignoreDuplicates: true }
-        );
 
       router.push('/home');
     } catch (err: unknown) {

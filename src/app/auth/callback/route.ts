@@ -1,6 +1,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
+import { createAdminClient } from '@/lib/supabase-admin';
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
@@ -46,19 +47,23 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/auth?error=auth_failed`);
   }
 
-  // Upsert profile row — use only columns that exist in the profiles table.
+  // Upsert profile row using the admin client so RLS never blocks a first-time insert.
   // Pull display_name + avatar from Google OAuth user_metadata on first sign-in.
-  await supabase.from('profiles').upsert(
+  const admin = createAdminClient();
+  const { error: profileErr } = await admin.from('profiles').upsert(
     {
-      id: user.id,
+      id:           user.id,
       display_name: (user.user_metadata?.full_name as string | undefined) ?? null,
       avatar_url:   (user.user_metadata?.avatar_url  as string | undefined) ?? null,
     },
     { onConflict: 'id', ignoreDuplicates: true }
   );
+  if (profileErr) {
+    console.error('[auth/callback] profiles upsert error:', profileErr.message);
+  }
 
-  // Decide where to send the user
-  const { data: prefs } = await supabase
+  // Decide where to send the user (also via admin to avoid RLS on preferences)
+  const { data: prefs } = await admin
     .from('preferences')
     .select('id')
     .eq('user_id', user.id)
