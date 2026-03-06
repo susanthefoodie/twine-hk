@@ -559,8 +559,17 @@ export default function HomePage() {
           filters: { categories, distanceMetres, budgets, openNow, hkHour },
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? 'Failed to create session');
+
+      // Guard against empty or non-JSON responses (e.g. Next.js 500 with no body)
+      let data: Record<string, unknown> = {};
+      const text = await res.text();
+      console.log('[home] /api/session/create response:', res.status, text);
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        throw new Error(`Server error (${res.status}) — check terminal logs`);
+      }
+      if (!res.ok) throw new Error((data.error as string) ?? `Failed to create session (${res.status})`);
       setCreatedSess(data);
       if (sheetMode === 'solo') {
         router.push(`/session/${data.sessionId}`);
