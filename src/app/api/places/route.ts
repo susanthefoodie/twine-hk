@@ -106,6 +106,11 @@ function normPrice(raw: string | undefined): number {
   return map[raw ?? ''] ?? 0;
 }
 
+// ── Route config ─────────────────────────────────────────────────────────────
+
+export const maxDuration = 30;
+export const runtime = 'nodejs';
+
 // ── POST /api/places ──────────────────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
@@ -136,30 +141,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Google Places API key not configured' }, { status: 503 });
   }
 
-  // Build includedTypes: cuisine selection + time-of-day bonuses
-  const typesRaw = cuisines?.length
-    ? cuisines.flatMap((c) => CUISINE_TYPE_MAP[c] ?? ['restaurant'])
-    : ['restaurant'];
-  const timeTypes = timeOfDayTypes(hkHour);
-  const includedTypes: string[] = Array.from(new Set([...typesRaw, ...timeTypes]));
-
   // MTR mode: radiusMetres=99999 means client already passed MTR station coords
-  // Use 800m for MTR searches, cap others at 50km
   const searchRadius = radiusMetres === 99999 ? 800 : Math.min(radiusMetres, 50000);
 
-  const searchPayload = {
-    includedTypes,
-    maxResultCount: 20,
+  // Minimal request body — includedTypes omitted until basic call is confirmed working
+  const searchPayload: Record<string, unknown> = {
     locationRestriction: {
       circle: {
         center: { latitude: lat, longitude: lng },
         radius: searchRadius,
       },
     },
-    rankPreference: 'POPULARITY',
+    maxResultCount: 20,
   };
 
-  console.log('[api/places] Google request body:', JSON.stringify(searchPayload, null, 2));
+  console.log('[api/places] Google request body:', JSON.stringify(searchPayload));
 
   const FIELD_MASK = [
     'places.id', 'places.displayName', 'places.formattedAddress',
@@ -174,14 +170,43 @@ export async function POST(request: NextRequest) {
     'X-Goog-FieldMask': FIELD_MASK,
   };
 
-  // Fetch English + zh-TW results in parallel
-  const [enRes, zhRes] = await Promise.all([
-    fetch('https://places.googleapis.com/v1/places:searchNearby', {
+  // 8-second timeout via AbortController so the route never hangs
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+
+  let enRes: Response;
+  try {
+    enRes = await fetch('https://places.googleapis.com/v1/places:searchNearby', {
       method: 'POST',
       headers: commonHeaders,
       body: JSON.stringify(searchPayload),
-    }),
-    fetch('https://places.googleapis.com/v1/places:searchNearby', {
+      signal: controller.signal,
+    });
+  } catch (fetchErr: unknown) {
+    clearTimeout(timeout);
+    const isTimeout = fetchErr instanceof Error && fetchErr.name === 'AbortError';
+    console.error('[api/places] fetch error:', isTimeout ? 'timed out after 8s' : fetchErr);
+    return NextResponse.json(
+      { error: isTimeout ? 'Google Places request timed out' : 'Failed to reach Google Places API' },
+      { status: 502 }
+    );
+  }
+  clearTimeout(timeout);
+
+  const enBody = await enRes.text();
+  console.log('[api/places] Google response status:', enRes.status, 'body:', enBody);
+
+  if (!enRes.ok) {
+    return NextResponse.json(
+      { error: `Google Places API returned ${enRes.status}: ${enBody}` },
+      { status: 502 }
+    );
+  }
+
+  // Also fetch zh-TW names (best-effort, no timeout abort needed — failures are non-fatal)
+  let zhRes: Response | null = null;
+  try {
+    zhRes = await fetch('https://places.googleapis.com/v1/places:searchNearby', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -190,27 +215,27 @@ export async function POST(request: NextRequest) {
         'Accept-Language': 'zh-TW',
       },
       body: JSON.stringify({ ...searchPayload, languageCode: 'zh-TW' }),
-    }),
-  ]);
-
-  if (!enRes.ok) {
-    const errBody = await enRes.text();
-    console.error('[api/places] Google API error:', enRes.status, errBody);
-    return NextResponse.json(
-      { error: `Google Places API returned ${enRes.status}: ${errBody}` },
-      { status: 502 }
-    );
+      signal: AbortSignal.timeout(8000),
+    });
+  } catch {
+    // Non-fatal — we'll just skip Chinese names
+    console.warn('[api/places] zh-TW fetch failed, continuing without Chinese names');
   }
 
-  const enData = (await enRes.json()) as NearbySearchResponse;
+  // enBody already consumed above via res.text() — parse from the string
+  const enData = JSON.parse(enBody) as NearbySearchResponse;
   const raw    = enData.places ?? [];
 
-  // Build zh-TW name map: id → chineseName
+  // Build zh-TW name map: id → chineseName (best-effort)
   const zhNameMap = new Map<string, string>();
-  if (zhRes.ok) {
-    const zhData = (await zhRes.json()) as { places?: { id: string; displayName?: { text: string } }[] };
-    for (const p of zhData.places ?? []) {
-      if (p.id && p.displayName?.text) zhNameMap.set(p.id, p.displayName.text);
+  if (zhRes?.ok) {
+    try {
+      const zhData = (await zhRes.json()) as { places?: { id: string; displayName?: { text: string } }[] };
+      for (const p of zhData.places ?? []) {
+        if (p.id && p.displayName?.text) zhNameMap.set(p.id, p.displayName.text);
+      }
+    } catch {
+      // Non-fatal
     }
   }
 
