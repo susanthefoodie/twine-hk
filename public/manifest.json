@@ -1,0 +1,9 @@
+{
+  "name": "Twine",
+  "short_name": "Twine",
+  "theme_color": "#c9622a",
+  "background_color": "#12100e",
+  "display": "standalone",
+  "start_url": "/home",
+  "orientation": "portrait"
+}
