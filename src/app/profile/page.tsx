@@ -341,15 +341,14 @@ function ProfileContent() {
         { data: saved },
       ] = await Promise.all([
         supabase.from('profiles').select('id, display_name, avatar_url, is_pro').eq('id', u.id).maybeSingle(),
-        supabase.from('sessions').select('id, matches(id)').eq('host_user_id', u.id),
-        supabase.from('saved_places').select('id, visited').eq('user_id', u.id),
+        supabase.from('sessions').select('id').eq('host_user_id', u.id),
+        supabase.from('saved_places').select('id, is_visited').eq('user_id', u.id),
       ]);
 
       setProfile(prof as Profile ?? null);
       const sessionCount = sessions?.length ?? 0;
-      const gemsFound    = sessions?.reduce((sum, s) => sum + ((s.matches as { id: string }[] | null)?.length ?? 0), 0) ?? 0;
-      const visitedCount = saved?.filter((s) => s.visited).length ?? 0;
-      setStats({ sessions: sessionCount, gemsFound, visited: visitedCount });
+      const visitedCount = saved?.filter((s) => s.is_visited).length ?? 0;
+      setStats({ sessions: sessionCount, gemsFound: 0, visited: visitedCount });
       setLoading(false);
     }
     load();
