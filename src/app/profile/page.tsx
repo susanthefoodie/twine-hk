@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, Suspense } from 'react';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/lib/supabase';
@@ -41,7 +42,7 @@ function BigAvatar({ url, name }: { url: string | null; name: string }) {
       flexShrink: 0,
     }}>
       {url ? (
-        <img src={url} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <Image src={url} alt={name} width={80} height={80} style={{ borderRadius: '50%', objectFit: 'cover' }} />
       ) : (
         <span style={{ fontFamily: 'var(--font-serif)', fontSize: '26px', fontStyle: 'italic', color: '#c9622a' }}>
           {initials || '?'}

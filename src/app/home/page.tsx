@@ -570,9 +570,10 @@ export default function HomePage() {
         throw new Error(`Server error (${res.status}) — check terminal logs`);
       }
       if (!res.ok) throw new Error((data.error as string) ?? `Failed to create session (${res.status})`);
-      setCreatedSess(data);
+      const sess = data as unknown as CreatedSession;
+      setCreatedSess(sess);
       if (sheetMode === 'solo') {
-        router.push(`/session/${data.sessionId}`);
+        router.push(`/session/${sess.sessionId}`);
       } else {
         setSheetView('share');
       }
