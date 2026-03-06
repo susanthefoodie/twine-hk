@@ -18,7 +18,6 @@ interface RecentSession {
   mode:       string;
   created_at: string;
   share_code: string;
-  matches:    { id: string }[];
 }
 
 interface CreatedSession {
@@ -365,7 +364,7 @@ function SessionChip({
         color: '#c4922a',
         letterSpacing: '0.04em',
       }}>
-        ✦ {session.matches?.length ?? 0} match{session.matches?.length !== 1 ? 'es' : ''} found
+        ✦ View results
       </div>
     </button>
   );
@@ -431,7 +430,7 @@ export default function HomePage() {
             .maybeSingle(),
           supabase
             .from('sessions')
-            .select('id, mode, created_at, share_code, matches(id)')
+            .select('id, mode, created_at, share_code')
             .eq('host_user_id', u.id)
             .order('created_at', { ascending: false })
             .limit(6),

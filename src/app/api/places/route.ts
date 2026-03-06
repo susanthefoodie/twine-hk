@@ -109,6 +109,7 @@ function normPrice(raw: string | undefined): number {
 // ── POST /api/places ──────────────────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
+  try {
   const body = (await request.json()) as {
     lat: number;
     lng: number;
@@ -122,6 +123,7 @@ export async function POST(request: NextRequest) {
   };
 
   const { lat, lng, radiusMetres, cuisines, budgetLevels, openNow, alreadySwiped = [] } = body;
+  console.log('[api/places] lat:', lat, 'lng:', lng, 'radius:', radiusMetres, 'cuisines:', cuisines);
 
   // HK hour: use provided value or derive from server time
   const hkHour = body.hkHour ?? parseInt(
@@ -129,6 +131,7 @@ export async function POST(request: NextRequest) {
   );
 
   const apiKey = process.env.GOOGLE_PLACES_API_KEY;
+  console.log('[api/places] API key present:', !!apiKey, 'length:', apiKey?.length);
   if (!apiKey || apiKey === 'replace_me') {
     return NextResponse.json({ error: 'Google Places API key not configured' }, { status: 503 });
   }
@@ -155,6 +158,8 @@ export async function POST(request: NextRequest) {
     },
     rankPreference: 'POPULARITY',
   };
+
+  console.log('[api/places] Google request body:', JSON.stringify(searchPayload, null, 2));
 
   const FIELD_MASK = [
     'places.id', 'places.displayName', 'places.formattedAddress',
@@ -189,8 +194,12 @@ export async function POST(request: NextRequest) {
   ]);
 
   if (!enRes.ok) {
-    const err = await enRes.text();
-    return NextResponse.json({ error: `Google API error: ${err}` }, { status: 502 });
+    const errBody = await enRes.text();
+    console.error('[api/places] Google API error:', enRes.status, errBody);
+    return NextResponse.json(
+      { error: `Google Places API returned ${enRes.status}: ${errBody}` },
+      { status: 502 }
+    );
   }
 
   const enData = (await enRes.json()) as NearbySearchResponse;
@@ -303,4 +312,10 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json({ places: final });
+
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Internal server error';
+    console.error('[api/places] unhandled error:', message, err);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
