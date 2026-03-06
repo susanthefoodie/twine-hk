@@ -417,22 +417,26 @@ export default function OnboardingPage() {
       if (profileErr) console.error('[onboarding] profiles upsert error:', profileErr.message);
 
       // Save preferences (upsert — re-doing onboarding is allowed)
+      const userId = user.id;
+      console.log('saving preferences for user:', userId);
       const { error: prefErr } = await supabase
         .from('preferences')
         .upsert(
           {
-            user_id: user.id,
-            cuisines: selections.cuisines,
-            dietary: selections.dietary,
+            user_id:      userId,
+            cuisines:     selections.cuisines,
+            dietary:      selections.dietary,
             budget_levels: selections.budgets,
-            meal_times: selections.mealTimes,
+            meal_times:   selections.mealTimes,
             radius_metres: selections.radius ?? 1500,
-            updated_at: new Date().toISOString(),
           },
           { onConflict: 'user_id' }
         );
 
-      if (prefErr) throw prefErr;
+      if (prefErr) {
+        console.error('[onboarding] preferences upsert error:', prefErr.message, prefErr.code, prefErr.details);
+        throw prefErr;
+      }
 
       router.push('/home');
     } catch (err: unknown) {
