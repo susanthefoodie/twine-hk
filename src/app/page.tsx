@@ -819,17 +819,6 @@ export default function LandingPage() {
             Ready to find your hidden gem?
           </h2>
           <EmberButton href="/auth" label="Create your first session — it's free →" size="lg" />
-          <p
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
-              letterSpacing: '0.04em',
-              color: '#7a7060',
-              marginTop: '20px',
-            }}
-          >
-            HK$38/month for unlimited sessions &nbsp;·&nbsp; No credit card needed to start
-          </p>
         </div>
       </section>
 
