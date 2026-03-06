@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createBrowserClient } from '@supabase/ssr';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -346,6 +348,18 @@ function StepCard({ num, title, desc, last }: { num: string; title: string; desc
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
+  const router = useRouter();
+
+  // Redirect already-authenticated users straight into the app
+  useEffect(() => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) router.replace('/home');
+    });
+  }, [router]);
 
   useEffect(() => {
     const handle = () => setScrolled(window.scrollY > 72);

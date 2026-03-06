@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-// Routes that require authentication
+// Routes that require an authenticated session
 const PROTECTED_PREFIXES = [
   '/home',
   '/session',
@@ -11,8 +11,11 @@ const PROTECTED_PREFIXES = [
   '/onboarding',
 ];
 
+// Routes where a logged-in user should be bounced straight to /home
+// (no point showing the landing page or sign-in screen to someone already authed)
+const AUTH_ENTRY_ROUTES = ['/', '/auth'];
+
 export async function middleware(request: NextRequest) {
-  // Start with a passthrough response so cookies can be refreshed
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -24,7 +27,6 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          // Attach new cookies to both the request (for downstream) and response
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
@@ -37,21 +39,24 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refresh session if the token has expired
+  // getUser() also refreshes the session token if it has expired
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
 
+  // 1. Authenticated user on landing / auth → send them into the app
+  if (user && AUTH_ENTRY_ROUTES.includes(pathname)) {
+    return NextResponse.redirect(new URL('/home', request.url));
+  }
+
+  // 2. Unauthenticated user on a protected route → send them to sign-in
   const isProtected = PROTECTED_PREFIXES.some((prefix) =>
     pathname.startsWith(prefix)
   );
-
   if (isProtected && !user) {
-    const loginUrl = request.nextUrl.clone();
-    loginUrl.pathname = '/auth';
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(new URL('/auth', request.url));
   }
 
   return supabaseResponse;
@@ -59,7 +64,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Run on all routes except Next.js internals and static files
-    '/((?!_next/static|_next/image|favicon.ico|manifest.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    // Skip Next.js internals and all static files
+    '/((?!_next/static|_next/image|favicon.ico|manifest.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt)$).*)',
   ],
 };
