@@ -14,6 +14,7 @@ export interface PlaceResult {
   gemScore: number;
   hidden_gem: boolean;
   isFeatured?: boolean;
+  districtName?: string | null;
   lat: number;
   lng: number;
 }
