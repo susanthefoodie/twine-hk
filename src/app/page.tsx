@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
+import DemoSwipeCards from '@/components/DemoSwipeCards';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -94,131 +95,6 @@ function DistrictPill({ label }: { label: string }) {
   );
 }
 
-function SwipeCard({ rotation, zIndex, front }: { rotation: number; zIndex: number; front: boolean }) {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        inset: 0,
-        background: '#1a1714',
-        border: '1px solid #332e28',
-        borderRadius: '12px',
-        transform: `rotate(${rotation}deg)`,
-        zIndex,
-        overflow: 'hidden',
-        boxShadow: front ? '0 32px 64px rgba(0,0,0,0.5)' : '0 8px 24px rgba(0,0,0,0.3)',
-      }}
-    >
-      {/* Background gradient */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(160deg, #2a2520 0%, #12100e 100%)',
-        }}
-      />
-      {/* Amber glow */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'radial-gradient(ellipse at 30% 35%, rgba(201,98,42,0.1) 0%, transparent 55%)',
-        }}
-      />
-      {/* Decorative grid lines */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '55%',
-          backgroundImage:
-            'linear-gradient(rgba(51,46,40,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(51,46,40,0.4) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
-        }}
-      />
-
-      {front && (
-        <>
-          {/* Hidden Gem badge */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 16,
-              right: 16,
-              background: 'rgba(196,146,42,0.12)',
-              border: '1px solid rgba(196,146,42,0.35)',
-              borderRadius: '4px',
-              padding: '4px 10px',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '10px',
-              color: '#c4922a',
-              letterSpacing: '0.06em',
-              zIndex: 1,
-            }}
-          >
-            ✦ Hidden Gem
-          </div>
-
-          {/* Bottom info */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              padding: '28px 20px 20px',
-              background: 'linear-gradient(0deg, rgba(18,16,14,0.97) 0%, rgba(18,16,14,0.6) 70%, transparent 100%)',
-              zIndex: 1,
-            }}
-          >
-            <p
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '20px',
-                fontWeight: 700,
-                color: '#f0e8d8',
-                margin: '0 0 6px',
-              }}
-            >
-              Fook Lam Moon
-            </p>
-            <p
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '10px',
-                color: '#7a7060',
-                letterSpacing: '0.05em',
-                margin: '0 0 12px',
-              }}
-            >
-              Cantonese · $$$ · Wan Chai
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-              {[1, 2, 3, 4, 5].map((i) => (
-                <span key={i} style={{ fontSize: '11px', color: i <= 4 ? '#c4922a' : '#3d3730' }}>
-                  ★
-                </span>
-              ))}
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '10px',
-                  color: '#7a7060',
-                  marginLeft: '8px',
-                  letterSpacing: '0.03em',
-                }}
-              >
-                4.0 · 23 Twine visits
-              </span>
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
 
 function ModeCard({
   icon, label, title, body, badge, accent,
@@ -529,21 +405,18 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* ── Right: swipe card stack (40%) ── */}
+          {/* ── Right: interactive demo card stack (40%) ── */}
           <div
             style={{
               flex: '0 0 40%',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
+              minHeight: '500px',
               padding: '40px 0',
             }}
           >
-            <div style={{ position: 'relative', width: '280px', height: '380px' }}>
-              <SwipeCard rotation={-4} zIndex={1} front={false} />
-              <SwipeCard rotation={2.5} zIndex={2} front={false} />
-              <SwipeCard rotation={0} zIndex={3} front={true} />
-            </div>
+            <DemoSwipeCards />
           </div>
         </div>
 
