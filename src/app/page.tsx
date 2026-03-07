@@ -412,8 +412,10 @@ export default function LandingPage() {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              minHeight: '500px',
-              padding: '40px 0',
+              minHeight: 'clamp(400px, 50vw, 500px)',
+              paddingTop: '20px',
+              paddingBottom: '40px',
+              overflow: 'hidden',
             }}
           >
             <DemoSwipeCards />

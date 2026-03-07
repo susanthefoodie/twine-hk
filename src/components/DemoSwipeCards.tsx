@@ -67,9 +67,6 @@ const DEMO_PLACES = [
   },
 ];
 
-const CARD_W = 280;
-const CARD_H = 380;
-
 function sleep(ms: number) {
   return new Promise<void>((res) => setTimeout(res, ms));
 }
@@ -77,12 +74,31 @@ function sleep(ms: number) {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function DemoSwipeCards() {
-  const [topIndex, setTopIndex]   = useState(0);
-  const [dragX,    setDragX]      = useState(0);
-  const [flyX,     setFlyX]       = useState(0);
-  const [isFlying, setIsFlying]   = useState(false);
-  const [wigRot,   setWigRot]     = useState(0);
-  const [done,     setDone]       = useState(false);
+  // ── Responsive card size (STEP 1) ──────────────────────────────────────────
+  const [cardSize, setCardSize] = useState({ width: 240, height: 320 });
+
+  useEffect(() => {
+    const update = () => {
+      if (window.innerWidth >= 640) {
+        setCardSize({ width: 300, height: 400 });
+      } else {
+        setCardSize({ width: 240, height: 320 });
+      }
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  const isMobile = cardSize.width < 280;
+
+  // ── Swipe state ────────────────────────────────────────────────────────────
+  const [topIndex, setTopIndex] = useState(0);
+  const [dragX,    setDragX]    = useState(0);
+  const [flyX,     setFlyX]     = useState(0);
+  const [isFlying, setIsFlying] = useState(false);
+  const [wigRot,   setWigRot]   = useState(0);
+  const [done,     setDone]     = useState(false);
 
   const isDraggingRef = useRef(false);
   const isFlyingRef   = useRef(false);
@@ -90,26 +106,26 @@ export default function DemoSwipeCards() {
   const dragXRef      = useRef(0);
   const cardRef       = useRef<HTMLDivElement>(null);
 
-  // ── Wiggle on mount ────────────────────────────────────────────────────────
-
+  // ── Wiggle on mount — ±5deg on mobile, ±8deg on desktop (STEP 5) ──────────
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     let alive = true;
+    const peak = window.innerWidth < 640 ? 5 : 8; // read directly, not from state
     (async () => {
       await sleep(1000);
       for (let i = 0; i < 2; i++) {
         if (!alive) return;
-        setWigRot(8);  await sleep(300);
+        setWigRot(peak);   await sleep(300);
         if (!alive) return;
-        setWigRot(-8); await sleep(300);
+        setWigRot(-peak);  await sleep(300);
         if (!alive) return;
-        setWigRot(0);  await sleep(300);
+        setWigRot(0);      await sleep(300);
       }
     })();
     return () => { alive = false; };
-  }, []); // mount only
+  }, []); // mount only — window.innerWidth read at call time, no stale closure
 
   // ── Fly a card off screen ──────────────────────────────────────────────────
-
   const doSwipe = useCallback((dir: 'left' | 'right') => {
     if (isFlyingRef.current) return;
     isFlyingRef.current = true;
@@ -129,8 +145,7 @@ export default function DemoSwipeCards() {
     }, 380);
   }, []);
 
-  // ── Mouse drag ────────────────────────────────────────────────────────────
-
+  // ── Mouse drag ─────────────────────────────────────────────────────────────
   const onMouseDown = (e: React.MouseEvent) => {
     if (isFlyingRef.current) return;
     isDraggingRef.current = true;
@@ -163,7 +178,6 @@ export default function DemoSwipeCards() {
   }, [doSwipe]);
 
   // ── Touch drag (non-passive to allow preventDefault) ───────────────────────
-
   useEffect(() => {
     const el = cardRef.current;
     if (!el) return;
@@ -177,7 +191,7 @@ export default function DemoSwipeCards() {
     };
     const onTouchMove = (e: TouchEvent) => {
       if (!isDraggingRef.current) return;
-      e.preventDefault(); // stop page scroll while swiping
+      e.preventDefault();
       const dx = e.touches[0].clientX - startXRef.current;
       dragXRef.current = dx;
       setDragX(dx);
@@ -199,28 +213,27 @@ export default function DemoSwipeCards() {
       el.removeEventListener('touchmove',  onTouchMove);
       el.removeEventListener('touchend',   onTouchEnd);
     };
-  }, [doSwipe, topIndex]); // re-attach when top card changes
+  }, [doSwipe, topIndex]);
 
   // ── Done state ─────────────────────────────────────────────────────────────
-
   if (done || topIndex >= DEMO_PLACES.length) {
     return (
       <div style={{
-        width: `${CARD_W}px`,
-        minHeight: `${CARD_H}px`,
+        width: `${cardSize.width}px`,
+        minHeight: `${cardSize.height}px`,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         gap: '20px',
-        padding: '40px 24px',
+        padding: '32px 20px',
         background: '#1a1714',
         border: '1px solid #332e28',
         borderRadius: '16px',
         textAlign: 'center',
         boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
       }}>
-        <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '20px', color: '#f0e8d8', margin: 0, lineHeight: 1.4 }}>
+        <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: isMobile ? '17px' : '20px', color: '#f0e8d8', margin: 0, lineHeight: 1.4 }}>
           Hundreds more hidden gems await.
         </p>
         <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '13px', color: '#7a7060', margin: 0 }}>
@@ -235,7 +248,7 @@ export default function DemoSwipeCards() {
             fontFamily: 'var(--font-sans)',
             fontWeight: 500,
             fontSize: '14px',
-            padding: '12px 24px',
+            padding: '12px 20px',
             borderRadius: '4px',
             textDecoration: 'none',
             letterSpacing: '0.01em',
@@ -248,7 +261,6 @@ export default function DemoSwipeCards() {
   }
 
   // ── Compute visual state ───────────────────────────────────────────────────
-
   const visibles = [
     DEMO_PLACES[topIndex],
     DEMO_PLACES[topIndex + 1],
@@ -273,14 +285,26 @@ export default function DemoSwipeCards() {
   const showLike = !isFlying && dragX >  40;
   const showPass = !isFlying && dragX < -40;
 
-  // ── Render ─────────────────────────────────────────────────────────────────
+  // Responsive font sizes (STEP 3)
+  const nameFontSize    = isMobile ? '15px' : '18px';
+  const zhFontSize      = isMobile ? '11px' : '13px';
+  const metaFontSize    = isMobile ? '8px'  : '9px';
 
+  // Responsive stack offsets (STEP 2)
+  const secondCardTransform = isMobile
+    ? 'scale(0.95) translateY(6px)'
+    : 'scale(0.95) translateY(8px)';
+  const thirdCardTransform  = isMobile
+    ? 'scale(0.90) translateY(12px)'
+    : 'scale(0.90) translateY(16px)';
+
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div
       style={{
         position: 'relative',
-        width: `${CARD_W}px`,
-        height: `${CARD_H}px`,
+        width: `${cardSize.width}px`,
+        height: `${cardSize.height}px`,
         userSelect: 'none',
       }}
     >
@@ -289,7 +313,7 @@ export default function DemoSwipeCards() {
       {visibles[2] && (
         <div style={{
           position: 'absolute', inset: 0, zIndex: 10,
-          transform: 'scale(0.90) translateY(16px)',
+          transform: thirdCardTransform,
           transformOrigin: 'bottom center',
           borderRadius: '16px', overflow: 'hidden',
           background: '#1a1714', border: '1px solid #332e28',
@@ -305,7 +329,7 @@ export default function DemoSwipeCards() {
       {visibles[1] && (
         <div style={{
           position: 'absolute', inset: 0, zIndex: 20,
-          transform: 'scale(0.95) translateY(8px)',
+          transform: secondCardTransform,
           transformOrigin: 'bottom center',
           borderRadius: '16px', overflow: 'hidden',
           background: '#1a1714', border: '1px solid #332e28',
@@ -342,7 +366,7 @@ export default function DemoSwipeCards() {
             draggable={false}
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
           />
-          {/* Gradient fade to card bottom */}
+          {/* Gradient */}
           <div style={{
             position: 'absolute', bottom: 0, left: 0, right: 0, height: '50%',
             background: 'linear-gradient(to bottom, transparent, #1a1714)',
@@ -352,11 +376,11 @@ export default function DemoSwipeCards() {
           {/* LIKE badge */}
           {showLike && (
             <div style={{
-              position: 'absolute', top: 16, left: 16,
-              border: '3px solid #4a7c6f', borderRadius: '6px', padding: '3px 10px',
+              position: 'absolute', top: 12, left: 12,
+              border: '2.5px solid #4a7c6f', borderRadius: '6px', padding: '2px 8px',
               pointerEvents: 'none',
             }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '18px', color: '#4a7c6f', letterSpacing: '0.1em' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: isMobile ? '14px' : '18px', color: '#4a7c6f', letterSpacing: '0.1em' }}>
                 LIKE
               </span>
             </div>
@@ -365,11 +389,11 @@ export default function DemoSwipeCards() {
           {/* PASS badge */}
           {showPass && (
             <div style={{
-              position: 'absolute', top: 16, right: 16,
-              border: '3px solid #c9622a', borderRadius: '6px', padding: '3px 10px',
+              position: 'absolute', top: 12, right: 12,
+              border: '2.5px solid #c9622a', borderRadius: '6px', padding: '2px 8px',
               pointerEvents: 'none',
             }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '18px', color: '#c9622a', letterSpacing: '0.1em' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: isMobile ? '14px' : '18px', color: '#c9622a', letterSpacing: '0.1em' }}>
                 PASS
               </span>
             </div>
@@ -378,11 +402,11 @@ export default function DemoSwipeCards() {
           {/* Hidden gem badge */}
           {top.gem && (
             <div style={{
-              position: 'absolute', bottom: 10, left: 12,
+              position: 'absolute', bottom: 8, left: 10,
               background: 'rgba(74,124,111,0.15)', border: '1px solid rgba(74,124,111,0.5)',
-              borderRadius: '4px', padding: '3px 8px', pointerEvents: 'none',
+              borderRadius: '4px', padding: '2px 7px', pointerEvents: 'none',
             }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#4a7c6f' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '8px', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#4a7c6f' }}>
                 💎 Hidden Gem
               </span>
             </div>
@@ -390,35 +414,34 @@ export default function DemoSwipeCards() {
         </div>
 
         {/* Info */}
-        <div style={{ padding: '14px 16px 14px', background: '#1a1714' }}>
-          {/* Name */}
-          <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '18px', color: '#f0e8d8', margin: '0 0 2px', lineHeight: 1.2 }}>
+        <div style={{ padding: isMobile ? '10px 12px 12px' : '14px 16px 14px', background: '#1a1714' }}>
+          <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: nameFontSize, color: '#f0e8d8', margin: '0 0 2px', lineHeight: 1.2 }}>
             {top.name}
           </h3>
-          <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '12px', color: '#7a7060', margin: '0 0 10px' }}>
+          <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: zhFontSize, color: '#7a7060', margin: `0 0 ${isMobile ? '7px' : '10px'}` }}>
             {top.nameZh}
           </p>
 
           {/* District · Type · Price */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: isMobile ? '6px' : '8px', flexWrap: 'wrap' }}>
             <span style={{
-              fontFamily: 'var(--font-mono)', fontSize: '9px', letterSpacing: '0.05em',
+              fontFamily: 'var(--font-mono)', fontSize: metaFontSize, letterSpacing: '0.05em',
               background: 'rgba(196,146,42,0.1)', border: '1px solid rgba(196,146,42,0.3)',
-              borderRadius: '3px', padding: '2px 6px', color: '#c4922a',
+              borderRadius: '3px', padding: '2px 5px', color: '#c4922a',
             }}>
               {top.district}
             </span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#554e46' }}>·</span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#7a7060', flexShrink: 0 }}>{top.type}</span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#c4922a', marginLeft: 'auto', flexShrink: 0 }}>{top.priceLabel}</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: metaFontSize, color: '#554e46' }}>·</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: metaFontSize, color: '#7a7060', flexShrink: 0 }}>{top.type}</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: metaFontSize, color: '#c4922a', marginLeft: 'auto', flexShrink: 0 }}>{top.priceLabel}</span>
           </div>
 
           {/* Stars · rating · reviews */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
             {[1, 2, 3, 4, 5].map((n) => (
-              <span key={n} style={{ fontSize: '10px', color: top.rating >= n ? '#c4922a' : '#3d3730' }}>★</span>
+              <span key={n} style={{ fontSize: isMobile ? '9px' : '10px', color: top.rating >= n ? '#c4922a' : '#3d3730' }}>★</span>
             ))}
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#7a7060', marginLeft: '5px' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: metaFontSize, color: '#7a7060', marginLeft: '4px' }}>
               {top.rating} · {top.reviews} reviews
             </span>
           </div>
