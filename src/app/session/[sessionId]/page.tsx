@@ -138,6 +138,7 @@ export default function SessionPage() {
   const router    = useRouter();
   const sessionId = params.sessionId as string;
 
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [session,     setSession]     = useState<SessionInfo | null>(null);
   const [sessionErr,  setSessionErr]  = useState<string | null>(null);
   const [places,      setPlaces]      = useState<PlaceResult[]>([]);
@@ -156,6 +157,12 @@ export default function SessionPage() {
   const [savedToast,      setSavedToast]      = useState<string | null>(null);
 
   const fetchingRef = useRef(false);
+
+  // ── Load current user ────────────────────────────────────────────────────
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => setCurrentUser(user));
+  }, []);
 
   // ── Load session info ────────────────────────────────────────────────────
 
@@ -254,7 +261,6 @@ export default function SessionPage() {
     setSwiped(newSwiped);
 
     if (!place.isFeatured) {
-      // 1. Record the swipe
       try {
         const res = await fetch('/api/session/swipe', {
           method: 'POST',
@@ -262,8 +268,10 @@ export default function SessionPage() {
           body: JSON.stringify({
             sessionId,
             placeId: place.id,
-            direction,
+            direction: direction === 'yes' ? 'right' : 'left',
+            placeName: place.name,
             placeData: place,
+            userId: currentUser?.id ?? null,
           }),
         });
         const data = await res.json();
@@ -273,39 +281,6 @@ export default function SessionPage() {
         }
       } catch (e) {
         console.error('swipe record failed:', e);
-      }
-
-      // 2. Auto-save on right swipe — completely independent, never blocks UI
-      if (direction === 'yes') {
-        ;(async () => {
-          try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user?.id) {
-              console.log('AUTO-SAVE: no user found');
-              return;
-            }
-            console.log('AUTO-SAVE: saving', place.name, 'for user', user.id);
-            const { error } = await supabase
-              .from('saved_places')
-              .upsert(
-                {
-                  user_id: user.id,
-                  place_id: place.id,
-                  place_data: place,
-                  list_name: 'Swiped Right',
-                  is_visited: false,
-                },
-                { onConflict: 'user_id,place_id' }
-              );
-            if (error) {
-              console.error('AUTO-SAVE ERROR:', error.message, error.code, error.details);
-            } else {
-              console.log('AUTO-SAVE SUCCESS:', place.name);
-            }
-          } catch (e: any) {
-            console.error('AUTO-SAVE CRASH:', e.message);
-          }
-        })();
       }
     }
 
