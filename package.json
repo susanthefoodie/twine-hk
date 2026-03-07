@@ -18,6 +18,7 @@
     "react-dom": "^18",
     "stripe": "^20.4.0"
   },
+  "engines": { "node": "20.x" },
   "devDependencies": {
     "@types/node": "^20.19.35",
     "@types/react": "^18",

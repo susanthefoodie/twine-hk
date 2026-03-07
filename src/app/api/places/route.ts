@@ -29,7 +29,6 @@ export async function POST(request: Request) {
             },
           },
         }),
-        signal: AbortSignal.timeout(25000),
       }
     );
 
@@ -57,15 +56,15 @@ export async function POST(request: Request) {
       editorialSummary: p.editorialSummary?.text ?? null,
       hidden_gem: (p.userRatingCount ?? 999) < 400 && (p.rating ?? 0) >= 4.0,
       gemScore: 50,
-      lat: lat,
-      lng: lng,
+      lat,
+      lng,
     }));
 
     return NextResponse.json({ places });
 
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    console.error('PLACES ROUTE CRASH:', message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    const error = err as Error | null;
+    console.error('PLACES ROUTE CRASH:', error?.message, error?.stack);
+    return NextResponse.json({ error: error?.message ?? 'Unknown error' }, { status: 500 });
   }
 }
