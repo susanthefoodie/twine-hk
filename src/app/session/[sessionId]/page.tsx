@@ -9,6 +9,9 @@ import { nearestMTRStation } from '@/lib/hkMTRStations';
 import type { MTRStation } from '@/lib/hkMTRStations';
 import { createClient } from '@/lib/supabase';
 
+// Module-level supabase instance (required for auto-save IIFE pattern)
+const supabase = createClient();
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface SessionInfo {
@@ -145,6 +148,7 @@ export default function SessionPage() {
   const [matchHistory, setMatchHistory] = useState<PlaceResult[]>([]);
   const [swiping,     setSwiping]     = useState(false);
   const [showMatches, setShowMatches] = useState(false);
+  const [hasTriedExpansion, setHasTriedExpansion] = useState(false);
 
   const { coords, locError, locLoading, request: requestLocation } = useLocation();
   const [locationGranted, setLocationGranted] = useState(false);
@@ -177,7 +181,6 @@ export default function SessionPage() {
       new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong', hour: 'numeric', hour12: false })
     );
 
-    // For MTR mode: find nearest station and search from there at 800m
     let searchLat = lat;
     let searchLng = lng;
     if (isMTR) {
@@ -187,31 +190,43 @@ export default function SessionPage() {
       searchLng = station.lng;
     }
 
-    try {
-      const res = await fetch('/api/places', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          lat: searchLat,
-          lng: searchLng,
-          radiusMetres: isMTR ? 99999 : (session.filters?.radiusMetres ?? 2000),
-          cuisines:     session.filters?.cuisines,
-          budgetLevels: session.filters?.budgetLevels,
-          openNow:      session.filters?.openNow,
-          hkHour,
-          sessionId,
-          alreadySwiped,
-        }),
-      });
-      const data = await res.json();
-      const incoming = data?.places ?? [];
-      if (incoming.length > 0) {
-        setPlaces((prev) => [...prev, ...incoming]);
+    // Try radii in sequence until we get enough places
+    const radii = isMTR ? [800] : [2000, 5000, 10000];
+    let fetched: PlaceResult[] = [];
+
+    for (const radius of radii) {
+      try {
+        console.log(`FETCH ATTEMPT radius=${radius}`);
+        const res = await fetch('/api/places', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            lat: searchLat,
+            lng: searchLng,
+            radiusMetres: radius,
+            cuisines:     session.filters?.cuisines,
+            budgetLevels: session.filters?.budgetLevels,
+            openNow:      session.filters?.openNow,
+            hkHour,
+            sessionId,
+            alreadySwiped,
+          }),
+        });
+        const data = await res.json();
+        fetched = data?.places ?? [];
+        console.log(`FETCH radius=${radius} returned ${fetched.length} places`);
+        if (fetched.length >= 8) break;
+      } catch (e) {
+        console.error('fetchPlaces error at radius', radius, e);
       }
-    } finally {
-      setLoadingPlaces(false);
-      fetchingRef.current = false;
     }
+
+    if (fetched.length > 0) {
+      setPlaces((prev) => [...prev, ...fetched]);
+    }
+    setHasTriedExpansion(true);
+    setLoadingPlaces(false);
+    fetchingRef.current = false;
   }, [session, sessionId]);
 
   useEffect(() => {
@@ -228,26 +243,6 @@ export default function SessionPage() {
     setLocationGranted(true);
   }
 
-  // ── Auto-save on right swipe ─────────────────────────────────────────────
-
-  async function silentSaveSwipedPlace(place: PlaceResult) {
-    try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      await supabase.from('saved_places').upsert({
-        user_id: user.id,
-        place_id: place.id,
-        place_name: place.name,
-        place_data: place,
-        list_name: 'Swiped Right',
-        is_visited: false,
-      }, { onConflict: 'user_id,place_id' });
-    } catch (e) {
-      console.log('[auto-save] silent error:', e);
-    }
-  }
-
   // ── Swipe handler ────────────────────────────────────────────────────────
 
   async function handleSwipe(direction: 'yes' | 'skip') {
@@ -258,8 +253,8 @@ export default function SessionPage() {
     const newSwiped = [...swiped, place.id];
     setSwiped(newSwiped);
 
-    // Record swipe
     if (!place.isFeatured) {
+      // 1. Record the swipe
       try {
         const res = await fetch('/api/session/swipe', {
           method: 'POST',
@@ -276,13 +271,41 @@ export default function SessionPage() {
           setMatch({ place: data.place });
           setMatchHistory((prev) => [...prev, data.place]);
         }
-      } catch {
-        // Non-fatal
+      } catch (e) {
+        console.error('swipe record failed:', e);
       }
 
-      // Auto-save on right swipe (non-blocking, silent)
+      // 2. Auto-save on right swipe — completely independent, never blocks UI
       if (direction === 'yes') {
-        silentSaveSwipedPlace(place);
+        ;(async () => {
+          try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user?.id) {
+              console.log('AUTO-SAVE: no user found');
+              return;
+            }
+            console.log('AUTO-SAVE: saving', place.name, 'for user', user.id);
+            const { error } = await supabase
+              .from('saved_places')
+              .upsert(
+                {
+                  user_id: user.id,
+                  place_id: place.id,
+                  place_data: place,
+                  list_name: 'Swiped Right',
+                  is_visited: false,
+                },
+                { onConflict: 'user_id,place_id' }
+              );
+            if (error) {
+              console.error('AUTO-SAVE ERROR:', error.message, error.code, error.details);
+            } else {
+              console.log('AUTO-SAVE SUCCESS:', place.name);
+            }
+          } catch (e: any) {
+            console.error('AUTO-SAVE CRASH:', e.message);
+          }
+        })();
       }
     }
 
@@ -300,7 +323,6 @@ export default function SessionPage() {
 
   async function handleSave(place: PlaceResult) {
     try {
-      const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       await supabase.from('saved_places').upsert({
@@ -390,7 +412,7 @@ export default function SessionPage() {
   // ── Render: empty state ──────────────────────────────────────────────────
 
   const remaining = places.slice(cardIndex);
-  if (!loadingPlaces && remaining.length === 0) {
+  if (!loadingPlaces && remaining.length === 0 && hasTriedExpansion) {
     return (
       <div style={containerStyle}>
         <motion.div
