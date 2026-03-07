@@ -416,26 +416,31 @@ export default function OnboardingPage() {
         );
       if (profileErr) console.error('[onboarding] profiles upsert error:', profileErr.message);
 
-      // Save preferences (upsert — re-doing onboarding is allowed)
+      // Save preferences: DELETE then INSERT to avoid ON CONFLICT constraint issues
       const userId = user.id;
       console.log('saving preferences for user:', userId);
-      const { error: prefErr } = await supabase
-        .from('preferences')
-        .upsert(
-          {
-            user_id:      userId,
-            cuisines:     selections.cuisines,
-            dietary:      selections.dietary,
-            budget_levels: selections.budgets,
-            meal_times:   selections.mealTimes,
-            radius_metres: selections.radius ?? 1500,
-          },
-          { onConflict: 'user_id' }
-        );
 
-      if (prefErr) {
-        console.error('[onboarding] preferences upsert error:', prefErr.message, prefErr.code, prefErr.details);
-        throw prefErr;
+      const prefData = {
+        user_id:       userId,
+        cuisines:      selections.cuisines,
+        dietary:       selections.dietary,
+        budget_levels: selections.budgets,
+        meal_times:    selections.mealTimes,
+        radius_metres: selections.radius ?? 1500,
+      };
+
+      const { error: delErr } = await supabase
+        .from('preferences')
+        .delete()
+        .eq('user_id', userId);
+      if (delErr) console.error('[onboarding] preferences delete error:', delErr.message, delErr.code);
+
+      const { error: insErr } = await supabase
+        .from('preferences')
+        .insert(prefData);
+      if (insErr) {
+        console.error('[onboarding] preferences insert error:', insErr.message, insErr.code, insErr.details);
+        throw insErr;
       }
 
       router.push('/home');

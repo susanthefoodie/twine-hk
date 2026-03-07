@@ -421,23 +421,25 @@ export default function HomePage() {
       if (!u) { router.push('/auth'); return; }
       setUser(u);
 
-      const [{ data: prof }, { data: sessions }] =
+      const [{ data: prof }, sessionsRes] =
         await Promise.all([
           supabase
             .from('profiles')
             .select('display_name, avatar_url')
             .eq('id', u.id)
             .maybeSingle(),
-          supabase
-            .from('sessions')
-            .select('id, mode, created_at, share_code')
-            .eq('host_user_id', u.id)
-            .order('created_at', { ascending: false })
-            .limit(6),
+          fetch('/api/sessions/recent'),
         ]);
 
       setProfile(prof);
-      setRecentSessions((sessions as RecentSession[]) ?? []);
+
+      if (sessionsRes.ok) {
+        const { sessions } = await sessionsRes.json() as { sessions: RecentSession[] };
+        setRecentSessions(sessions ?? []);
+      } else {
+        console.error('[home] failed to load recent sessions:', sessionsRes.status);
+        setRecentSessions([]);
+      }
     }
     load();
   }, [router]);
