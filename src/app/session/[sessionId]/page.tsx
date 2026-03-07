@@ -228,6 +228,26 @@ export default function SessionPage() {
     setLocationGranted(true);
   }
 
+  // ── Auto-save on right swipe ─────────────────────────────────────────────
+
+  async function silentSaveSwipedPlace(place: PlaceResult) {
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      await supabase.from('saved_places').upsert({
+        user_id: user.id,
+        place_id: place.id,
+        place_name: place.name,
+        place_data: place,
+        list_name: 'Swiped Right',
+        is_visited: false,
+      }, { onConflict: 'user_id,place_id' });
+    } catch (e) {
+      console.log('[auto-save] silent error:', e);
+    }
+  }
+
   // ── Swipe handler ────────────────────────────────────────────────────────
 
   async function handleSwipe(direction: 'yes' | 'skip') {
@@ -258,6 +278,11 @@ export default function SessionPage() {
         }
       } catch {
         // Non-fatal
+      }
+
+      // Auto-save on right swipe (non-blocking, silent)
+      if (direction === 'yes') {
+        silentSaveSwipedPlace(place);
       }
     }
 
