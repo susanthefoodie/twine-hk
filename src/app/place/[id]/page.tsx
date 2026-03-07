@@ -475,10 +475,10 @@ export default function PlaceDetailPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
           <Stars rating={place.rating} size={14} />
           <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '14px', color: '#9a8f7e' }}>
-            {place.rating.toFixed(1)}
+            {(place.rating ?? 0).toFixed(1)}
           </span>
           <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '13px', color: '#7a7060' }}>
-            ({place.reviewCount.toLocaleString()} reviews)
+            ({(place.reviewCount ?? 0).toLocaleString()} reviews)
           </span>
         </div>
 

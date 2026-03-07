@@ -221,7 +221,7 @@ export default function SwipeCard({ place, stackIndex, onSwipe, onSave }: SwipeC
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Stars rating={place.rating} />
           <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '12px', color: '#7a7060' }}>
-            {place.rating.toFixed(1)} · {place.reviewCount.toLocaleString()} reviews
+            {(place.rating ?? 0).toFixed(1)} · {(place.reviewCount ?? 0).toLocaleString()} reviews
           </span>
         </div>
 

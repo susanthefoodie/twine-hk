@@ -204,8 +204,9 @@ export default function SessionPage() {
         }),
       });
       const data = await res.json();
-      if (data.places) {
-        setPlaces((prev) => [...prev, ...data.places]);
+      const incoming = data?.places ?? [];
+      if (incoming.length > 0) {
+        setPlaces((prev) => [...prev, ...incoming]);
       }
     } finally {
       setLoadingPlaces(false);

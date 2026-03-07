@@ -32,7 +32,7 @@ export async function POST(req: Request) {
       id: p.id,
       name: p.displayName?.text ?? 'Unknown',
       rating: p.rating ?? 0,
-      userRatingCount: p.userRatingCount ?? 0,
+      reviewCount: p.userRatingCount ?? 0,
       priceLevel: p.priceLevel ?? null,
       priceLabel: ['$', '$', '$$', '$$$'][(p.priceLevel ?? 2) - 1] ?? '$',
       address: p.formattedAddress ?? '',
