@@ -28,7 +28,6 @@ export async function POST(req: Request) {
     console.log('GOOGLE STATUS:', res.status);
     const data = await res.json();
     console.log('GOOGLE COUNT:', data.places?.length ?? 0);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const places = (data.places ?? []).map((p: any) => ({
       id: p.id,
       name: p.displayName?.text ?? 'Unknown',

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { createClient } from '@/lib/supabase';
 import type { User } from '@supabase/supabase-js';
 
@@ -159,7 +160,7 @@ function Avatar({
       }}
     >
       {url ? (
-        <img src={url} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <Image src={url} alt={name} width={40} height={40} style={{ borderRadius: '50%', objectFit: 'cover' }} />
       ) : (
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#c9622a' }}>
           {initials || '?'}
