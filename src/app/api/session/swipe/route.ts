@@ -1,122 +1,106 @@
-import { createAdminClient } from '@/lib/supabase-admin';
-import { NextRequest, NextResponse } from 'next/server';
-import type { PlaceResult } from '@/types/place';
+import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
-// POST /api/session/swipe
-// Body: { sessionId, placeId, direction, placeName?, placeData?, userId? }
-export async function POST(request: NextRequest) {
-  console.log('[session/swipe] POST called');
+const admin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+export async function POST(req: Request) {
+  console.log('[swipe] START')
   try {
-    let body: {
-      sessionId?: string;
-      placeId?: string;
-      direction?: string;
-      placeData?: PlaceResult;
-      placeName?: string;
-      userId?: string | null;
-    };
-    try {
-      body = await request.json();
-    } catch {
-      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
-    }
+    const body = await req.json()
+    console.log('[swipe] body:', JSON.stringify(body))
 
-    // ── Debug logging — always runs ───────────────────────────────────────
-    console.log('[swipe] received body keys:', Object.keys(body));
-    console.log('[swipe] userId:', body.userId);
-    console.log('[swipe] direction:', body.direction);
-    console.log('[swipe] placeData exists:', !!body.placeData);
-
-    const { sessionId, placeId, direction, placeData, placeName, userId } = body;
+    const { sessionId, placeId, direction, placeName, placeData, userId } = body
 
     if (!sessionId || !placeId || !direction) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Normalize direction — ALWAYS 'right' or 'left'
-    const normalizedDirection =
-      direction === 'right' || direction === 'like' || direction === 'yes'
-        ? 'right'
-        : 'left';
+    const normalizedDirection = ['right','like','yes'].includes(String(direction).toLowerCase()) ? 'right' : 'left'
+    console.log('[swipe] normalized direction:', normalizedDirection)
 
-    console.log('[session/swipe] normalizedDirection:', normalizedDirection);
+    // Insert swipe record — ignore duplicate errors
+    const { error: swipeError } = await admin
+      .from('swipes')
+      .insert({
+        session_id: sessionId,
+        place_id: placeId,
+        user_id: userId ?? null,
+        direction: normalizedDirection,
+        place_name: placeName ?? null
+      })
 
-    const supabaseAdmin = createAdminClient();
-
-    // ── Step 1: Record swipe — errors here do NOT block the save ─────────
-    try {
-      const { error: swipeError } = await supabaseAdmin
-        .from('swipes')
-        .insert({
-          session_id: sessionId,
-          place_id: placeId,
-          user_id: userId ?? null,
-          guest_participant_id: null,
-          direction: normalizedDirection,
-        });
-
-      if (swipeError) {
-        if (swipeError.code === '23505') {
-          console.log('[session/swipe] duplicate swipe ignored');
-        } else {
-          console.error('[session/swipe] swipe insert error:', swipeError.message, swipeError.code);
-        }
-      } else {
-        console.log('[session/swipe] swipe recorded:', normalizedDirection);
-      }
-    } catch (e: any) {
-      console.error('[session/swipe] swipe insert threw:', e.message);
-    }
-
-    // ── Step 2: Save to saved_places — ALWAYS runs on right swipe ────────
-    if (normalizedDirection === 'right' && placeData && userId) {
-      console.log('[swipe] attempting save for userId:', userId, 'placeId:', placeId);
-      const { data: saveData, error: saveError } = await supabaseAdmin
-        .from('saved_places')
-        .upsert(
-          {
-            user_id: userId,
-            place_id: placeId,
-            place_data: placeData,
-            list_name: 'Swiped Right',
-            is_visited: false,
-          },
-          { onConflict: 'user_id,place_id' }
-        );
-      console.log('[swipe] save result - data:', saveData, 'error:', saveError?.message);
+    if (swipeError && swipeError.code !== '23505') {
+      console.error('[swipe] swipe insert error:', swipeError.message, swipeError.code)
     } else {
-      console.log('[swipe] skipping save — direction:', normalizedDirection, 'hasPlaceData:', !!placeData, 'hasUserId:', !!userId);
+      console.log('[swipe] swipe recorded successfully')
     }
 
-    // ── Step 3: Match check — only for right swipes from auth users ───────
-    if (normalizedDirection !== 'right' || !userId) {
-      return NextResponse.json({ matched: false });
+    // Save to saved_places if right swipe
+    if (normalizedDirection === 'right') {
+      console.log('[swipe] attempting to save place, userId:', userId)
+
+      if (!userId) {
+        console.log('[swipe] WARNING: no userId provided, cannot save')
+      } else {
+        const savePayload = {
+          user_id: userId,
+          place_id: placeId,
+          place_data: placeData ?? { id: placeId, name: placeName },
+          list_name: 'Swiped Right',
+          is_visited: false
+        }
+        console.log('[swipe] save payload:', JSON.stringify(savePayload))
+
+        const { data: saveData, error: saveError } = await admin
+          .from('saved_places')
+          .upsert(savePayload, { onConflict: 'user_id,place_id' })
+          .select()
+
+        if (saveError) {
+          console.error('[swipe] SAVE FAILED:', saveError.message, saveError.code, saveError.details, saveError.hint)
+        } else {
+          console.log('[swipe] SAVE SUCCESS, rows:', JSON.stringify(saveData))
+        }
+      }
     }
 
-    const { data: matchResult, error: rpcErr } = await supabaseAdmin
-      .rpc('check_for_match', { p_session_id: sessionId, p_place_id: placeId });
+    // Check for match
+    const { data: rightSwipes } = await admin
+      .from('swipes')
+      .select('user_id')
+      .eq('session_id', sessionId)
+      .eq('place_id', placeId)
+      .eq('direction', 'right')
 
-    if (rpcErr) {
-      console.error('[session/swipe] check_for_match error:', rpcErr.message);
-      return NextResponse.json({ matched: false });
+    const { data: participants } = await admin
+      .from('session_participants')
+      .select('id')
+      .eq('session_id', sessionId)
+
+    const isMatch = rightSwipes && participants &&
+      rightSwipes.length >= Math.min(2, participants.length)
+
+    if (isMatch) {
+      await admin.from('matches').upsert({
+        session_id: sessionId,
+        place_id: placeId,
+        place_data: placeData ?? { id: placeId, name: placeName },
+        match_score: 100
+      }, { onConflict: 'session_id,place_id' })
+      console.log('[swipe] MATCH CREATED for place:', placeId)
     }
 
-    console.log('[session/swipe] match result:', matchResult);
-    const matched = matchResult === true;
+    return NextResponse.json({
+      success: true,
+      direction: normalizedDirection,
+      matched: isMatch ?? false
+    })
 
-    if (matched && placeData) {
-      await supabaseAdmin
-        .from('matches')
-        .update({ place_data: placeData })
-        .eq('session_id', sessionId)
-        .eq('place_id', placeId);
-    }
-
-    return NextResponse.json({ matched, place: matched ? placeData ?? null : null });
-
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Internal server error';
-    console.error('[session/swipe] unhandled error:', message, err);
-    return NextResponse.json({ error: message }, { status: 500 });
+  } catch (e: any) {
+    console.error('[swipe] CRASH:', e.message, e.stack)
+    return NextResponse.json({ error: e.message }, { status: 500 })
   }
 }

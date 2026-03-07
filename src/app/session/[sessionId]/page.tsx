@@ -138,7 +138,7 @@ export default function SessionPage() {
   const router    = useRouter();
   const sessionId = params.sessionId as string;
 
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [session,     setSession]     = useState<SessionInfo | null>(null);
   const [sessionErr,  setSessionErr]  = useState<string | null>(null);
   const [places,      setPlaces]      = useState<PlaceResult[]>([]);
@@ -161,7 +161,10 @@ export default function SessionPage() {
   // ── Load current user ────────────────────────────────────────────────────
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => setCurrentUser(user));
+    supabase.auth.getUser().then(({ data }) => {
+      console.log('[session] current user id:', data.user?.id)
+      setCurrentUserId(data.user?.id ?? null)
+    })
   }, []);
 
   // ── Load session info ────────────────────────────────────────────────────
@@ -266,18 +269,19 @@ export default function SessionPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            sessionId,
+            sessionId: sessionId,
             placeId: place.id,
             direction: direction === 'yes' ? 'right' : 'left',
-            placeName: place.name,
+            placeName: place.name ?? '',
             placeData: place,
-            userId: currentUser?.id ?? null,
+            userId: currentUserId,
           }),
         });
         const data = await res.json();
-        if (data.matched && data.place) {
-          setMatch({ place: data.place });
-          setMatchHistory((prev) => [...prev, data.place]);
+        if (data.matched) {
+          const matchedPlace = data.place ?? place;
+          setMatch({ place: matchedPlace });
+          setMatchHistory((prev) => [...prev, matchedPlace]);
         }
       } catch (e) {
         console.error('swipe record failed:', e);
