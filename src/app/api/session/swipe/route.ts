@@ -52,70 +52,51 @@ export async function POST(req: Request) {
             is_visited: false,
           }, { onConflict: 'user_id,place_id' })
         if (saveError) {
-          console.error('[swipe] SAVE ERROR:', saveError.message, saveError.code)
+          console.error('[swipe] save error:', saveError.message)
         } else {
-          console.log('[swipe] saved_places upserted ok')
+          console.log('[swipe] saved to collection')
         }
       }
 
-      // 3. Match detection
-      const { data: sessionData } = await admin
-        .from('sessions')
-        .select('mode')
-        .eq('id', sessionId)
-        .single()
-
-      const mode = sessionData?.mode ?? 'solo'
-      console.log('[swipe] session mode:', mode)
-
-      // Get all participants in this session
+      // 3. Count participants
       const { data: participants } = await admin
         .from('session_participants')
         .select('user_id')
         .eq('session_id', sessionId)
 
-      const participantCount = Math.max(participants?.length ?? 1, 1)
-      console.log('[swipe] participant count:', participantCount)
+      const totalParticipants = participants?.length ?? 1
+      console.log('[swipe] totalParticipants:', totalParticipants)
 
-      // Get all right swipes for this place in this session
-      const { data: rightSwipes } = await admin
+      // Count unique users who swiped right on this place
+      const { data: rightSwipeRows } = await admin
         .from('swipes')
         .select('user_id')
         .eq('session_id', sessionId)
         .eq('place_id', placeId)
         .eq('direction', 'right')
+        .not('user_id', 'is', null)
 
-      const rightSwipeCount = rightSwipes?.length ?? 0
-      console.log('[swipe] right swipe count for this place:', rightSwipeCount)
+      const uniqueSwipers = new Set((rightSwipeRows ?? []).map((r: any) => r.user_id))
+      const rightSwipeCount = uniqueSwipers.size
+      console.log('[swipe] uniqueRightSwipers:', rightSwipeCount, 'needed:', totalParticipants)
 
-      // Determine match based on mode
-      if (mode === 'solo') {
+      // Match only when ALL participants have swiped right
+      if (rightSwipeCount >= totalParticipants) {
         isMatch = true
-      } else if (mode === 'couples' || mode === 'date') {
-        isMatch = rightSwipeCount >= 2
-      } else if (mode === 'group' || mode === 'friends') {
-        isMatch = rightSwipeCount >= Math.ceil(participantCount / 2)
-      } else {
-        isMatch = true
-      }
-
-      console.log('[swipe] isMatch:', isMatch, 'mode:', mode, 'rightSwipes:', rightSwipeCount, 'participants:', participantCount)
-
-      if (isMatch) {
         const { error: matchError } = await admin
           .from('matches')
           .upsert({
             session_id: sessionId,
             place_id: placeId,
             place_data: placeData ?? { id: placeId, name: placeName ?? '' },
-            match_score: rightSwipeCount * 50,
+            match_score: rightSwipeCount * 100,
             is_visited: false,
           }, { onConflict: 'session_id,place_id' })
 
         if (matchError) {
-          console.error('[swipe] MATCH ERROR:', matchError.message, matchError.code, matchError.details)
+          console.error('[swipe] MATCH ERROR:', matchError.message, matchError.code)
         } else {
-          console.log('[swipe] MATCH CREATED/UPDATED:', placeId, 'score:', rightSwipeCount * 50)
+          console.log('[swipe] MATCH CREATED:', placeId, 'swipers:', rightSwipeCount)
         }
       }
     }

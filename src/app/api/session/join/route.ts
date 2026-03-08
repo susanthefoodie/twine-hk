@@ -75,9 +75,7 @@ export async function POST(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
+        getAll() { return cookieStore.getAll(); },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
             cookieStore.set(name, value, options);
@@ -87,39 +85,24 @@ export async function POST(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+  const userId = user?.id ?? null;
+  console.log('[session/join] userId:', userId ?? 'guest', 'session:', session.id);
 
-  // Check for existing participation (avoid duplicates)
-  if (user) {
-    const { data: existing } = await admin
-      .from('session_participants')
-      .select('id')
-      .eq('session_id', session.id)
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if (existing) {
-      // Already a participant — just return the session ID
-      return NextResponse.json({ sessionId: session.id });
-    }
-  }
-
-  // Insert participant (admin client bypasses RLS for guest inserts)
-  const { error: insertErr } = await admin
+  // Insert participant — upsert prevents duplicate rows for auth users
+  // (requires UNIQUE constraint on session_participants(session_id, user_id))
+  const { error: participantError } = await admin
     .from('session_participants')
-    .insert({
+    .upsert({
       session_id: session.id,
-      user_id: user?.id ?? null,
-      guest_name: !user ? (guestName ?? 'Guest') : null,
-    });
+      user_id: userId,
+      guest_name: !userId ? (guestName ?? 'Guest') : null,
+      joined_at: new Date().toISOString(),
+    }, { onConflict: 'session_id,user_id' });
+  console.log('[session/join] participant upsert:', participantError?.message ?? 'OK');
 
-  if (insertErr) {
-    return NextResponse.json(
-      { error: insertErr.message },
-      { status: 500 }
-    );
+  if (participantError) {
+    return NextResponse.json({ error: participantError.message }, { status: 500 });
   }
 
   // Increment participant count

@@ -32,8 +32,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid mode' }, { status: 400 });
     }
 
-    // Use the cookie-based client ONLY to authenticate the user (reads JWT, no table queries)
-    console.log('[session/create] authenticating user');
+    // Use the cookie-based client ONLY to authenticate the user
     const cookieStore = cookies();
     const authClient = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -51,10 +50,10 @@ export async function POST(request: NextRequest) {
     );
 
     const { data: { user } } = await authClient.auth.getUser();
-    // user may be null for guest mode — session created with host_user_id: null
-    console.log('[session/create] user:', user?.id ?? 'guest');
+    const userId = user?.id ?? null;
+    console.log('[session/create] user:', userId ?? 'guest');
 
-    // All DB writes use the admin client — bypasses RLS entirely, no policy recursion
+    // All DB writes use the admin client — bypasses RLS entirely
     const admin = createAdminClient();
 
     // Generate a unique 6-char share code
@@ -71,12 +70,11 @@ export async function POST(request: NextRequest) {
     console.log('[session/create] share code:', shareCode);
 
     // Create the session
-    console.log('[session/create] inserting session');
     const { data: session, error: sessionErr } = await admin
       .from('sessions')
       .insert({
         mode,
-        host_user_id: user?.id ?? null,
+        host_user_id: userId,
         share_code: shareCode,
         filters: filters ?? {},
         status: 'active',
@@ -95,31 +93,21 @@ export async function POST(request: NextRequest) {
     }
     console.log('[session/create] session created:', session.id);
 
-    // Insert host as first participant only if authenticated
-    if (user) {
-      console.log('[session/create] inserting participant');
-      const { error: participantErr } = await admin
-        .from('session_participants')
-        .insert({
-          session_id: session.id,
-          user_id: user.id,
-        });
-
-      if (participantErr) {
-        console.error('[session/create] insert session_participants error:', participantErr.message);
-        // Non-fatal — session was created; log and continue
-      } else {
-        console.log('[session/create] participant inserted');
-      }
-    } else {
-      console.log('[session/create] guest session — skipping participant insert');
-    }
+    // Always insert the host as a participant (even guests get a null-user-id row
+    // so the participant count is correct when checking for matches)
+    const { error: participantError } = await admin
+      .from('session_participants')
+      .insert({
+        session_id: session.id,
+        user_id: userId,
+        joined_at: new Date().toISOString(),
+      });
+    console.log('[session/create] host participant insert:', participantError?.message ?? 'OK');
 
     const origin =
       request.headers.get('origin') ??
       `https://${request.headers.get('host')}`;
 
-    console.log('[session/create] success, returning response');
     return NextResponse.json({
       sessionId: session.id,
       shareCode,
