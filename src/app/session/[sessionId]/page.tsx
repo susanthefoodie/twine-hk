@@ -284,9 +284,7 @@ export default function SessionPage() {
           setMatch({ place: matchedPlace });
           setMatchHistory((prev) => [...prev, matchedPlace]);
         }
-        if (direction === 'yes') {
-          refreshMatches();
-        }
+        refreshMatchCount();
       } catch (e) {
         console.error('swipe record failed:', e);
       }
@@ -304,11 +302,13 @@ export default function SessionPage() {
 
   // ── Refresh match count from server ──────────────────────────────────────
 
-  const refreshMatches = useCallback(async () => {
+  const refreshMatchCount = useCallback(async () => {
     try {
       const res = await fetch(`/api/session/results?sessionId=${sessionId}`)
-      const data = await res.json()
-      setMatchCount(data.matches?.length ?? 0)
+      if (res.ok) {
+        const data = await res.json()
+        setMatchCount(data.matches?.length ?? 0)
+      }
     } catch {
       // Non-fatal
     }
@@ -483,18 +483,17 @@ export default function SessionPage() {
             </span>
           )}
         </div>
-        {matchCount > 0 ? (
-          <button
-            onClick={() => router.push(`/results/${sessionId}`)}
-            style={{
-              background: 'none', border: '1px solid #332e28', borderRadius: '4px',
-              color: '#c4922a', fontFamily: 'var(--font-mono)', fontSize: '10px',
-              letterSpacing: '0.06em', padding: '5px 10px', cursor: 'pointer',
-            }}
-          >
-            {matchCount} MATCH{matchCount !== 1 ? 'ES' : ''}
-          </button>
-        ) : <span style={{ width: '70px' }} />}
+        <button
+          onClick={() => router.push(`/results/${sessionId}`)}
+          style={{
+            background: 'none', border: '1px solid #332e28', borderRadius: '4px',
+            color: matchCount > 0 ? '#c4922a' : '#7a7060',
+            fontFamily: 'var(--font-mono)', fontSize: '10px',
+            letterSpacing: '0.06em', padding: '5px 10px', cursor: 'pointer',
+          }}
+        >
+          {matchCount} {matchCount === 1 ? 'Match' : 'Matches'} 🎯
+        </button>
       </div>
 
       {/* Card stack area */}

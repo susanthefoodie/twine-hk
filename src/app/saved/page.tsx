@@ -358,19 +358,14 @@ export default function SavedPage() {
   // ── Load ──────────────────────────────────────────────────────────────────
 
   useEffect(() => {
-    async function load() {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) { router.push('/auth'); return; }
-      const { data } = await supabase
-        .from('saved_places')
-        .select('id, place_id, place_data, is_visited, visit_rating, visit_note, list_name, created_at')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-      setPlaces((data as SavedPlace[]) ?? []);
-      setLoading(false);
-    }
-    load();
+      const res = await fetch(`/api/saved?userId=${user.id}`)
+      const data = await res.json()
+      setPlaces((data.places ?? []) as SavedPlace[])
+      setLoading(false)
+    })
   }, [router]);
 
   // ── Delete with undo ──────────────────────────────────────────────────────

@@ -10,39 +10,37 @@ export async function POST(req: Request) {
   console.log('[swipe] START')
   try {
     const body = await req.json()
-    console.log('[swipe] body:', JSON.stringify(body))
-
     const { sessionId, placeId, direction, placeName, placeData, userId } = body
+    console.log('[swipe] userId:', userId, 'placeId:', placeId, 'direction:', direction)
 
     if (!sessionId || !placeId || !direction) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+      return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
     }
 
     const normalizedDirection = ['right','like','yes'].includes(String(direction).toLowerCase()) ? 'right' : 'left'
-    console.log('[swipe] normalized direction:', normalizedDirection)
 
-    // Insert swipe record — ignore duplicate errors
+    // 1. Insert into swipes using EXACT column names
     const { error: swipeError } = await admin
       .from('swipes')
       .insert({
         session_id: sessionId,
         place_id: placeId,
-        user_id: userId ?? null,
         direction: normalizedDirection,
+        user_id: userId ?? null,
+        guest_participant_id: null,
         place_name: placeName ?? null
       })
-
     if (swipeError && swipeError.code !== '23505') {
-      console.error('[swipe] swipe insert error:', swipeError.message, swipeError.code)
+      console.error('[swipe] swipe error:', swipeError.message, swipeError.code)
     } else {
-      console.log('[swipe] swipe recorded successfully')
+      console.log('[swipe] swipe inserted ok, direction:', normalizedDirection)
     }
 
-    // Save to saved_places BEFORE match logic
-    if (normalizedDirection === 'right' && userId && placeId) {
-      console.log('[swipe] saving to saved_places, userId:', userId, 'placeId:', placeId)
-      try {
-        const { data: sd, error: se } = await admin
+    if (normalizedDirection === 'right') {
+
+      // 2. Insert into saved_places using EXACT column names
+      if (userId && placeId) {
+        const { data: saveData, error: saveError } = await admin
           .from('saved_places')
           .upsert({
             user_id: userId,
@@ -52,65 +50,92 @@ export async function POST(req: Request) {
             is_visited: false
           }, { onConflict: 'user_id,place_id' })
           .select()
-        console.log('[swipe] saved_places result:', JSON.stringify(sd), JSON.stringify(se))
-      } catch (err: any) {
-        console.error('[swipe] saved_places exception:', err.message)
+        if (saveError) {
+          console.error('[swipe] SAVE ERROR:', saveError.message, saveError.code, saveError.details, saveError.hint)
+        } else {
+          console.log('[swipe] SAVE SUCCESS:', JSON.stringify(saveData))
+        }
+      } else {
+        console.log('[swipe] skipping saved_places — userId:', userId, 'placeId:', placeId)
       }
-    }
 
-    // Get session mode for solo check
-    const { data: sessionData } = await admin
-      .from('sessions')
-      .select('mode')
-      .eq('id', sessionId)
-      .single()
-
-    const isSolo = sessionData?.mode === 'solo'
-
-    let isMatch = false
-
-    if (normalizedDirection === 'right') {
-      const { data: participants } = await admin
-        .from('session_participants')
+      // 3. Insert into matches using EXACT column names
+      // Check first to avoid duplicates (no unique constraint on session_id,place_id)
+      const { data: existing } = await admin
+        .from('matches')
         .select('id')
         .eq('session_id', sessionId)
-
-      const { data: rightSwipes } = await admin
-        .from('swipes')
-        .select('user_id')
-        .eq('session_id', sessionId)
         .eq('place_id', placeId)
-        .eq('direction', 'right')
+        .maybeSingle()
 
-      const participantCount = participants?.length ?? 1
-      const rightSwipeCount = rightSwipes?.length ?? 0
-      isMatch = isSolo || rightSwipeCount >= Math.min(2, participantCount)
-
-      console.log('[swipe] match check — mode:', sessionData?.mode, 'participants:', participantCount, 'rightSwipes:', rightSwipeCount, 'isMatch:', isMatch)
-
-      if (isMatch) {
-        const { error: matchError } = await admin
+      if (existing) {
+        // Update place_data if it was stored as empty {} by check_for_match trigger
+        const { error: updateErr } = await admin
           .from('matches')
-          .upsert({
-            session_id: sessionId,
-            place_id: placeId,
-            place_data: placeData ?? { id: placeId, name: placeName },
+          .update({
+            place_data: placeData ?? { id: placeId, name: placeName ?? '' },
             match_score: 100
-          }, { onConflict: 'session_id,place_id' })
-
-        if (matchError) {
-          console.error('[swipe] match upsert error:', matchError.message, matchError.code)
+          })
+          .eq('id', existing.id)
+        if (updateErr) {
+          console.error('[swipe] MATCH UPDATE ERROR:', updateErr.message)
         } else {
-          console.log('[swipe] MATCH CREATED:', placeId)
+          console.log('[swipe] MATCH UPDATED existing row:', existing.id)
+        }
+      } else {
+        // Determine if we should create a match now
+        const { data: sessionData } = await admin
+          .from('sessions')
+          .select('mode')
+          .eq('id', sessionId)
+          .single()
+
+        const isSolo = !sessionData?.mode || sessionData.mode === 'solo'
+
+        let shouldMatch = isSolo
+
+        if (!isSolo) {
+          const { data: participants } = await admin
+            .from('session_participants')
+            .select('id')
+            .eq('session_id', sessionId)
+
+          const { data: rightSwipes } = await admin
+            .from('swipes')
+            .select('user_id')
+            .eq('session_id', sessionId)
+            .eq('place_id', placeId)
+            .eq('direction', 'right')
+
+          const participantCount = participants?.length ?? 1
+          const rightSwipeCount = rightSwipes?.length ?? 0
+          console.log('[swipe] group — participants:', participantCount, 'rightSwipes:', rightSwipeCount)
+          shouldMatch = rightSwipeCount >= participantCount
+        }
+
+        console.log('[swipe] mode:', sessionData?.mode, 'shouldMatch:', shouldMatch)
+
+        if (shouldMatch) {
+          const { data: matchData, error: matchError } = await admin
+            .from('matches')
+            .insert({
+              session_id: sessionId,
+              place_id: placeId,
+              place_data: placeData ?? { id: placeId, name: placeName ?? '' },
+              match_score: 100,
+              is_visited: false
+            })
+            .select()
+          if (matchError) {
+            console.error('[swipe] MATCH ERROR:', matchError.message, matchError.code, matchError.details)
+          } else {
+            console.log('[swipe] MATCH CREATED:', JSON.stringify(matchData))
+          }
         }
       }
     }
 
-    return NextResponse.json({
-      success: true,
-      direction: normalizedDirection,
-      matched: isMatch
-    })
+    return NextResponse.json({ success: true, direction: normalizedDirection })
 
   } catch (e: any) {
     console.error('[swipe] CRASH:', e.message, e.stack)
