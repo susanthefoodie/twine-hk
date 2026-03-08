@@ -38,65 +38,78 @@ export async function POST(req: Request) {
       console.log('[swipe] swipe recorded successfully')
     }
 
-    // Save to saved_places if right swipe
-    if (normalizedDirection === 'right') {
-      console.log('[swipe] attempting to save place, userId:', userId)
-
-      if (!userId) {
-        console.log('[swipe] WARNING: no userId provided, cannot save')
-      } else {
-        const savePayload = {
-          user_id: userId,
-          place_id: placeId,
-          place_data: placeData ?? { id: placeId, name: placeName },
-          list_name: 'Swiped Right',
-          is_visited: false
-        }
-        console.log('[swipe] save payload:', JSON.stringify(savePayload))
-
-        const { data: saveData, error: saveError } = await admin
+    // Save to saved_places BEFORE match logic
+    if (normalizedDirection === 'right' && userId && placeId) {
+      console.log('[swipe] saving to saved_places, userId:', userId, 'placeId:', placeId)
+      try {
+        const { data: sd, error: se } = await admin
           .from('saved_places')
-          .upsert(savePayload, { onConflict: 'user_id,place_id' })
+          .upsert({
+            user_id: userId,
+            place_id: placeId,
+            place_data: placeData ?? { id: placeId, name: placeName ?? '' },
+            list_name: 'Swiped Right',
+            is_visited: false
+          }, { onConflict: 'user_id,place_id' })
           .select()
-
-        if (saveError) {
-          console.error('[swipe] SAVE FAILED:', saveError.message, saveError.code, saveError.details, saveError.hint)
-        } else {
-          console.log('[swipe] SAVE SUCCESS, rows:', JSON.stringify(saveData))
-        }
+        console.log('[swipe] saved_places result:', JSON.stringify(sd), JSON.stringify(se))
+      } catch (err: any) {
+        console.error('[swipe] saved_places exception:', err.message)
       }
     }
 
-    // Check for match
-    const { data: rightSwipes } = await admin
-      .from('swipes')
-      .select('user_id')
-      .eq('session_id', sessionId)
-      .eq('place_id', placeId)
-      .eq('direction', 'right')
+    // Get session mode for solo check
+    const { data: sessionData } = await admin
+      .from('sessions')
+      .select('mode')
+      .eq('id', sessionId)
+      .single()
 
-    const { data: participants } = await admin
-      .from('session_participants')
-      .select('id')
-      .eq('session_id', sessionId)
+    const isSolo = sessionData?.mode === 'solo'
 
-    const isMatch = rightSwipes && participants &&
-      rightSwipes.length >= Math.min(2, participants.length)
+    let isMatch = false
 
-    if (isMatch) {
-      await admin.from('matches').upsert({
-        session_id: sessionId,
-        place_id: placeId,
-        place_data: placeData ?? { id: placeId, name: placeName },
-        match_score: 100
-      }, { onConflict: 'session_id,place_id' })
-      console.log('[swipe] MATCH CREATED for place:', placeId)
+    if (normalizedDirection === 'right') {
+      const { data: participants } = await admin
+        .from('session_participants')
+        .select('id')
+        .eq('session_id', sessionId)
+
+      const { data: rightSwipes } = await admin
+        .from('swipes')
+        .select('user_id')
+        .eq('session_id', sessionId)
+        .eq('place_id', placeId)
+        .eq('direction', 'right')
+
+      const participantCount = participants?.length ?? 1
+      const rightSwipeCount = rightSwipes?.length ?? 0
+      isMatch = isSolo || rightSwipeCount >= Math.min(2, participantCount)
+
+      console.log('[swipe] match check — mode:', sessionData?.mode, 'participants:', participantCount, 'rightSwipes:', rightSwipeCount, 'isMatch:', isMatch)
+
+      if (isMatch) {
+        const { error: matchError } = await admin
+          .from('matches')
+          .upsert({
+            session_id: sessionId,
+            place_id: placeId,
+            place_data: placeData ?? { id: placeId, name: placeName },
+            match_score: 100
+          }, { onConflict: 'session_id,place_id' })
+
+        if (matchError) {
+          console.error('[swipe] match upsert error:', matchError.message, matchError.code)
+        } else {
+          console.log('[swipe] MATCH CREATED:', placeId)
+        }
+      }
     }
 
     return NextResponse.json({
       success: true,
       direction: normalizedDirection,
-      matched: isMatch ?? false
+      matched: isMatch
     })
 
   } catch (e: any) {

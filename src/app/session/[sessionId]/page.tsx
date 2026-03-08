@@ -147,6 +147,7 @@ export default function SessionPage() {
   const [loadingPlaces, setLoadingPlaces] = useState(false);
   const [match,       setMatch]       = useState<MatchedPlace | null>(null);
   const [matchHistory, setMatchHistory] = useState<PlaceResult[]>([]);
+  const [matchCount,  setMatchCount]  = useState(0);
   const [swiping,     setSwiping]     = useState(false);
   const [showMatches, setShowMatches] = useState(false);
   const [hasTriedExpansion, setHasTriedExpansion] = useState(false);
@@ -283,6 +284,9 @@ export default function SessionPage() {
           setMatch({ place: matchedPlace });
           setMatchHistory((prev) => [...prev, matchedPlace]);
         }
+        if (direction === 'yes') {
+          refreshMatches();
+        }
       } catch (e) {
         console.error('swipe record failed:', e);
       }
@@ -297,6 +301,18 @@ export default function SessionPage() {
       fetchPlaces(coords.lat, coords.lng, newSwiped);
     }
   }
+
+  // ── Refresh match count from server ──────────────────────────────────────
+
+  const refreshMatches = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/session/results?sessionId=${sessionId}`)
+      const data = await res.json()
+      setMatchCount(data.matches?.length ?? 0)
+    } catch {
+      // Non-fatal
+    }
+  }, [sessionId]);
 
   // ── Save place ───────────────────────────────────────────────────────────
 
@@ -467,7 +483,7 @@ export default function SessionPage() {
             </span>
           )}
         </div>
-        {matchHistory.length > 0 ? (
+        {matchCount > 0 ? (
           <button
             onClick={() => router.push(`/results/${sessionId}`)}
             style={{
@@ -476,7 +492,7 @@ export default function SessionPage() {
               letterSpacing: '0.06em', padding: '5px 10px', cursor: 'pointer',
             }}
           >
-            {matchHistory.length} MATCH{matchHistory.length !== 1 ? 'ES' : ''}
+            {matchCount} MATCH{matchCount !== 1 ? 'ES' : ''}
           </button>
         ) : <span style={{ width: '70px' }} />}
       </div>
