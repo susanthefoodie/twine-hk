@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/lib/supabase';
 import type { PlaceResult } from '@/types/place';
 
+const supabase = createClient();
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface Match {
@@ -437,77 +439,26 @@ export default function ResultsPage() {
 
   useEffect(() => {
     async function load() {
-      const supabase = createClient();
+      try {
+        const res = await fetch(`/api/session/results?sessionId=${sessionId}`)
+        const data = await res.json()
 
-      const [sessionRes, matchesRes] = await Promise.all([
-        supabase
-          .from('sessions')
-          .select('id, mode')
-          .eq('id', sessionId)
-          .maybeSingle(),
-        supabase
-          .from('matches')
-          .select('id, place_id, place_data, match_score, is_visited')
-          .eq('session_id', sessionId)
-          .order('match_score', { ascending: false }),
-      ]);
-
-      if (sessionRes.error || !sessionRes.data) {
-        setError('Session not found.');
-        setLoading(false);
-        return;
-      }
-
-      setSession(sessionRes.data as SessionInfo);
-      const loadedMatches = (matchesRes.data as Match[]) ?? [];
-      setMatches(loadedMatches);
-
-      // Compute almost-matches: yes swipes whose place_id didn't make it to a full match
-      const matchedIds = new Set(loadedMatches.map((m) => m.place_id));
-
-      const [swipesRes, participantRes] = await Promise.all([
-        supabase
-          .from('swipes')
-          .select('place_id, place_data')
-          .eq('session_id', sessionId)
-          .eq('direction', 'yes'),
-        supabase
-          .from('session_participants')
-          .select('id', { count: 'exact', head: true })
-          .eq('session_id', sessionId),
-      ]);
-
-      const totalParticipants = participantRes.count ?? 1;
-      const swipeRows = (swipesRes.data ?? []) as {
-        place_id: string;
-        place_data: PlaceResult | null;
-      }[];
-
-      // Count yes votes per place (exclude fully-matched places)
-      const yesCounts: Record<string, { count: number; place_data: PlaceResult | null }> = {};
-      for (const row of swipeRows) {
-        if (matchedIds.has(row.place_id)) continue;
-        if (!yesCounts[row.place_id]) {
-          yesCounts[row.place_id] = { count: 0, place_data: row.place_data };
+        if (!res.ok || data.error) {
+          setError(data.error ?? 'Session not found.')
+          setLoading(false)
+          return
         }
-        yesCounts[row.place_id].count += 1;
+
+        setSession(data.session as SessionInfo)
+        setMatches((data.matches ?? []) as Match[])
+        setAlmostMatches((data.almostMatches ?? []) as AlmostMatch[])
+        setLoading(false)
+      } catch {
+        setError('Failed to load session.')
+        setLoading(false)
       }
-
-      const almosts: AlmostMatch[] = Object.entries(yesCounts)
-        .filter(([, v]) => v.place_data !== null && v.count < totalParticipants)
-        .map(([place_id, v]) => ({
-          place_id,
-          place_data: v.place_data as PlaceResult,
-          yes_count: v.count,
-          total_count: totalParticipants,
-        }))
-        .sort((a, b) => b.yes_count - a.yes_count)
-        .slice(0, 5);
-
-      setAlmostMatches(almosts);
-      setLoading(false);
     }
-    load();
+    load()
   }, [sessionId]);
 
   // ── Visited toggle ────────────────────────────────────────────────────────
@@ -516,7 +467,6 @@ export default function ResultsPage() {
     setMatches((prev) =>
       prev.map((m) => (m.id === matchId ? { ...m, is_visited: visited } : m))
     );
-    const supabase = createClient();
     await supabase
       .from('matches')
       .update({ is_visited: visited })
@@ -553,9 +503,28 @@ export default function ResultsPage() {
   if (error) {
     return (
       <div style={centreStyle}>
-        <p style={{ fontFamily: 'var(--font-serif)', fontSize: '18px', color: '#f0e8d8', textAlign: 'center' }}>
-          {error}
-        </p>
+        <div style={{ textAlign: 'center', padding: '0 24px' }}>
+          <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '20px', color: '#7a7060', marginBottom: '24px' }}>
+            {error}
+          </p>
+          <button
+            onClick={() => router.push('/home')}
+            style={{
+              height: '48px',
+              padding: '0 28px',
+              background: '#c9622a',
+              border: 'none',
+              borderRadius: '4px',
+              fontFamily: 'var(--font-sans)',
+              fontWeight: 500,
+              fontSize: '15px',
+              color: '#f0e8d8',
+              cursor: 'pointer',
+            }}
+          >
+            Back to Home
+          </button>
+        </div>
       </div>
     );
   }
