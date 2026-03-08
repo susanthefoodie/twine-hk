@@ -43,7 +43,7 @@ type Tab = 'all' | 'visited' | 'lists';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function photoSrc(name: string | null) {
+function photoSrc(name: string | null | undefined) {
   if (!name) return null;
   return `/api/places/photo?name=${encodeURIComponent(name)}&maxWidthPx=400`;
 }
@@ -115,7 +115,7 @@ function VisitSheet({
         </div>
 
         <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '18px', color: '#f0e8d8', margin: '0 0 4px' }}>
-          {saved.place_data.name}
+          {saved.place_data?.name ?? 'Unknown Restaurant'}
         </h3>
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#c9622a', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 24px' }}>
           Mark as Visited
@@ -194,10 +194,10 @@ function SavedCard({
   onVisitTap: (s: SavedPlace) => void;
 }) {
   const router   = useRouter();
-  const place    = saved.place_data;
-  const src      = photoSrc(place.photoName);
-  const district = place.address.split(',')[0]?.trim() ?? '';
-  const mapsUrl  = `https://www.google.com/maps/dir/?api=1&destination_place_id=${place.id}&travelmode=transit`;
+  const place    = saved.place_data ?? {} as PlaceResult;
+  const src      = photoSrc(place.photoName ?? null);
+  const district = place.districtName ?? (place.address ?? '').split(',')[0]?.trim() ?? '';
+  const mapsUrl  = `https://www.google.com/maps/dir/?api=1&destination_place_id=${place.id ?? ''}&travelmode=transit`;
 
   return (
     <div
@@ -211,7 +211,7 @@ function SavedCard({
       {/* Photo */}
       <div style={{ position: 'relative', height: '160px', background: '#0e0c0a' }}>
         {src ? (
-          <Image src={src} alt={place.name} fill unoptimized sizes="280px" style={{ objectFit: 'cover' }} />
+          <Image src={src} alt={place.name ?? ''} fill unoptimized sizes="280px" style={{ objectFit: 'cover' }} />
         ) : (
           <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px' }}>🍜</div>
         )}
@@ -234,10 +234,10 @@ function SavedCard({
       {/* Body */}
       <div style={{ padding: '12px 14px' }}>
         <p style={{ fontFamily: 'var(--font-serif)', fontWeight: 600, fontSize: '14px', color: '#f0e8d8', margin: '0 0 4px', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          {place.name}
+          {place.name ?? 'Unknown Restaurant'}
         </p>
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#7a7060', margin: '0 0 10px' }}>
-          {[district, place.priceLabel].filter(Boolean).join(' · ')}
+          {[district, place.priceLabel ?? null].filter(Boolean).join(' · ')}
         </p>
         {/* Actions (stop propagation so they don't open the sheet) */}
         <div style={{ display: 'flex', gap: '8px' }} onClick={(e) => e.stopPropagation()}>
@@ -383,7 +383,7 @@ export default function SavedPage() {
       await supabase.from('saved_places').delete().eq('id', saved.id);
     }, 5000);
 
-    setToast({ dbId: saved.id, name: saved.place_data.name, timerId });
+    setToast({ dbId: saved.id, name: saved.place_data?.name ?? 'Place', timerId });
   }, [toast]);
 
   function handleUndo() {
@@ -436,7 +436,7 @@ export default function SavedPage() {
     if (activeTab === 'visited') result = result.filter((p) => p.is_visited);
     if (district !== 'All') {
       result = result.filter((p) =>
-        p.place_data.address.toLowerCase().includes(district.toLowerCase())
+        (p.place_data?.address ?? '').toLowerCase().includes(district.toLowerCase())
       );
     }
     if (sortBy === 'rating') {
