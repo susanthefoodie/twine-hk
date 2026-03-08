@@ -401,7 +401,7 @@ export default function LandingPage() {
             {/* CTAs */}
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
               <EmberButton href="/auth" label="Start Discovering →" size="lg" />
-              <GhostButton href="#how-it-works" label="How it works ↓" />
+              <GhostButton href="/guest" label="Try as Guest" />
             </div>
           </div>
 
@@ -707,7 +707,10 @@ export default function LandingPage() {
           >
             Ready to find your hidden gem?
           </h2>
-          <EmberButton href="/auth" label="Create your first session — it's free →" size="lg" />
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <EmberButton href="/auth" label="Create your first session — it's free →" size="lg" />
+            <GhostButton href="/guest" label="Try as Guest" />
+          </div>
         </div>
       </section>
 

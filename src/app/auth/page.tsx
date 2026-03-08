@@ -106,12 +106,31 @@ function AuthContent() {
 
   const urlError = searchParams.get('error');
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated; also recover any guest liked places
   useEffect(() => {
     createClient()
       .auth.getUser()
-      .then(({ data: { user } }) => {
-        if (user) router.replace('/home');
+      .then(async ({ data: { user } }) => {
+        if (user) {
+          // Recover guest liked places from localStorage and save them
+          try {
+            const raw = localStorage.getItem('guest_liked');
+            if (raw) {
+              const likedPlaces = JSON.parse(raw);
+              for (const place of likedPlaces) {
+                await fetch('/api/saved/add', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ userId: user.id, placeId: place.id, placeData: place }),
+                });
+              }
+              localStorage.removeItem('guest_liked');
+            }
+          } catch {
+            // Non-fatal
+          }
+          router.replace('/home');
+        }
       });
   }, [router]);
 
@@ -371,13 +390,49 @@ function AuthContent() {
           )}
         </AnimatePresence>
 
-        {/* Divider */}
+        {/* Divider with "or" */}
         <div
           style={{
-            borderTop: '1px solid #332e28',
-            margin: '4px 0 16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            margin: '4px 0 14px',
           }}
-        />
+        >
+          <div style={{ flex: 1, height: '1px', background: '#332e28' }} />
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#3d3730', letterSpacing: '0.06em' }}>or</span>
+          <div style={{ flex: 1, height: '1px', background: '#332e28' }} />
+        </div>
+
+        {/* Guest button */}
+        <div style={{ marginBottom: '16px' }}>
+          <button
+            onClick={() => router.push('/guest')}
+            style={{
+              width: '100%',
+              height: '44px',
+              background: 'transparent',
+              border: '1px solid #332e28',
+              borderRadius: '4px',
+              fontFamily: 'var(--font-sans)',
+              fontWeight: 400,
+              fontSize: '14px',
+              color: '#7a7060',
+              cursor: 'pointer',
+              transition: 'border-color 0.2s, color 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.borderColor = '#7a7060';
+              (e.currentTarget as HTMLElement).style.color = '#9a8f7e';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.borderColor = '#332e28';
+              (e.currentTarget as HTMLElement).style.color = '#7a7060';
+            }}
+          >
+            Try as Guest — no sign up needed
+          </button>
+        </div>
 
         {/* Privacy note */}
         <p

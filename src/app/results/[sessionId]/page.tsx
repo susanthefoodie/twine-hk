@@ -267,7 +267,7 @@ function MatchCard({
             marginBottom: '10px',
           }}
         >
-          <Stars rating={place.rating} />
+          <Stars rating={place.rating ?? 0} />
           <span
             style={{
               fontFamily: 'var(--font-mono)',
@@ -275,7 +275,7 @@ function MatchCard({
               color: '#7a7060',
             }}
           >
-            {place.rating.toFixed(1)}
+            {(place.rating ?? 0).toFixed(1)}
           </span>
         </div>
 

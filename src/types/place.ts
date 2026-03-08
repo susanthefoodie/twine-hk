@@ -3,9 +3,9 @@ export interface PlaceResult {
   name: string;
   chineseName?: string | null;   // zh-TW display name (only if differs from English)
   address: string;
-  rating: number;
-  reviewCount: number;
-  priceLevel: number;   // 0–4
+  rating: number | null;
+  reviewCount: number | null;
+  priceLevel: string | null;  // Google Places enum e.g. 'PRICE_LEVEL_INEXPENSIVE'
   priceLabel: string;   // '$' | '$$' | '$$$' | '$$$$'
   cuisineTypes: string[];
   photoName: string | null; // Google Photos resource name for /api/places/photo proxy

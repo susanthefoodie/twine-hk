@@ -473,7 +473,7 @@ export default function PlaceDetailPage() {
 
         {/* Rating */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-          <Stars rating={place.rating} size={14} />
+          <Stars rating={place.rating ?? 0} size={14} />
           <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '14px', color: '#9a8f7e' }}>
             {(place.rating ?? 0).toFixed(1)}
           </span>

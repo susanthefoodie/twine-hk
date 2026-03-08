@@ -387,7 +387,7 @@ export default function MatchPopup({
               >
                 {place.priceLabel}
               </span>
-              <Stars rating={place.rating} />
+              <Stars rating={place.rating ?? 0} />
             </div>
 
             {/* Editorial summary */}

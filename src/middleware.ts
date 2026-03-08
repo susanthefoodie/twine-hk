@@ -4,15 +4,16 @@ import { NextResponse, type NextRequest } from 'next/server';
 // Routes that require an authenticated session
 const PROTECTED_PREFIXES = [
   '/home',
-  '/session',
-  '/results',
   '/saved',
   '/profile',
   '/onboarding',
+  '/results',
 ];
 
+// /session is protected UNLESS ?guest=true is present
+const SESSION_PREFIX = '/session';
+
 // Routes where a logged-in user should be bounced straight to /home
-// (no point showing the landing page or sign-in screen to someone already authed)
 const AUTH_ENTRY_ROUTES = ['/', '/auth'];
 
 export async function middleware(request: NextRequest) {
@@ -39,7 +40,6 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // getUser() also refreshes the session token if it has expired
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -51,7 +51,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/home', request.url));
   }
 
-  // 2. Unauthenticated user on a protected route → send them to sign-in
+  // 2. /session is public if ?guest=true, otherwise requires auth
+  if (pathname.startsWith(SESSION_PREFIX) && !user) {
+    const isGuest = request.nextUrl.searchParams.get('guest') === 'true';
+    if (!isGuest) {
+      return NextResponse.redirect(new URL('/auth', request.url));
+    }
+  }
+
+  // 3. Other protected routes
   const isProtected = PROTECTED_PREFIXES.some((prefix) =>
     pathname.startsWith(prefix)
   );
@@ -64,7 +72,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files
     '/((?!_next/static|_next/image|favicon.ico|manifest.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt)$).*)',
   ],
 };

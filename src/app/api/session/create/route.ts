@@ -51,11 +51,8 @@ export async function POST(request: NextRequest) {
     );
 
     const { data: { user } } = await authClient.auth.getUser();
-    if (!user) {
-      console.error('[session/create] no authenticated user');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    console.log('[session/create] user authenticated:', user.id);
+    // user may be null for guest mode — session created with host_user_id: null
+    console.log('[session/create] user:', user?.id ?? 'guest');
 
     // All DB writes use the admin client — bypasses RLS entirely, no policy recursion
     const admin = createAdminClient();
@@ -79,7 +76,7 @@ export async function POST(request: NextRequest) {
       .from('sessions')
       .insert({
         mode,
-        host_user_id: user.id,
+        host_user_id: user?.id ?? null,
         share_code: shareCode,
         filters: filters ?? {},
         status: 'active',
@@ -98,20 +95,24 @@ export async function POST(request: NextRequest) {
     }
     console.log('[session/create] session created:', session.id);
 
-    // Insert host as first participant (admin client — no RLS evaluation)
-    console.log('[session/create] inserting participant');
-    const { error: participantErr } = await admin
-      .from('session_participants')
-      .insert({
-        session_id: session.id,
-        user_id: user.id,
-      });
+    // Insert host as first participant only if authenticated
+    if (user) {
+      console.log('[session/create] inserting participant');
+      const { error: participantErr } = await admin
+        .from('session_participants')
+        .insert({
+          session_id: session.id,
+          user_id: user.id,
+        });
 
-    if (participantErr) {
-      console.error('[session/create] insert session_participants error:', participantErr.message);
-      // Non-fatal — session was created; log and continue
+      if (participantErr) {
+        console.error('[session/create] insert session_participants error:', participantErr.message);
+        // Non-fatal — session was created; log and continue
+      } else {
+        console.log('[session/create] participant inserted');
+      }
     } else {
-      console.log('[session/create] participant inserted');
+      console.log('[session/create] guest session — skipping participant insert');
     }
 
     const origin =
