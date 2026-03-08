@@ -308,9 +308,10 @@ export default function SessionPage() {
       if (res.ok) {
         const data = await res.json()
         setMatchCount(data.matches?.length ?? 0)
+        console.log('[session] match count refreshed:', data.matches?.length)
       }
-    } catch {
-      // Non-fatal
+    } catch (e) {
+      console.error('[session] match count refresh failed:', e)
     }
   }, [sessionId]);
 
