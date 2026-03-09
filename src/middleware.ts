@@ -1,13 +1,13 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-// Routes that require an authenticated session
+// Only these routes require a logged-in user.
+// /session, /join, /results, /guest, and all /api routes are intentionally PUBLIC.
 const PROTECTED_PREFIXES = [
   '/home',
   '/saved',
   '/profile',
   '/onboarding',
-  '/results',
 ];
 
 // Routes where a logged-in user should be bounced straight to /home
@@ -43,16 +43,13 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // 1. Authenticated user on landing / auth → send them into the app
+  // Logged-in user on landing/auth → send into app
   if (user && AUTH_ENTRY_ROUTES.includes(pathname)) {
     return NextResponse.redirect(new URL('/home', request.url));
   }
 
-  // 2. Protected routes — require auth
-  // /session, /join, and all /api routes are intentionally PUBLIC
-  const isProtected = PROTECTED_PREFIXES.some((prefix) =>
-    pathname.startsWith(prefix)
-  );
+  // Unauthenticated user on protected route → send to auth
+  const isProtected = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
   if (isProtected && !user) {
     return NextResponse.redirect(new URL('/auth', request.url));
   }

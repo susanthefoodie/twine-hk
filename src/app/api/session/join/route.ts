@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
     participantRow.user_id = userId;
   } else {
     participantRow.user_id = null;
-    participantRow.guest_name = guestName ?? 'Guest';
+    participantRow.guest_name = guestName ?? guestId ?? 'Guest';
   }
 
   // Upsert for auth users (prevents duplicate rows); insert for guests

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase';
 import { motion } from 'framer-motion';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -56,10 +55,10 @@ export default function JoinPage() {
     setError(null);
     try {
       // Get or create a stable guest ID for this browser
-      let guestId = localStorage.getItem('guest_id');
+      let guestId = localStorage.getItem('twine_guest_id');
       if (!guestId) {
-        guestId = 'guest_' + Math.random().toString(36).slice(2, 11);
-        localStorage.setItem('guest_id', guestId);
+        guestId = 'g_' + Date.now();
+        localStorage.setItem('twine_guest_id', guestId);
       }
       localStorage.setItem('guest_name', name.trim());
 
@@ -71,15 +70,8 @@ export default function JoinPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Could not join session');
 
-      // Store active session so the session page can use it
       localStorage.setItem('active_session', data.sessionId);
-
-      // Check auth — logged-in users go straight in, guests get ?guest=true
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      const isLoggedIn = !!user;
-
-      router.push(`/session/${data.sessionId}${isLoggedIn ? '' : '?guest=true'}`);
+      router.push(`/session/${data.sessionId}`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
       setJoining(false);

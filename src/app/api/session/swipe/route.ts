@@ -62,46 +62,27 @@ export async function POST(req: Request) {
         }
       }
 
-      // 3. Get participants
-      const { data: participants } = await admin
-        .from('session_participants')
-        .select('user_id, guest_name')
-        .eq('session_id', sessionId)
-
-      console.log('[swipe] participants:', JSON.stringify(participants))
-
-      // 4. Get unique right swipers for this place
-      const { data: rightSwipeRows } = await admin
+      // 3. Count right swipes for this place (one row per swipe)
+      const { count: rightSwipeCount } = await admin
         .from('swipes')
-        .select('user_id')
+        .select('id', { count: 'exact', head: true })
         .eq('session_id', sessionId)
         .eq('place_id', placeId)
         .eq('direction', 'right')
 
-      const uniqueRightSwipers = new Set(
-        (rightSwipeRows ?? []).map((r: any) => r.user_id).filter(Boolean)
-      )
-      const rightSwipeCount = uniqueRightSwipers.size
-
-      // 5. Count participants — fall back to unique swipers across the whole session
-      //    if the participants table has no rows (e.g. participant insert failed)
-      const { data: allSwipeUsers } = await admin
-        .from('swipes')
-        .select('user_id')
+      // 4. Count total participants in this session
+      const { count: participantCount } = await admin
+        .from('session_participants')
+        .select('id', { count: 'exact', head: true })
         .eq('session_id', sessionId)
-        .not('user_id', 'is', null)
 
-      const uniqueAllSwipers = new Set((allSwipeUsers ?? []).map((r: any) => r.user_id))
-      const totalFromSwipes = uniqueAllSwipers.size
+      const totalParticipants = Math.max(participantCount ?? 1, 1)
+      const rights = rightSwipeCount ?? 0
 
-      const totalParticipants = (participants?.length ?? 0) > 0
-        ? participants!.length
-        : Math.max(totalFromSwipes, 1)
+      console.log('[swipe] totalParticipants:', totalParticipants, 'rightSwipeCount:', rights)
 
-      console.log('[swipe] totalParticipants:', totalParticipants, 'rightSwipeCount:', rightSwipeCount)
-
-      // 6. Match when ALL participants have swiped right
-      if (rightSwipeCount >= totalParticipants) {
+      // 5. Match when ALL participants have swiped right
+      if (rights >= totalParticipants) {
         isMatch = true
         const { error: matchError } = await admin
           .from('matches')
@@ -109,7 +90,7 @@ export async function POST(req: Request) {
             session_id: sessionId,
             place_id: placeId,
             place_data: placeData ?? { id: placeId, name: placeName ?? '' },
-            match_score: rightSwipeCount * 100,
+            match_score: rights * 100,
             is_visited: false,
           }, { onConflict: 'session_id,place_id' })
 

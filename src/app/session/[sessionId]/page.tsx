@@ -26,10 +26,6 @@ interface SessionInfo {
   };
 }
 
-interface MatchedPlace {
-  place: PlaceResult;
-}
-
 // ── Location helper ───────────────────────────────────────────────────────────
 
 function useLocation() {
@@ -138,31 +134,15 @@ export default function SessionPage() {
   const router    = useRouter();
   const sessionId = params.sessionId as string;
 
-  // Guest mode — read ?guest=true from URL without useSearchParams (avoids Suspense requirement)
-  const [isGuest] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return new URLSearchParams(window.location.search).get('guest') === 'true';
-  });
-
-  // Stable guest ID persisted in localStorage
-  const [guestId] = useState(() => {
-    if (typeof window === 'undefined') return null;
-    let id = localStorage.getItem('guest_id');
-    if (!id) {
-      id = 'guest_' + Math.random().toString(36).slice(2, 11);
-      localStorage.setItem('guest_id', id);
-    }
-    return id;
-  });
-
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  // Single identity: auth UUID for logged-in users, 'g_<timestamp>' for guests
+  const [myId, setMyId] = useState<string | null>(null);
   const [session,     setSession]     = useState<SessionInfo | null>(null);
   const [sessionErr,  setSessionErr]  = useState<string | null>(null);
   const [places,      setPlaces]      = useState<PlaceResult[]>([]);
   const [cardIndex,   setCardIndex]   = useState(0);
   const [swiped,      setSwiped]      = useState<string[]>([]);
   const [loadingPlaces, setLoadingPlaces] = useState(false);
-  const [match,       setMatch]       = useState<MatchedPlace | null>(null);
+  const [matchedPlace, setMatchedPlace] = useState<PlaceResult | null>(null);
   const [matchHistory, setMatchHistory] = useState<PlaceResult[]>([]);
   const [matchCount,  setMatchCount]  = useState(0);
   const [swiping,     setSwiping]     = useState(false);
@@ -176,33 +156,41 @@ export default function SessionPage() {
 
   const fetchingRef = useRef(false);
 
-  // ── Load current user (auth user or guest ID) ────────────────────────────
+  // ── Resolve identity (auth user or guest) ────────────────────────────────
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      const uid = data.user?.id ?? null;
-      // Auth user takes priority; guests fall back to their guestId
-      setCurrentUserId(uid ?? (isGuest ? guestId : null));
-      console.log('[session] currentUserId:', uid ?? guestId ?? 'none');
+      if (data.user?.id) {
+        setMyId(data.user.id);
+        console.log('[session] auth user:', data.user.id);
+      } else {
+        let id = localStorage.getItem('twine_guest_id');
+        if (!id) {
+          id = 'g_' + Date.now();
+          localStorage.setItem('twine_guest_id', id);
+        }
+        setMyId(id);
+        console.log('[session] guest id:', id);
+      }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Guest: register as participant on mount ───────────────────────────────
+  // ── Guest: register as participant when myId is known ────────────────────
 
   useEffect(() => {
-    if (!isGuest || !sessionId) return;
+    if (!myId || !myId.startsWith('g_') || !sessionId) return;
     const guestName = localStorage.getItem('guest_name') ?? 'Guest';
     fetch('/api/session/join', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId, guestId, guestName }),
+      body: JSON.stringify({ sessionId, guestId: myId, guestName }),
     })
       .then((r) => r.json())
       .then((d) => console.log('[session] guest joined:', d))
       .catch((e) => console.error('[session] guest join failed:', e));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isGuest, sessionId]);
+  }, [myId, sessionId]);
 
   // ── Load session info ────────────────────────────────────────────────────
 
@@ -311,14 +299,14 @@ export default function SessionPage() {
             direction: direction === 'yes' ? 'right' : 'left',
             placeName: place.name ?? '',
             placeData: place,
-            userId: currentUserId,
+            userId: myId,
           }),
         });
         const data = await res.json();
         if (data.matched) {
-          const matchedPlace = data.place ?? place;
-          setMatch({ place: matchedPlace });
-          setMatchHistory((prev) => [...prev, matchedPlace]);
+          const mp = data.place ?? place;
+          setMatchedPlace(mp);
+          setMatchHistory((prev) => [...prev, mp]);
         }
         refreshMatchCount();
       } catch (e) {
@@ -343,8 +331,15 @@ export default function SessionPage() {
       const res = await fetch(`/api/session/results?sessionId=${sessionId}`)
       if (res.ok) {
         const data = await res.json()
-        setMatchCount(data.matches?.length ?? 0)
-        console.log('[session] match count refreshed:', data.matches?.length)
+        const newCount = data.matches?.length ?? 0
+        setMatchCount((prev) => {
+          if (newCount > prev && data.matches?.length > 0) {
+            const latest = data.matches[data.matches.length - 1]
+            setMatchedPlace(latest?.place_data ?? null)
+          }
+          return newCount
+        })
+        console.log('[session] match count refreshed:', newCount)
       }
     } catch (e) {
       console.error('[session] match count refresh failed:', e)
@@ -612,10 +607,10 @@ export default function SessionPage() {
 
       {/* Match popup */}
       <AnimatePresence>
-        {match && (
+        {matchedPlace && (
           <MatchPopup
-            place={match.place}
-            onDismiss={() => setMatch(null)}
+            place={matchedPlace}
+            onDismiss={() => setMatchedPlace(null)}
           />
         )}
       </AnimatePresence>
