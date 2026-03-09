@@ -84,13 +84,13 @@ function StepHeader({ title, sub }: { title: string; sub: string }) {
     <div style={{ marginBottom: '32px' }}>
       <h2
         style={{
-          fontFamily: 'var(--font-serif)',
-          fontStyle: 'italic',
-          fontWeight: 400,
+          fontFamily: 'var(--font-sans)',
+          fontWeight: 800,
           fontSize: 'clamp(24px, 5vw, 32px)',
-          color: '#f0e8d8',
+          letterSpacing: '-0.03em',
+          color: '#f8f8ff',
           margin: '0 0 10px',
-          lineHeight: 1.25,
+          lineHeight: 1.2,
         }}
       >
         {title}
@@ -98,9 +98,9 @@ function StepHeader({ title, sub }: { title: string; sub: string }) {
       <p
         style={{
           fontFamily: 'var(--font-sans)',
-          fontWeight: 300,
+          fontWeight: 400,
           fontSize: '15px',
-          color: '#7a7060',
+          color: 'rgba(248,248,255,0.6)',
           margin: 0,
           lineHeight: 1.6,
         }}
@@ -132,14 +132,14 @@ function Tile({
       onMouseLeave={() => setHovered(false)}
       style={{
         background: selected
-          ? 'rgba(201,98,42,0.08)'
+          ? 'rgba(255,107,53,0.1)'
           : hovered
-          ? '#221e1a'
-          : '#1a1714',
+          ? 'rgba(255,255,255,0.07)'
+          : 'rgba(255,255,255,0.04)',
         border: `${selected ? 2 : 1}px solid ${
-          selected ? '#c9622a' : hovered ? '#3d3730' : '#332e28'
+          selected ? 'rgba(255,107,53,0.5)' : hovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)'
         }`,
-        borderRadius: '8px',
+        borderRadius: '14px',
         padding: '16px 12px',
         cursor: 'pointer',
         display: 'flex',
@@ -149,6 +149,7 @@ function Tile({
         transition: 'background 0.15s, border-color 0.15s',
         textAlign: center ? 'center' : 'left',
         width: '100%',
+        boxShadow: selected ? '0 0 12px rgba(255,107,53,0.15)' : 'none',
       }}
     >
       {emoji && (
@@ -157,9 +158,9 @@ function Tile({
       <span
         style={{
           fontFamily: 'var(--font-sans)',
-          fontWeight: 500,
+          fontWeight: 600,
           fontSize: '13px',
-          color: selected ? '#c9622a' : '#f0e8d8',
+          color: selected ? '#ff6b35' : '#f8f8ff',
           lineHeight: 1.3,
           transition: 'color 0.15s',
         }}
@@ -191,14 +192,14 @@ function BudgetTile({
       onMouseLeave={() => setHovered(false)}
       style={{
         background: selected
-          ? 'rgba(201,98,42,0.08)'
+          ? 'rgba(255,107,53,0.1)'
           : hovered
-          ? '#221e1a'
-          : '#1a1714',
+          ? 'rgba(255,255,255,0.07)'
+          : 'rgba(255,255,255,0.04)',
         border: `${selected ? 2 : 1}px solid ${
-          selected ? '#c9622a' : hovered ? '#3d3730' : '#332e28'
+          selected ? 'rgba(255,107,53,0.5)' : hovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)'
         }`,
-        borderRadius: '8px',
+        borderRadius: '14px',
         padding: '20px',
         cursor: 'pointer',
         display: 'flex',
@@ -209,6 +210,7 @@ function BudgetTile({
         textAlign: 'left',
         minHeight: '110px',
         width: '100%',
+        boxShadow: selected ? '0 0 12px rgba(255,107,53,0.15)' : 'none',
       }}
     >
       <span
@@ -216,7 +218,8 @@ function BudgetTile({
           fontFamily: 'var(--font-mono)',
           fontSize: '16px',
           letterSpacing: '0.05em',
-          color: selected ? '#c9622a' : '#c4922a',
+          fontWeight: 600,
+          color: selected ? '#ff6b35' : '#ffa500',
           transition: 'color 0.15s',
         }}
       >
@@ -225,9 +228,10 @@ function BudgetTile({
       <span
         style={{
           fontFamily: 'var(--font-sans)',
-          fontWeight: 600,
+          fontWeight: 700,
           fontSize: '15px',
-          color: selected ? '#c9622a' : '#f0e8d8',
+          letterSpacing: '-0.01em',
+          color: selected ? '#ff6b35' : '#f8f8ff',
           transition: 'color 0.15s',
         }}
       >
@@ -236,9 +240,9 @@ function BudgetTile({
       <span
         style={{
           fontFamily: 'var(--font-sans)',
-          fontWeight: 300,
+          fontWeight: 400,
           fontSize: '12px',
-          color: '#7a7060',
+          color: 'rgba(248,248,255,0.5)',
           lineHeight: 1.5,
         }}
       >
@@ -270,14 +274,14 @@ function RadiusPill({
       style={{
         flexShrink: 0,
         background: selected
-          ? 'rgba(201,98,42,0.08)'
+          ? 'rgba(255,107,53,0.1)'
           : hovered
-          ? '#221e1a'
-          : '#1a1714',
+          ? 'rgba(255,255,255,0.07)'
+          : 'rgba(255,255,255,0.04)',
         border: `${selected ? 2 : 1}px solid ${
-          selected ? '#c9622a' : hovered ? '#3d3730' : '#332e28'
+          selected ? 'rgba(255,107,53,0.5)' : hovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)'
         }`,
-        borderRadius: '8px',
+        borderRadius: '14px',
         padding: '20px 24px',
         cursor: 'pointer',
         display: 'flex',
@@ -286,6 +290,7 @@ function RadiusPill({
         gap: '8px',
         minWidth: '120px',
         transition: 'background 0.15s, border-color 0.15s',
+        boxShadow: selected ? '0 0 12px rgba(255,107,53,0.15)' : 'none',
       }}
     >
       {icon && <span style={{ fontSize: '24px' }}>{icon}</span>}
@@ -293,8 +298,8 @@ function RadiusPill({
         style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '15px',
-          fontWeight: 500,
-          color: selected ? '#c9622a' : '#f0e8d8',
+          fontWeight: 600,
+          color: selected ? '#ff6b35' : '#f8f8ff',
           letterSpacing: '0.03em',
           transition: 'color 0.15s',
         }}
@@ -304,9 +309,9 @@ function RadiusPill({
       <span
         style={{
           fontFamily: 'var(--font-sans)',
-          fontWeight: 300,
+          fontWeight: 400,
           fontSize: '11px',
-          color: '#7a7060',
+          color: 'rgba(248,248,255,0.5)',
         }}
       >
         {sub}
@@ -556,16 +561,16 @@ export default function OnboardingPage() {
                     onClick={() => toggle('mealTimes', m.id)}
                     style={{
                       background: selections.mealTimes.includes(m.id)
-                        ? 'rgba(201,98,42,0.08)'
-                        : '#1a1714',
+                        ? 'rgba(255,107,53,0.1)'
+                        : 'rgba(255,255,255,0.04)',
                       border: `${
                         selections.mealTimes.includes(m.id) ? 2 : 1
                       }px solid ${
                         selections.mealTimes.includes(m.id)
-                          ? '#c9622a'
-                          : '#332e28'
+                          ? 'rgba(255,107,53,0.5)'
+                          : 'rgba(255,255,255,0.08)'
                       }`,
-                      borderRadius: '8px',
+                      borderRadius: '14px',
                       padding: '16px',
                       cursor: 'pointer',
                       display: 'flex',
@@ -574,6 +579,7 @@ export default function OnboardingPage() {
                       textAlign: 'left',
                       transition: 'background 0.15s, border-color 0.15s',
                       width: '100%',
+                      boxShadow: selections.mealTimes.includes(m.id) ? '0 0 12px rgba(255,107,53,0.15)' : 'none',
                     }}
                   >
                     <span style={{ fontSize: '22px', flexShrink: 0 }}>
@@ -583,11 +589,11 @@ export default function OnboardingPage() {
                       <div
                         style={{
                           fontFamily: 'var(--font-sans)',
-                          fontWeight: 500,
+                          fontWeight: 600,
                           fontSize: '13px',
                           color: selections.mealTimes.includes(m.id)
-                            ? '#c9622a'
-                            : '#f0e8d8',
+                            ? '#ff6b35'
+                            : '#f8f8ff',
                           transition: 'color 0.15s',
                         }}
                       >
@@ -598,7 +604,7 @@ export default function OnboardingPage() {
                           style={{
                             fontFamily: 'var(--font-mono)',
                             fontSize: '10px',
-                            color: '#7a7060',
+                            color: 'rgba(248,248,255,0.35)',
                             letterSpacing: '0.03em',
                             marginTop: '2px',
                           }}
@@ -654,13 +660,13 @@ export default function OnboardingPage() {
               style={{
                 marginTop: '28px',
                 padding: '16px',
-                background: '#1a1714',
-                border: '1px solid #332e28',
-                borderRadius: '8px',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '14px',
                 fontFamily: 'var(--font-sans)',
-                fontWeight: 300,
+                fontWeight: 400,
                 fontSize: '13px',
-                color: '#7a7060',
+                color: 'rgba(248,248,255,0.5)',
                 lineHeight: 1.6,
               }}
             >
@@ -682,8 +688,8 @@ export default function OnboardingPage() {
     <div
       style={{
         height: '100dvh',
-        background: '#12100e',
-        color: '#f0e8d8',
+        background: '#0a0a0f',
+        color: '#f8f8ff',
         fontFamily: 'var(--font-sans)',
         display: 'flex',
         flexDirection: 'column',
@@ -691,9 +697,9 @@ export default function OnboardingPage() {
       }}
     >
       {/* ── Progress bar ── */}
-      <div style={{ height: '3px', background: '#332e28', flexShrink: 0 }}>
+      <div style={{ height: '3px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }}>
         <motion.div
-          style={{ height: '100%', background: '#c9622a', transformOrigin: 'left' }}
+          style={{ height: '100%', background: 'linear-gradient(90deg, #ff6b35, #ffa500)', transformOrigin: 'left' }}
           animate={{ width: `${((step + 1) / TOTAL) * 100}%` }}
           transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
         />
@@ -721,7 +727,7 @@ export default function OnboardingPage() {
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#7a7060',
+                color: 'rgba(248,248,255,0.35)',
                 cursor: 'pointer',
                 fontSize: '22px',
                 padding: '4px 8px 4px 0',
@@ -741,7 +747,8 @@ export default function OnboardingPage() {
           style={{
             fontFamily: 'var(--font-mono)',
             fontSize: '11px',
-            color: '#7a7060',
+            fontWeight: 600,
+            color: 'rgba(248,248,255,0.35)',
             letterSpacing: '0.08em',
           }}
         >
@@ -785,8 +792,8 @@ export default function OnboardingPage() {
       <div
         style={{
           flexShrink: 0,
-          background: '#12100e',
-          borderTop: '1px solid #332e28',
+          background: '#0a0a0f',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
           padding: '16px 24px 20px',
         }}
       >
@@ -796,7 +803,7 @@ export default function OnboardingPage() {
               style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '11px',
-                color: '#c9622a',
+                color: '#ff6b35',
                 marginBottom: '10px',
                 letterSpacing: '0.03em',
               }}
@@ -808,20 +815,24 @@ export default function OnboardingPage() {
             onClick={goNext}
             disabled={!isReady}
             animate={{
-              background: isReady ? '#c9622a' : '#2a2520',
+              background: isReady
+                ? 'linear-gradient(135deg, #ff6b35, #ffa500)'
+                : 'rgba(255,255,255,0.05)',
             }}
-            whileHover={isReady ? { background: '#e07840' } : {}}
+            whileHover={isReady ? { boxShadow: '0 0 28px rgba(255,107,53,0.5)' } : {}}
             transition={{ duration: 0.2 }}
             style={{
               width: '100%',
               height: '52px',
               border: 'none',
-              borderRadius: '4px',
+              borderRadius: '9999px',
               fontFamily: 'var(--font-sans)',
-              fontWeight: 500,
+              fontWeight: 600,
               fontSize: '16px',
-              color: isReady ? '#f0e8d8' : '#7a7060',
+              letterSpacing: '0.02em',
+              color: isReady ? '#fff' : 'rgba(248,248,255,0.35)',
               cursor: isReady ? 'pointer' : 'not-allowed',
+              boxShadow: isReady ? '0 0 20px rgba(255,107,53,0.3)' : 'none',
             }}
           >
             {submitting

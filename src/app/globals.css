@@ -3,30 +3,50 @@
 @tailwind utilities;
 
 :root {
-  --bg: #12100e; --surface: #1a1714; --surface2: #221e1a; --surface3: #2a2520;
-  --border: #332e28; --border2: #3d3730;
-  --ember: #c9622a; --ember2: #e07840;
-  --ember-soft: rgba(201,98,42,0.08); --ember-border: rgba(201,98,42,0.25);
-  --gold: #c4922a; --gold-soft: rgba(196,146,42,0.08); --gold-border: rgba(196,146,42,0.25);
-  --sage: #4a7c6f; --sage-soft: rgba(74,124,111,0.08); --sage-border: rgba(74,124,111,0.25);
-  --cream: #f2ebe0; --muted: #7a7060; --dim: #3d3730; --text: #f0e8d8;
-  --font-serif: 'Libre Baskerville', serif;
-  --font-sans: 'Epilogue', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --bg-base: #0a0a0f;
+  --bg-surface: #111118;
+  --bg-elevated: #16161f;
+  --bg-card: rgba(255,255,255,0.04);
+  --bg-card-hover: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.14);
+  --accent-primary: #ff6b35;
+  --accent-secondary: #ffa500;
+  --accent-purple: #8b5cf6;
+  --accent-green: #10b981;
+  --accent-glow: rgba(255,107,53,0.15);
+  --accent-glow-strong: rgba(255,107,53,0.3);
+  --text-primary: #f8f8ff;
+  --text-secondary: rgba(248,248,255,0.6);
+  --text-muted: rgba(248,248,255,0.35);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+  /* Backward compat mappings */
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #16161f;
+  --surface3: #1e1e2a;
+  --ember: #ff6b35;
+  --ember2: #ffa500;
+  --gold: #ffa500;
+  --sage: #10b981;
+  --text: #f8f8ff;
+  --muted: rgba(248,248,255,0.4);
+  --dim: rgba(255,255,255,0.08);
+  --cream: #f8f8ff;
+  --font-display: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Inter', sans-serif;
+  --font-mono: 'Inter', monospace;
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans);
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.5;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
 }

@@ -63,7 +63,9 @@ function MatchPopup({ place, onDismiss }: { place: PlaceResult; onDismiss: () =>
       exit={{ opacity: 0 }}
       style={{
         position: 'fixed', inset: 0, zIndex: 100,
-        background: 'rgba(18,16,14,0.92)',
+        background: 'rgba(10,10,15,0.92)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '24px',
       }}
@@ -76,22 +78,42 @@ function MatchPopup({ place, onDismiss }: { place: PlaceResult; onDismiss: () =>
         transition={{ type: 'spring', damping: 22, stiffness: 260 }}
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: '#1a1714', border: '1px solid #c4922a55',
-          borderRadius: '12px', padding: '40px 32px', maxWidth: '380px', width: '100%',
+          background: 'rgba(255,255,255,0.06)',
+          border: '1px solid rgba(255,107,53,0.35)',
+          borderRadius: '20px',
+          padding: '40px 32px',
+          maxWidth: '380px',
+          width: '100%',
           textAlign: 'center',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          boxShadow: '0 0 40px rgba(255,107,53,0.2), 0 8px 40px rgba(0,0,0,0.6)',
         }}
       >
-        <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '16px', color: '#c4922a', margin: '0 0 12px' }}>
+        <p style={{ fontSize: '32px', margin: '0 0 12px' }}>🎉</p>
+        <p
+          style={{
+            fontSize: '14px',
+            fontWeight: 600,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            margin: '0 0 12px',
+          }}
+        >
           ✦ It&apos;s a match!
         </p>
-        <h2 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '26px', color: '#f0e8d8', margin: '0 0 8px' }}>
+        <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '26px', letterSpacing: '-0.02em', color: '#f8f8ff', margin: '0 0 8px' }}>
           {place.name}
         </h2>
-        <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '14px', color: '#7a7060', margin: '0 0 28px' }}>
+        <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(248,248,255,0.6)', margin: '0 0 28px' }}>
           {place.address}
         </p>
         {place.editorialSummary && (
-          <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '14px', color: '#9a8f7e', margin: '0 0 28px', lineHeight: 1.6 }}>
+          <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(248,248,255,0.5)', margin: '0 0 28px', lineHeight: 1.6 }}>
             {place.editorialSummary}
           </p>
         )}
@@ -101,11 +123,16 @@ function MatchPopup({ place, onDismiss }: { place: PlaceResult; onDismiss: () =>
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              flex: 1, height: '48px', background: '#c9622a', border: 'none',
-              borderRadius: '4px', color: '#f0e8d8',
-              fontFamily: 'var(--font-sans)', fontWeight: 500, fontSize: '15px',
+              flex: 1, height: '48px',
+              background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+              border: 'none',
+              borderRadius: '9999px',
+              color: '#fff',
+              fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '15px',
+              letterSpacing: '0.02em',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               textDecoration: 'none', cursor: 'pointer',
+              boxShadow: '0 0 16px rgba(255,107,53,0.3)',
             }}
           >
             Directions →
@@ -113,8 +140,11 @@ function MatchPopup({ place, onDismiss }: { place: PlaceResult; onDismiss: () =>
           <button
             onClick={onDismiss}
             style={{
-              flex: 1, height: '48px', background: '#221e1a', border: '1px solid #332e28',
-              borderRadius: '4px', color: '#7a7060',
+              flex: 1, height: '48px',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              borderRadius: '9999px',
+              color: 'rgba(248,248,255,0.6)',
               fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '15px',
               cursor: 'pointer',
             }}
@@ -371,10 +401,10 @@ export default function SessionPage() {
     return (
       <div style={containerStyle}>
         <div style={{ textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--font-serif)', fontSize: '20px', color: '#f0e8d8', marginBottom: '12px' }}>
+          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '20px', color: '#f8f8ff', marginBottom: '12px' }}>
             {sessionErr}
           </p>
-          <a href="/home" style={{ color: '#c9622a', fontFamily: 'var(--font-sans)', fontSize: '14px' }}>
+          <a href="/home" style={{ color: '#ff6b35', fontFamily: 'var(--font-sans)', fontSize: '14px' }}>
             ← Back to home
           </a>
         </div>
@@ -391,31 +421,43 @@ export default function SessionPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           style={{
-            background: '#1a1714', border: '1px solid #332e28',
-            borderRadius: '8px', padding: '48px 36px', maxWidth: '380px', width: '100%',
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '20px',
+            padding: '48px 36px',
+            maxWidth: '380px',
+            width: '100%',
             textAlign: 'center',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
           }}
         >
           <p style={{ fontSize: '40px', margin: '0 0 20px' }}>📍</p>
-          <h2 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '24px', color: '#f0e8d8', margin: '0 0 12px' }}>
+          <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '24px', letterSpacing: '-0.02em', color: '#f8f8ff', margin: '0 0 12px' }}>
             Share your location
           </h2>
-          <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '14px', color: '#7a7060', margin: '0 0 32px', lineHeight: 1.6 }}>
+          <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(248,248,255,0.6)', margin: '0 0 32px', lineHeight: 1.6 }}>
             We&apos;ll find hidden gems near you. Your location is never stored or shared.
           </p>
           <button
             onClick={handleGrantLocation}
             style={{
-              width: '100%', height: '50px', background: '#c9622a', border: 'none',
-              borderRadius: '4px', color: '#f0e8d8',
-              fontFamily: 'var(--font-sans)', fontWeight: 500, fontSize: '16px',
+              width: '100%', height: '52px',
+              background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+              border: 'none',
+              borderRadius: '9999px',
+              color: '#fff',
+              fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '16px',
+              letterSpacing: '0.02em',
               cursor: 'pointer',
+              boxShadow: '0 0 20px rgba(255,107,53,0.3)',
             }}
           >
             Enable Location →
           </button>
           {locError && (
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#7a7060', marginTop: '16px' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(248,248,255,0.35)', marginTop: '16px' }}>
               {locError}
             </p>
           )}
@@ -429,7 +471,7 @@ export default function SessionPage() {
   if (locLoading || (loadingPlaces && places.length === 0)) {
     return (
       <div style={containerStyle}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#7a7060', letterSpacing: '0.06em' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'rgba(248,248,255,0.35)', letterSpacing: '0.06em' }}>
           Finding hidden gems…
         </span>
       </div>
@@ -448,10 +490,10 @@ export default function SessionPage() {
           style={{ textAlign: 'center', maxWidth: '320px' }}
         >
           <p style={{ fontSize: '48px', margin: '0 0 16px' }}>🍜</p>
-          <h2 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '22px', color: '#f0e8d8', margin: '0 0 10px' }}>
+          <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '22px', letterSpacing: '-0.02em', color: '#f8f8ff', margin: '0 0 10px' }}>
             You&apos;ve seen them all!
           </h2>
-          <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '14px', color: '#7a7060', margin: '0 0 28px' }}>
+          <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(248,248,255,0.6)', margin: '0 0 28px' }}>
             {matchHistory.length > 0
               ? `You matched ${matchHistory.length} place${matchHistory.length !== 1 ? 's' : ''}.`
               : 'Try expanding your filters to see more places.'}
@@ -460,10 +502,16 @@ export default function SessionPage() {
             <button
               onClick={() => router.push(`/results/${sessionId}`)}
               style={{
-                width: '100%', height: '50px', background: '#c9622a', border: 'none',
-                borderRadius: '4px', color: '#f0e8d8',
-                fontFamily: 'var(--font-sans)', fontWeight: 500, fontSize: '15px',
-                cursor: 'pointer', marginBottom: '12px',
+                width: '100%', height: '52px',
+                background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+                border: 'none',
+                borderRadius: '9999px',
+                color: '#fff',
+                fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '15px',
+                letterSpacing: '0.02em',
+                cursor: 'pointer',
+                marginBottom: '12px',
+                boxShadow: '0 0 20px rgba(255,107,53,0.3)',
               }}
             >
               See Your Matches →
@@ -472,8 +520,11 @@ export default function SessionPage() {
           <button
             onClick={() => router.push('/home')}
             style={{
-              width: '100%', height: '44px', background: 'none',
-              border: '1px solid #332e28', borderRadius: '4px', color: '#7a7060',
+              width: '100%', height: '48px',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              borderRadius: '9999px',
+              color: 'rgba(248,248,255,0.6)',
               fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', cursor: 'pointer',
             }}
           >
@@ -494,22 +545,38 @@ export default function SessionPage() {
       <div style={{
         width: '100%', maxWidth: '480px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '20px 20px 0',
+        padding: '16px 20px',
+        background: 'rgba(10,10,15,0.9)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        height: '60px',
+        boxSizing: 'border-box',
       }}>
         <button
           onClick={() => router.push('/home')}
-          style={{ background: 'none', border: 'none', color: '#7a7060', cursor: 'pointer', fontSize: '20px', padding: 0 }}
+          style={{ background: 'none', border: 'none', color: 'rgba(248,248,255,0.35)', cursor: 'pointer', fontSize: '20px', padding: 0 }}
         >
           ←
         </button>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-          <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '18px', color: '#e07840' }}>
-            ✦ Twine
+          <span
+            style={{
+              fontSize: '18px',
+              fontWeight: 800,
+              letterSpacing: '-0.02em',
+              background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            ✦ twine
           </span>
           {nearestStation && (
             <span style={{
               fontFamily: 'var(--font-mono)', fontSize: '9px',
-              color: '#7a7060', letterSpacing: '0.06em',
+              color: 'rgba(248,248,255,0.35)', letterSpacing: '0.06em',
             }}>
               🚇 Near {nearestStation.name} MTR
             </span>
@@ -518,10 +585,15 @@ export default function SessionPage() {
         <button
           onClick={() => router.push(`/results/${sessionId}`)}
           style={{
-            background: 'none', border: '1px solid #332e28', borderRadius: '4px',
-            color: matchCount > 0 ? '#c4922a' : '#7a7060',
+            background: matchCount > 0 ? 'rgba(255,107,53,0.12)' : 'rgba(255,255,255,0.04)',
+            border: matchCount > 0 ? '1px solid rgba(255,107,53,0.3)' : '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '9999px',
+            color: matchCount > 0 ? '#ff6b35' : 'rgba(248,248,255,0.35)',
             fontFamily: 'var(--font-mono)', fontSize: '10px',
-            letterSpacing: '0.06em', padding: '5px 10px', cursor: 'pointer',
+            fontWeight: 600,
+            letterSpacing: '0.06em', padding: '5px 12px', cursor: 'pointer',
+            boxShadow: matchCount > 0 ? '0 0 12px rgba(255,107,53,0.4)' : 'none',
+            transition: 'all 0.2s',
           }}
         >
           {matchCount} {matchCount === 1 ? 'Match' : 'Matches'} 🎯
@@ -554,7 +626,7 @@ export default function SessionPage() {
           {loadingPlaces && remaining.length <= 5 && (
             <div style={{
               position: 'absolute', bottom: -20, left: '50%', transform: 'translateX(-50%)',
-              fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#7a7060', letterSpacing: '0.06em',
+              fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(248,248,255,0.35)', letterSpacing: '0.06em',
             }}>
               Loading more…
             </div>
@@ -563,7 +635,7 @@ export default function SessionPage() {
 
         {/* Counter */}
         <p style={{
-          fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#7a7060',
+          fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(248,248,255,0.35)',
           letterSpacing: '0.08em', textAlign: 'center', margin: '0 0 20px',
         }}>
           {Math.min(swiped.length + 1, places.length)} / {places.length} places
@@ -577,7 +649,7 @@ export default function SessionPage() {
         />
 
         <p style={{
-          fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '11px', color: '#7a7060',
+          fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '11px', color: 'rgba(248,248,255,0.35)',
           textAlign: 'center', margin: '16px 0 0',
         }}>
           Swipe right or tap ✓ if you&apos;re interested
@@ -593,11 +665,14 @@ export default function SessionPage() {
             exit={{ opacity: 0, y: 20 }}
             style={{
               position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)',
-              background: '#1a1714', border: '1px solid #4a7c6f55',
-              borderRadius: '6px', padding: '10px 18px', zIndex: 200,
+              background: 'rgba(16,185,129,0.1)',
+              border: '1px solid rgba(16,185,129,0.3)',
+              borderRadius: '14px', padding: '10px 18px', zIndex: 200,
               fontFamily: 'var(--font-mono)', fontSize: '11px',
-              color: '#4a7c6f', letterSpacing: '0.06em',
+              color: '#10b981', letterSpacing: '0.06em',
               whiteSpace: 'nowrap',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
             }}
           >
             ✦ Saved to your collection
@@ -622,8 +697,8 @@ export default function SessionPage() {
 
 const containerStyle: React.CSSProperties = {
   minHeight: '100vh',
-  background: '#12100e',
-  color: '#f0e8d8',
+  background: '#0a0a0f',
+  color: '#f8f8ff',
   fontFamily: 'var(--font-sans)',
   display: 'flex',
   alignItems: 'center',

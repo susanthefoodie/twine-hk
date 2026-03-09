@@ -34,9 +34,9 @@ interface AlmostMatch {
 // ── Meta ──────────────────────────────────────────────────────────────────────
 
 const MODE_META = {
-  couples: { emoji: '💑', label: 'Date Night',   accent: '#c9622a' },
-  friends: { emoji: '👯', label: 'Group Dinner', accent: '#c4922a' },
-  solo:    { emoji: '🙋', label: 'Solo',         accent: '#4a7c6f' },
+  couples: { emoji: '💑', label: 'Date Night',   accent: '#ff6b35' },
+  friends: { emoji: '👯', label: 'Group Dinner', accent: '#ffa500' },
+  solo:    { emoji: '🙋', label: 'Solo',         accent: '#10b981' },
 } as const;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -52,7 +52,7 @@ function Stars({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((n) => (
         <span
           key={n}
-          style={{ color: rating >= n - 0.5 ? '#c4922a' : '#3d3730', fontSize: '11px' }}
+          style={{ color: rating >= n - 0.5 ? '#ffa500' : 'rgba(255,255,255,0.12)', fontSize: '11px' }}
         >
           ★
         </span>
@@ -75,14 +75,15 @@ function VisitedToggle({
       onClick={(e) => { e.stopPropagation(); onChange(!visited); }}
       style={{
         flexShrink: 0,
-        background: visited ? 'rgba(74,124,111,0.14)' : 'none',
-        border: `1px solid ${visited ? '#4a7c6f' : '#332e28'}`,
-        borderRadius: '4px',
-        padding: '3px 9px',
+        background: visited ? 'rgba(16,185,129,0.12)' : 'rgba(255,255,255,0.04)',
+        border: `1px solid ${visited ? 'rgba(16,185,129,0.35)' : 'rgba(255,255,255,0.08)'}`,
+        borderRadius: '9999px',
+        padding: '4px 12px',
         fontFamily: 'var(--font-mono)',
         fontSize: '10px',
         letterSpacing: '0.06em',
-        color: visited ? '#4a7c6f' : '#7a7060',
+        fontWeight: 600,
+        color: visited ? '#10b981' : 'rgba(248,248,255,0.35)',
         cursor: 'pointer',
         transition: 'all 0.2s',
         whiteSpace: 'nowrap',
@@ -117,26 +118,29 @@ function MatchCard({
         highlighted
           ? {
               boxShadow: [
-                '0 0 0px rgba(201,98,42,0)',
-                '0 0 20px rgba(201,98,42,0.55)',
-                '0 0 20px rgba(201,98,42,0.55)',
-                '0 0 0px rgba(201,98,42,0)',
+                '0 4px 24px rgba(0,0,0,0.4)',
+                '0 0 30px rgba(255,107,53,0.5)',
+                '0 0 30px rgba(255,107,53,0.5)',
+                '0 4px 24px rgba(0,0,0,0.4)',
               ],
-              borderColor: ['#332e28', '#c9622a', '#c9622a', '#332e28'],
+              borderColor: ['rgba(255,255,255,0.08)', 'rgba(255,107,53,0.5)', 'rgba(255,107,53,0.5)', 'rgba(255,255,255,0.08)'],
             }
           : {}
       }
       transition={highlighted ? { duration: 3, times: [0, 0.15, 0.85, 1] } : {}}
       style={{
-        background: match.is_visited ? '#141210' : '#1a1714',
-        border: '1px solid #332e28',
-        borderRadius: '8px',
+        background: match.is_visited ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: '20px',
         padding: '16px',
         display: 'flex',
         gap: '16px',
         alignItems: 'flex-start',
         opacity: match.is_visited ? 0.5 : 1,
         transition: 'opacity 0.3s',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
       }}
     >
       {/* Photo */}
@@ -145,9 +149,9 @@ function MatchCard({
           flexShrink: 0,
           width: '120px',
           height: '120px',
-          borderRadius: '8px',
+          borderRadius: '14px',
           overflow: 'hidden',
-          background: '#0e0c0a',
+          background: '#111118',
           position: 'relative',
         }}
       >
@@ -190,10 +194,11 @@ function MatchCard({
         >
           <h3
             style={{
-              fontFamily: 'var(--font-serif)',
-              fontWeight: 600,
+              fontFamily: 'var(--font-sans)',
+              fontWeight: 700,
               fontSize: '16px',
-              color: match.is_visited ? '#7a7060' : '#f0e8d8',
+              letterSpacing: '-0.01em',
+              color: match.is_visited ? 'rgba(248,248,255,0.35)' : '#f8f8ff',
               margin: 0,
               lineHeight: 1.25,
               flex: 1,
@@ -222,11 +227,13 @@ function MatchCard({
               style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '10px',
-                color: '#7a7060',
-                background: '#221e1a',
-                border: '1px solid #332e28',
-                borderRadius: '3px',
-                padding: '2px 7px',
+                color: 'rgba(248,248,255,0.35)',
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '9999px',
+                padding: '2px 8px',
+                fontWeight: 600,
+                letterSpacing: '0.04em',
               }}
             >
               {district}
@@ -236,7 +243,8 @@ function MatchCard({
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '10px',
-              color: '#c4922a',
+              color: '#ffa500',
+              fontWeight: 600,
             }}
           >
             {place.priceLabel}
@@ -246,11 +254,13 @@ function MatchCard({
               style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '10px',
-                color: '#c4922a',
-                background: 'rgba(196,146,42,0.08)',
-                border: '1px solid rgba(196,146,42,0.3)',
-                borderRadius: '3px',
-                padding: '2px 7px',
+                fontWeight: 600,
+                letterSpacing: '0.06em',
+                color: '#ff6b35',
+                background: 'rgba(255,107,53,0.15)',
+                border: '1px solid rgba(255,107,53,0.3)',
+                borderRadius: '9999px',
+                padding: '2px 8px',
               }}
             >
               ✦ Hidden Gem
@@ -272,7 +282,7 @@ function MatchCard({
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '10px',
-              color: '#7a7060',
+              color: 'rgba(248,248,255,0.35)',
             }}
           >
             {(place.rating ?? 0).toFixed(1)}
@@ -289,7 +299,7 @@ function MatchCard({
               fontFamily: 'var(--font-sans)',
               fontWeight: 500,
               fontSize: '12px',
-              color: '#c9622a',
+              color: '#ff6b35',
               textDecoration: 'none',
             }}
           >
@@ -303,7 +313,7 @@ function MatchCard({
               fontFamily: 'var(--font-sans)',
               fontWeight: 400,
               fontSize: '12px',
-              color: '#7a7060',
+              color: 'rgba(248,248,255,0.35)',
               textDecoration: 'none',
             }}
           >
@@ -325,9 +335,9 @@ function AlmostCard({ am }: { am: AlmostMatch }) {
   return (
     <div
       style={{
-        background: '#141210',
-        border: '1px solid #2a2520',
-        borderRadius: '8px',
+        background: 'rgba(255,255,255,0.02)',
+        border: '1px solid rgba(255,255,255,0.06)',
+        borderRadius: '14px',
         padding: '12px',
         display: 'flex',
         gap: '12px',
@@ -340,9 +350,9 @@ function AlmostCard({ am }: { am: AlmostMatch }) {
           flexShrink: 0,
           width: '56px',
           height: '56px',
-          borderRadius: '6px',
+          borderRadius: '10px',
           overflow: 'hidden',
-          background: '#0e0c0a',
+          background: '#111118',
           position: 'relative',
           filter: 'grayscale(0.5)',
         }}
@@ -375,10 +385,10 @@ function AlmostCard({ am }: { am: AlmostMatch }) {
       <div style={{ flex: 1, minWidth: 0 }}>
         <p
           style={{
-            fontFamily: 'var(--font-serif)',
+            fontFamily: 'var(--font-sans)',
             fontWeight: 600,
             fontSize: '13px',
-            color: '#7a7060',
+            color: 'rgba(248,248,255,0.5)',
             margin: '0 0 2px',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
@@ -391,7 +401,7 @@ function AlmostCard({ am }: { am: AlmostMatch }) {
           style={{
             fontFamily: 'var(--font-mono)',
             fontSize: '10px',
-            color: '#3d3730',
+            color: 'rgba(248,248,255,0.2)',
             margin: 0,
           }}
         >
@@ -408,7 +418,7 @@ function AlmostCard({ am }: { am: AlmostMatch }) {
           fontFamily: 'var(--font-sans)',
           fontWeight: 500,
           fontSize: '12px',
-          color: '#c9622a',
+          color: '#ff6b35',
           textDecoration: 'none',
         }}
       >
@@ -493,7 +503,7 @@ export default function ResultsPage() {
   if (loading) {
     return (
       <div style={centreStyle}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#7a7060', letterSpacing: '0.06em' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'rgba(248,248,255,0.35)', letterSpacing: '0.06em' }}>
           Loading matches…
         </span>
       </div>
@@ -504,22 +514,24 @@ export default function ResultsPage() {
     return (
       <div style={centreStyle}>
         <div style={{ textAlign: 'center', padding: '0 24px' }}>
-          <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '20px', color: '#7a7060', marginBottom: '24px' }}>
+          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '20px', color: 'rgba(248,248,255,0.6)', marginBottom: '24px' }}>
             {error}
           </p>
           <button
             onClick={() => router.push('/home')}
             style={{
-              height: '48px',
+              height: '52px',
               padding: '0 28px',
-              background: '#c9622a',
+              background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
               border: 'none',
-              borderRadius: '4px',
+              borderRadius: '9999px',
               fontFamily: 'var(--font-sans)',
-              fontWeight: 500,
+              fontWeight: 600,
               fontSize: '15px',
-              color: '#f0e8d8',
+              letterSpacing: '0.02em',
+              color: '#fff',
               cursor: 'pointer',
+              boxShadow: '0 0 20px rgba(255,107,53,0.3)',
             }}
           >
             Back to Home
@@ -532,9 +544,9 @@ export default function ResultsPage() {
   return (
     <div
       style={{
-        background: '#12100e',
+        background: '#0a0a0f',
         minHeight: '100vh',
-        color: '#f0e8d8',
+        color: '#f8f8ff',
         fontFamily: 'var(--font-sans)',
         paddingBottom: matches.length > 0 ? '90px' : '48px',
       }}
@@ -545,10 +557,11 @@ export default function ResultsPage() {
           position: 'sticky',
           top: 0,
           zIndex: 50,
-          height: '52px',
-          background: 'rgba(18,16,14,0.92)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid #332e28',
+          height: '60px',
+          background: 'rgba(10,10,15,0.9)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -561,7 +574,7 @@ export default function ResultsPage() {
           style={{
             background: 'none',
             border: 'none',
-            color: '#7a7060',
+            color: 'rgba(248,248,255,0.35)',
             cursor: 'pointer',
             fontSize: '20px',
             padding: 0,
@@ -575,9 +588,10 @@ export default function ResultsPage() {
         <span
           style={{
             fontFamily: 'var(--font-sans)',
-            fontWeight: 500,
+            fontWeight: 600,
             fontSize: '15px',
-            color: '#f0e8d8',
+            letterSpacing: '-0.01em',
+            color: '#f8f8ff',
           }}
         >
           Session Matches
@@ -586,14 +600,15 @@ export default function ResultsPage() {
         {meta ? (
           <span
             style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '10px',
-              letterSpacing: '0.08em',
+              fontSize: '11px',
+              fontWeight: 600,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
               color: meta.accent,
-              background: `${meta.accent}11`,
+              background: `${meta.accent}18`,
               border: `1px solid ${meta.accent}44`,
-              borderRadius: '4px',
-              padding: '3px 9px',
+              borderRadius: '9999px',
+              padding: '3px 10px',
               flexShrink: 0,
             }}
           >
@@ -611,10 +626,12 @@ export default function ResultsPage() {
           <div style={{ textAlign: 'center', padding: '72px 0' }}>
             <div
               style={{
-                fontFamily: 'var(--font-serif)',
                 fontSize: '120px',
-                color: '#c9622a',
-                opacity: 0.22,
+                background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                opacity: 0.2,
                 lineHeight: 1,
                 marginBottom: '28px',
                 userSelect: 'none',
@@ -624,11 +641,11 @@ export default function ResultsPage() {
             </div>
             <h2
               style={{
-                fontFamily: 'var(--font-serif)',
-                fontStyle: 'italic',
-                fontWeight: 400,
+                fontFamily: 'var(--font-sans)',
+                fontWeight: 700,
                 fontSize: '22px',
-                color: '#7a7060',
+                letterSpacing: '-0.02em',
+                color: 'rgba(248,248,255,0.6)',
                 margin: '0 0 10px',
               }}
             >
@@ -637,9 +654,9 @@ export default function ResultsPage() {
             <p
               style={{
                 fontFamily: 'var(--font-sans)',
-                fontWeight: 300,
+                fontWeight: 400,
                 fontSize: '14px',
-                color: '#3d3730',
+                color: 'rgba(248,248,255,0.35)',
                 margin: '0 0 32px',
               }}
             >
@@ -648,16 +665,18 @@ export default function ResultsPage() {
             <button
               onClick={() => router.push(`/session/${sessionId}`)}
               style={{
-                height: '48px',
+                height: '52px',
                 padding: '0 28px',
-                background: '#c9622a',
+                background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
                 border: 'none',
-                borderRadius: '4px',
+                borderRadius: '9999px',
                 fontFamily: 'var(--font-sans)',
-                fontWeight: 500,
+                fontWeight: 600,
                 fontSize: '15px',
-                color: '#f0e8d8',
+                letterSpacing: '0.02em',
+                color: '#fff',
                 cursor: 'pointer',
+                boxShadow: '0 0 20px rgba(255,107,53,0.3)',
               }}
             >
               Keep Swiping →
@@ -677,8 +696,7 @@ export default function ResultsPage() {
                   transform: 'translate(-50%, -50%)',
                   width: '320px',
                   height: '80px',
-                  background:
-                    'radial-gradient(ellipse, rgba(196,146,42,0.14) 0%, transparent 70%)',
+                  background: 'radial-gradient(ellipse, rgba(255,165,0,0.1) 0%, transparent 70%)',
                   pointerEvents: 'none',
                 }}
               />
@@ -692,11 +710,11 @@ export default function ResultsPage() {
               >
                 <h1
                   style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontStyle: 'italic',
-                    fontWeight: 400,
+                    fontFamily: 'var(--font-sans)',
+                    fontWeight: 800,
                     fontSize: 'clamp(18px, 4vw, 26px)',
-                    color: '#f0e8d8',
+                    letterSpacing: '-0.03em',
+                    color: '#f8f8ff',
                     margin: 0,
                     lineHeight: 1.3,
                   }}
@@ -710,22 +728,25 @@ export default function ResultsPage() {
                     flexShrink: 0,
                     height: '38px',
                     padding: '0 14px',
-                    background: '#221e1a',
-                    border: '1px solid #332e28',
-                    borderRadius: '4px',
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.14)',
+                    borderRadius: '9999px',
                     fontFamily: 'var(--font-mono)',
                     fontSize: '11px',
+                    fontWeight: 600,
                     letterSpacing: '0.06em',
-                    color: '#c4922a',
+                    color: '#ffa500',
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
-                    transition: 'border-color 0.15s',
+                    transition: 'border-color 0.15s, background 0.15s',
                   }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor = '#c4922a';
+                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,165,0,0.4)';
+                    (e.currentTarget as HTMLElement).style.background = 'rgba(255,165,0,0.08)';
                   }}
                   onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor = '#332e28';
+                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.14)';
+                    (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.04)';
                   }}
                 >
                   🎲 Pick One
@@ -778,7 +799,7 @@ export default function ResultsPage() {
                       fontFamily: 'var(--font-sans)',
                       fontWeight: 500,
                       fontSize: '14px',
-                      color: '#7a7060',
+                      color: 'rgba(248,248,255,0.5)',
                       textAlign: 'left',
                     }}
                   >
@@ -787,7 +808,7 @@ export default function ResultsPage() {
                   <motion.span
                     animate={{ rotate: almostOpen ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
-                    style={{ color: '#7a7060', fontSize: '14px', flexShrink: 0 }}
+                    style={{ color: 'rgba(248,248,255,0.35)', fontSize: '14px', flexShrink: 0 }}
                   >
                     ▾
                   </motion.span>
@@ -832,7 +853,7 @@ export default function ResultsPage() {
             left: 0,
             right: 0,
             padding: '12px clamp(16px, 4vw, 40px)',
-            background: 'linear-gradient(to top, #12100e 65%, transparent)',
+            background: 'linear-gradient(to top, #0a0a0f 65%, transparent)',
             zIndex: 40,
           }}
         >
@@ -848,20 +869,22 @@ export default function ResultsPage() {
               width: '100%',
               maxWidth: '680px',
               margin: '0 auto',
-              background: '#c9622a',
-              borderRadius: '4px',
+              background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+              borderRadius: '9999px',
               fontFamily: 'var(--font-sans)',
               fontWeight: 600,
               fontSize: '15px',
-              color: '#f0e8d8',
+              letterSpacing: '0.02em',
+              color: '#fff',
               textDecoration: 'none',
-              transition: 'background 0.15s',
+              boxShadow: '0 0 24px rgba(255,107,53,0.35), 0 4px 16px rgba(0,0,0,0.4)',
+              transition: 'box-shadow 0.15s',
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.background = '#e07840';
+              (e.currentTarget as HTMLElement).style.boxShadow = '0 0 36px rgba(255,107,53,0.5), 0 4px 16px rgba(0,0,0,0.4)';
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.background = '#c9622a';
+              (e.currentTarget as HTMLElement).style.boxShadow = '0 0 24px rgba(255,107,53,0.35), 0 4px 16px rgba(0,0,0,0.4)';
             }}
           >
             Book the top gem via Chope →
@@ -874,7 +897,7 @@ export default function ResultsPage() {
 
 const centreStyle: React.CSSProperties = {
   minHeight: '100vh',
-  background: '#12100e',
+  background: '#0a0a0f',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',

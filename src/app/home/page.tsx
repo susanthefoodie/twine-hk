@@ -51,7 +51,7 @@ const MODES = [
     modeLabel: 'DATE NIGHT',
     title:     'Find a hidden gem together.',
     body:      'You and your partner each swipe secretly. Twine reveals only the places you both chose.',
-    accent:    '#c9622a',
+    accent:    '#ff6b35',
     ctaLabel:  'Start Session →',
     ctaKind:   'ember' as const,
     sharePrompt: 'your partner',
@@ -62,7 +62,7 @@ const MODES = [
     modeLabel: 'GROUP DINNER',
     title:     'Finally agree on somewhere.',
     body:      'Share a link to your friend group. Everyone swipes independently. Your collective gem is revealed.',
-    accent:    '#c4922a',
+    accent:    '#ffa500',
     ctaLabel:  'Start Session →',
     ctaKind:   'gold' as const,
     sharePrompt: 'your group',
@@ -73,7 +73,7 @@ const MODES = [
     modeLabel: 'JUST ME',
     title:     'Explore the city alone.',
     body:      'A personal swipe feed of under-the-radar spots, filtered to exactly your taste.',
-    accent:    '#4a7c6f',
+    accent:    '#38bdf8',
     ctaLabel:  'Start Swiping →',
     ctaKind:   'sage' as const,
     sharePrompt: '',
@@ -149,20 +149,26 @@ function Avatar({
     <button
       onClick={onClick}
       style={{
-        width: '36px', height: '36px',
+        width: '38px',
+        height: '38px',
         borderRadius: '50%',
-        border: '1px solid #332e28',
+        border: '2px solid transparent',
+        backgroundImage: 'linear-gradient(#111118, #111118), linear-gradient(135deg, #ff6b35, #ffa500)',
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
         overflow: 'hidden',
-        background: '#221e1a',
         cursor: 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        flexShrink: 0, padding: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+        padding: 0,
       }}
     >
       {url ? (
         <Image src={url} alt={name} width={40} height={40} style={{ borderRadius: '50%', objectFit: 'cover' }} />
       ) : (
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#c9622a' }}>
+        <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '11px', fontWeight: 600, color: '#ff6b35' }}>
           {initials || '?'}
         </span>
       )}
@@ -175,22 +181,29 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
     <button
       onClick={() => onChange(!on)}
       style={{
-        width: '44px', height: '24px',
+        width: '44px',
+        height: '24px',
         borderRadius: '12px',
-        background: on ? '#c9622a' : '#332e28',
-        border: 'none', cursor: 'pointer',
+        background: on ? '#ff6b35' : 'rgba(255,255,255,0.1)',
+        border: 'none',
+        cursor: 'pointer',
         position: 'relative',
         transition: 'background 0.2s',
         flexShrink: 0,
+        boxShadow: on ? '0 0 12px rgba(255,107,53,0.4)' : 'none',
       }}
     >
       <motion.div
         animate={{ x: on ? 22 : 2 }}
         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         style={{
-          position: 'absolute', top: '2px', left: 0,
-          width: '20px', height: '20px',
-          borderRadius: '50%', background: '#f0e8d8',
+          position: 'absolute',
+          top: '2px',
+          left: 0,
+          width: '20px',
+          height: '20px',
+          borderRadius: '50%',
+          background: '#f8f8ff',
         }}
       />
     </button>
@@ -200,12 +213,13 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
 function FilterLabel({ children }: { children: React.ReactNode }) {
   return (
     <p style={{
-      fontFamily: 'var(--font-mono)',
+      fontFamily: 'Inter, sans-serif',
       fontSize: '10px',
       letterSpacing: '0.1em',
       textTransform: 'uppercase',
-      color: '#7a7060',
+      color: 'rgba(248,248,255,0.35)',
       margin: '0 0 10px',
+      fontWeight: 500,
     }}>
       {children}
     </p>
@@ -213,12 +227,12 @@ function FilterLabel({ children }: { children: React.ReactNode }) {
 }
 
 function CopyIcon({ done }: { done: boolean }) {
-  if (done) return <span style={{ fontSize: '16px', color: '#4a7c6f' }}>✓</span>;
+  if (done) return <span style={{ fontSize: '16px', color: '#10b981' }}>✓</span>;
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-      <rect x="5.5" y="5.5" width="8" height="8" rx="1" stroke="#7a7060" strokeWidth="1.3" />
+      <rect x="5.5" y="5.5" width="8" height="8" rx="1" stroke="rgba(248,248,255,0.4)" strokeWidth="1.3" />
       <path d="M10.5 5.5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v6.5a1 1 0 0 0 1 1H5.5"
-            stroke="#7a7060" strokeWidth="1.3" strokeLinecap="round" />
+            stroke="rgba(248,248,255,0.4)" strokeWidth="1.3" strokeLinecap="round" />
     </svg>
   );
 }
@@ -235,51 +249,51 @@ function ModeCard({
 }) {
   const [ctaHover, setCtaHover] = useState(false);
 
-  const ctaBg = () => {
-    if (ctaKind === 'ember') return ctaHover ? '#e07840' : '#c9622a';
-    return ctaHover
-      ? (ctaKind === 'gold' ? 'rgba(196,146,42,0.12)' : 'rgba(74,124,111,0.12)')
-      : 'transparent';
-  };
+  const isEmber = ctaKind === 'ember';
 
   return (
     <div
       style={{
-        background: '#1a1714',
-        border: '1px solid #332e28',
-        borderLeft: `4px solid ${accent}`,
-        borderRadius: '8px',
-        padding: '32px',
+        background: 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: '20px',
+        padding: '28px',
         display: 'flex',
         flexDirection: 'column',
         gap: '12px',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        transition: 'border-color 0.2s, box-shadow 0.2s',
+        boxShadow: `inset -4px 0 20px ${accent}11`,
       }}
     >
-      <div style={{ fontSize: '26px' }}>{emoji}</div>
+      <div style={{ fontSize: '40px', lineHeight: 1 }}>{emoji}</div>
       <div style={{
-        fontFamily: 'var(--font-mono)',
+        fontFamily: 'Inter, sans-serif',
         fontSize: '10px',
         letterSpacing: '0.12em',
         color: accent,
         textTransform: 'uppercase',
+        fontWeight: 600,
       }}>
         {modeLabel}
       </div>
       <h3 style={{
-        fontFamily: 'var(--font-serif)',
+        fontFamily: 'Inter, sans-serif',
         fontWeight: 700,
-        fontSize: '22px',
-        color: '#f0e8d8',
+        fontSize: '20px',
+        color: '#f8f8ff',
         margin: 0,
         lineHeight: 1.2,
+        letterSpacing: '-0.02em',
       }}>
         {title}
       </h3>
       <p style={{
-        fontFamily: 'var(--font-sans)',
-        fontWeight: 300,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: 400,
         fontSize: '14px',
-        color: '#7a7060',
+        color: 'rgba(248,248,255,0.55)',
         lineHeight: 1.7,
         margin: 0,
         flex: 1,
@@ -292,17 +306,20 @@ function ModeCard({
         onMouseLeave={() => setCtaHover(false)}
         style={{
           marginTop: '4px',
-          padding: '12px 20px',
-          background: ctaBg(),
-          border: ctaKind === 'ember' ? 'none' : `1px solid ${accent}`,
-          borderRadius: '4px',
-          fontFamily: 'var(--font-sans)',
-          fontWeight: 500,
+          padding: '12px 22px',
+          background: isEmber
+            ? (ctaHover ? 'linear-gradient(135deg, #ff7f50, #ffb300)' : 'linear-gradient(135deg, #ff6b35, #ffa500)')
+            : (ctaHover ? `${accent}22` : `${accent}11`),
+          border: isEmber ? 'none' : `1px solid ${accent}66`,
+          borderRadius: '9999px',
+          fontFamily: 'Inter, sans-serif',
+          fontWeight: 600,
           fontSize: '14px',
-          color: ctaKind === 'ember' ? '#f0e8d8' : accent,
+          color: isEmber ? '#fff' : accent,
           cursor: 'pointer',
-          transition: 'background 0.2s',
+          transition: 'all 0.2s',
           alignSelf: 'flex-start',
+          boxShadow: isEmber && ctaHover ? '0 4px 20px rgba(255,107,53,0.4)' : isEmber ? '0 2px 12px rgba(255,107,53,0.25)' : 'none',
         }}
       >
         {ctaLabel}
@@ -329,40 +346,43 @@ function SessionChip({
       style={{
         flexShrink: 0,
         width: '180px',
-        background: hovered ? '#221e1a' : '#1a1714',
-        border: '1px solid #332e28',
-        borderRadius: '8px',
+        background: hovered ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.04)',
+        border: `1px solid ${hovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)'}`,
+        borderRadius: '16px',
         padding: '16px',
         cursor: 'pointer',
         textAlign: 'left',
-        transition: 'background 0.15s',
+        transition: 'all 0.15s',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
       }}
     >
       <div style={{ fontSize: '18px', marginBottom: '8px' }}>
         {MODE_EMOJI[session.mode] ?? '✦'}
       </div>
       <div style={{
-        fontFamily: 'var(--font-sans)',
-        fontWeight: 500,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: 600,
         fontSize: '13px',
-        color: '#f0e8d8',
+        color: '#f8f8ff',
         marginBottom: '4px',
       }}>
         {MODE_DISPLAY[session.mode] ?? session.mode}
       </div>
       <div style={{
-        fontFamily: 'var(--font-mono)',
+        fontFamily: 'Inter, sans-serif',
         fontSize: '10px',
-        color: '#7a7060',
+        color: 'rgba(248,248,255,0.35)',
         letterSpacing: '0.04em',
         marginBottom: '10px',
       }}>
         {relativeDate(session.created_at)}
       </div>
       <div style={{
-        fontFamily: 'var(--font-mono)',
+        fontFamily: 'Inter, sans-serif',
         fontSize: '10px',
-        color: '#c4922a',
+        fontWeight: 500,
+        color: '#ff6b35',
         letterSpacing: '0.04em',
       }}>
         ✦ View results
@@ -604,10 +624,10 @@ export default function HomePage() {
   return (
     <div
       style={{
-        background: '#12100e',
+        background: '#0a0a0f',
         minHeight: '100vh',
-        color: '#f0e8d8',
-        fontFamily: 'var(--font-sans)',
+        color: '#f8f8ff',
+        fontFamily: 'Inter, sans-serif',
       }}
     >
 
@@ -619,10 +639,11 @@ export default function HomePage() {
           position: 'sticky',
           top: 0,
           zIndex: 50,
-          height: '52px',
-          background: 'rgba(18,16,14,0.92)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid #332e28',
+          height: '60px',
+          background: 'rgba(10,10,15,0.9)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -631,14 +652,17 @@ export default function HomePage() {
       >
         <span
           style={{
-            fontFamily: 'var(--font-serif)',
-            fontStyle: 'italic',
-            fontSize: '20px',
-            color: '#e07840',
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 800,
+            fontSize: '18px',
+            background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
             userSelect: 'none',
           }}
         >
-          ✦ Twine
+          twine HK
         </span>
         <Avatar
           url={profile?.avatar_url ?? null}
@@ -657,14 +681,15 @@ export default function HomePage() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            style={{ overflow: 'hidden', background: 'rgba(201,98,42,0.1)', borderBottom: '1px solid #c9622a44' }}
+            style={{ overflow: 'hidden', background: 'rgba(255,107,53,0.08)', borderBottom: '1px solid rgba(255,107,53,0.25)' }}
           >
             <p style={{
               padding: '10px clamp(16px, 4vw, 48px)',
               margin: 0,
-              fontFamily: 'var(--font-mono)',
+              fontFamily: 'Inter, sans-serif',
               fontSize: '11px',
-              color: '#c9622a',
+              fontWeight: 500,
+              color: '#ff6b35',
               letterSpacing: '0.06em',
             }}>
               🌀 Typhoon Signal 8+ · Radius auto-set to 1 km · Stay safe!
@@ -677,14 +702,15 @@ export default function HomePage() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            style={{ overflow: 'hidden', background: 'rgba(196,146,42,0.08)', borderBottom: '1px solid #c4922a33' }}
+            style={{ overflow: 'hidden', background: 'rgba(255,165,0,0.06)', borderBottom: '1px solid rgba(255,165,0,0.2)' }}
           >
             <p style={{
               padding: '10px clamp(16px, 4vw, 48px)',
               margin: 0,
-              fontFamily: 'var(--font-mono)',
+              fontFamily: 'Inter, sans-serif',
               fontSize: '11px',
-              color: '#c4922a',
+              fontWeight: 500,
+              color: '#ffa500',
               letterSpacing: '0.06em',
             }}>
               🌧 Rainy day in HK · Indoor spots and cafés surfaced
@@ -693,20 +719,20 @@ export default function HomePage() {
         )}
         {!typhoonActive && (
           hkHour >= 5 && hkHour < 11 ? (
-            <motion.div key="morning" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: 'hidden', background: 'rgba(74,124,111,0.07)', borderBottom: '1px solid #4a7c6f22' }}>
-              <p style={{ padding: '10px clamp(16px, 4vw, 48px)', margin: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#4a7c6f', letterSpacing: '0.06em' }}>
+            <motion.div key="morning" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: 'hidden', background: 'rgba(56,189,248,0.06)', borderBottom: '1px solid rgba(56,189,248,0.15)' }}>
+              <p style={{ padding: '10px clamp(16px, 4vw, 48px)', margin: 0, fontFamily: 'Inter, sans-serif', fontSize: '11px', fontWeight: 500, color: '#38bdf8', letterSpacing: '0.06em' }}>
                 🍵 Morning vibes · Dim sum & breakfast spots highlighted
               </p>
             </motion.div>
           ) : (hkHour >= 14 && hkHour < 18) ? (
-            <motion.div key="tea" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: 'hidden', background: 'rgba(196,146,42,0.07)', borderBottom: '1px solid #c4922a22' }}>
-              <p style={{ padding: '10px clamp(16px, 4vw, 48px)', margin: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#c4922a', letterSpacing: '0.06em' }}>
+            <motion.div key="tea" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: 'hidden', background: 'rgba(255,165,0,0.06)', borderBottom: '1px solid rgba(255,165,0,0.15)' }}>
+              <p style={{ padding: '10px clamp(16px, 4vw, 48px)', margin: 0, fontFamily: 'Inter, sans-serif', fontSize: '11px', fontWeight: 500, color: '#ffa500', letterSpacing: '0.06em' }}>
                 ☕ Afternoon tea hour · Tea houses & cafés surfaced
               </p>
             </motion.div>
           ) : (hkHour >= 22 || hkHour < 5) ? (
-            <motion.div key="night" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: 'hidden', background: 'rgba(74,74,111,0.07)', borderBottom: '1px solid #44447022' }}>
-              <p style={{ padding: '10px clamp(16px, 4vw, 48px)', margin: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#9a8fa8', letterSpacing: '0.06em' }}>
+            <motion.div key="night" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: 'hidden', background: 'rgba(139,92,246,0.06)', borderBottom: '1px solid rgba(139,92,246,0.15)' }}>
+              <p style={{ padding: '10px clamp(16px, 4vw, 48px)', margin: 0, fontFamily: 'Inter, sans-serif', fontSize: '11px', fontWeight: 500, color: '#a78bfa', letterSpacing: '0.06em' }}>
                 🌙 Night owl mode · Bars, ramen, and izakayas surfaced
               </p>
             </motion.div>
@@ -726,8 +752,8 @@ export default function HomePage() {
             exit={{ height: 0, opacity: 0 }}
             style={{
               overflow: 'hidden',
-              background: 'rgba(196,146,42,0.1)',
-              borderBottom: '1px solid #c4922a44',
+              background: 'rgba(255,165,0,0.08)',
+              borderBottom: '1px solid rgba(255,165,0,0.2)',
             }}
           >
             <div style={{
@@ -737,8 +763,12 @@ export default function HomePage() {
             }}>
               <span style={{ fontSize: '20px', flexShrink: 0 }}>🏮</span>
               <p style={{
-                fontFamily: 'var(--font-sans)', fontWeight: 300,
-                fontSize: '13px', color: '#c4922a', margin: 0, flex: 1,
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 400,
+                fontSize: '13px',
+                color: '#ffa500',
+                margin: 0,
+                flex: 1,
               }}>
                 {pwaPrompt === 'android'
                   ? 'Add Twine to your home screen for the best experience'
@@ -754,10 +784,16 @@ export default function HomePage() {
                     setPwaPrompt(null);
                   }}
                   style={{
-                    padding: '7px 14px',
-                    background: '#c4922a', border: 'none', borderRadius: '4px',
-                    fontFamily: 'var(--font-sans)', fontWeight: 500, fontSize: '12px',
-                    color: '#12100e', cursor: 'pointer', flexShrink: 0,
+                    padding: '7px 16px',
+                    background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+                    border: 'none',
+                    borderRadius: '9999px',
+                    fontFamily: 'Inter, sans-serif',
+                    fontWeight: 600,
+                    fontSize: '12px',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    flexShrink: 0,
                   }}
                 >
                   Install →
@@ -766,8 +802,13 @@ export default function HomePage() {
               <button
                 onClick={() => { localStorage.setItem('twine_pwa_dismissed', '1'); setPwaPrompt(null); }}
                 style={{
-                  background: 'none', border: 'none', color: '#7a7060',
-                  cursor: 'pointer', fontSize: '18px', padding: '4px', flexShrink: 0,
+                  background: 'none',
+                  border: 'none',
+                  color: 'rgba(248,248,255,0.35)',
+                  cursor: 'pointer',
+                  fontSize: '18px',
+                  padding: '4px',
+                  flexShrink: 0,
                 }}
               >
                 ×
@@ -784,7 +825,7 @@ export default function HomePage() {
         style={{
           maxWidth: '1100px',
           margin: '0 auto',
-          padding: '36px clamp(16px, 4vw, 48px) 80px',
+          padding: '36px clamp(16px, 4vw, 48px) 100px',
         }}
       >
 
@@ -792,22 +833,22 @@ export default function HomePage() {
         <div style={{ marginBottom: '40px' }}>
           <h1
             style={{
-              fontFamily: 'var(--font-serif)',
-              fontStyle: 'italic',
-              fontWeight: 400,
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 700,
               fontSize: 'clamp(22px, 3.5vw, 32px)',
-              color: '#7a7060',
+              color: 'rgba(248,248,255,0.55)',
               margin: '0 0 6px',
+              letterSpacing: '-0.02em',
             }}
           >
             Good {greeting}, {firstName}.
           </h1>
           <p
             style={{
-              fontFamily: 'var(--font-sans)',
-              fontWeight: 300,
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 400,
               fontSize: '14px',
-              color: '#3d3730',
+              color: 'rgba(248,248,255,0.3)',
               margin: 0,
             }}
           >
@@ -844,11 +885,12 @@ export default function HomePage() {
           <div>
             <h2
               style={{
-                fontFamily: 'var(--font-serif)',
+                fontFamily: 'Inter, sans-serif',
                 fontWeight: 700,
                 fontSize: '18px',
-                color: '#f0e8d8',
+                color: '#f8f8ff',
                 margin: '0 0 16px',
+                letterSpacing: '-0.02em',
               }}
             >
               Recent sessions
@@ -894,7 +936,9 @@ export default function HomePage() {
               onClick={closeSheet}
               style={{
                 position: 'fixed', inset: 0,
-                background: 'rgba(0,0,0,0.72)',
+                background: 'rgba(0,0,0,0.75)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
                 zIndex: 200,
               }}
             />
@@ -909,9 +953,9 @@ export default function HomePage() {
               style={{
                 position: 'fixed',
                 bottom: 0, left: 0, right: 0,
-                background: '#1a1714',
-                borderRadius: '12px 12px 0 0',
-                borderTop: '1px solid #332e28',
+                background: '#111118',
+                borderRadius: '24px 24px 0 0',
+                borderTop: '1px solid rgba(255,255,255,0.08)',
                 maxHeight: '88vh',
                 overflowY: 'auto',
                 zIndex: 201,
@@ -922,7 +966,8 @@ export default function HomePage() {
               <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 0' }}>
                 <div style={{
                   width: '36px', height: '4px',
-                  background: '#3d3730', borderRadius: '2px',
+                  background: 'rgba(255,255,255,0.2)',
+                  borderRadius: '2px',
                 }} />
               </div>
 
@@ -942,8 +987,12 @@ export default function HomePage() {
                       justifyContent: 'space-between', marginBottom: '24px',
                     }}>
                       <h3 style={{
-                        fontFamily: 'var(--font-serif)', fontWeight: 700,
-                        fontSize: '20px', color: '#f0e8d8', margin: 0,
+                        fontFamily: 'Inter, sans-serif',
+                        fontWeight: 700,
+                        fontSize: '20px',
+                        color: '#f8f8ff',
+                        margin: 0,
+                        letterSpacing: '-0.02em',
                       }}>
                         New {sheetModeConfig?.emoji}{' '}
                         {sheetMode
@@ -954,9 +1003,19 @@ export default function HomePage() {
                       <button
                         onClick={closeSheet}
                         style={{
-                          background: 'none', border: 'none',
-                          color: '#7a7060', cursor: 'pointer',
-                          fontSize: '20px', padding: '4px', lineHeight: 1,
+                          background: 'rgba(255,255,255,0.06)',
+                          border: '1px solid rgba(255,255,255,0.1)',
+                          borderRadius: '50%',
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'rgba(248,248,255,0.5)',
+                          cursor: 'pointer',
+                          fontSize: '18px',
+                          lineHeight: 1,
+                          padding: 0,
                         }}
                       >
                         ×
@@ -965,9 +1024,14 @@ export default function HomePage() {
 
                     {/* Filters label */}
                     <p style={{
-                      fontFamily: 'var(--font-mono)', fontSize: '10px',
-                      letterSpacing: '0.1em', textTransform: 'uppercase',
-                      color: '#c9622a', margin: '0 0 20px', opacity: 0.8,
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: '10px',
+                      fontWeight: 600,
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                      color: '#ff6b35',
+                      margin: '0 0 20px',
+                      opacity: 0.8,
                     }}>
                       Quick filters
                     </p>
@@ -1037,14 +1101,20 @@ export default function HomePage() {
                     }}>
                       <div>
                         <p style={{
-                          fontFamily: 'var(--font-sans)', fontWeight: 500,
-                          fontSize: '14px', color: '#f0e8d8', margin: '0 0 2px',
+                          fontFamily: 'Inter, sans-serif',
+                          fontWeight: 500,
+                          fontSize: '14px',
+                          color: '#f8f8ff',
+                          margin: '0 0 2px',
                         }}>
                           Open now only
                         </p>
                         <p style={{
-                          fontFamily: 'var(--font-sans)', fontWeight: 300,
-                          fontSize: '12px', color: '#7a7060', margin: 0,
+                          fontFamily: 'Inter, sans-serif',
+                          fontWeight: 400,
+                          fontSize: '12px',
+                          color: 'rgba(248,248,255,0.35)',
+                          margin: 0,
                         }}>
                           Filter to places open right now in HK
                         </p>
@@ -1053,12 +1123,15 @@ export default function HomePage() {
                     </div>
 
                     {/* Divider */}
-                    <div style={{ borderTop: '1px solid #332e28', marginBottom: '20px' }} />
+                    <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', marginBottom: '20px' }} />
 
                     {createError && (
                       <p style={{
-                        fontFamily: 'var(--font-mono)', fontSize: '11px',
-                        color: '#c9622a', margin: '0 0 12px', letterSpacing: '0.03em',
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '11px',
+                        color: '#ff6b35',
+                        margin: '0 0 12px',
+                        letterSpacing: '0.03em',
                       }}>
                         {createError}
                       </p>
@@ -1089,15 +1162,23 @@ export default function HomePage() {
                     }}>
                       <div>
                         <p style={{
-                          fontFamily: 'var(--font-mono)', fontSize: '10px',
-                          letterSpacing: '0.1em', textTransform: 'uppercase',
-                          color: '#4a7c6f', margin: '0 0 6px',
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '10px',
+                          fontWeight: 600,
+                          letterSpacing: '0.1em',
+                          textTransform: 'uppercase',
+                          color: '#10b981',
+                          margin: '0 0 6px',
                         }}>
                           ✓ Session created
                         </p>
                         <h3 style={{
-                          fontFamily: 'var(--font-serif)', fontWeight: 700,
-                          fontSize: '20px', color: '#f0e8d8', margin: 0,
+                          fontFamily: 'Inter, sans-serif',
+                          fontWeight: 700,
+                          fontSize: '20px',
+                          color: '#f8f8ff',
+                          margin: 0,
+                          letterSpacing: '-0.02em',
                         }}>
                           Share with {sheetModeConfig?.sharePrompt}
                         </h3>
@@ -1105,9 +1186,19 @@ export default function HomePage() {
                       <button
                         onClick={closeSheet}
                         style={{
-                          background: 'none', border: 'none',
-                          color: '#7a7060', cursor: 'pointer',
-                          fontSize: '20px', padding: '4px', lineHeight: 1,
+                          background: 'rgba(255,255,255,0.06)',
+                          border: '1px solid rgba(255,255,255,0.1)',
+                          borderRadius: '50%',
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'rgba(248,248,255,0.5)',
+                          cursor: 'pointer',
+                          fontSize: '18px',
+                          lineHeight: 1,
+                          padding: 0,
                         }}
                       >
                         ×
@@ -1117,11 +1208,11 @@ export default function HomePage() {
                     {/* Code */}
                     <div
                       style={{
-                        background: '#221e1a',
-                        border: '1px solid #332e28',
-                        borderRadius: '8px',
+                        background: 'rgba(255,255,255,0.04)',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        borderRadius: '16px',
                         padding: '24px',
-                        marginBottom: '20px',
+                        marginBottom: '16px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
@@ -1130,11 +1221,14 @@ export default function HomePage() {
                     >
                       <span
                         style={{
-                          fontFamily: 'var(--font-mono)',
+                          fontFamily: 'Inter, sans-serif',
                           fontSize: 'clamp(32px, 8vw, 48px)',
-                          fontWeight: 500,
-                          color: '#c9622a',
-                          letterSpacing: '0.25em',
+                          fontWeight: 800,
+                          background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          backgroundClip: 'text',
+                          letterSpacing: '0.2em',
                           lineHeight: 1,
                         }}
                       >
@@ -1158,17 +1252,20 @@ export default function HomePage() {
                     {/* Emphasis: no account needed */}
                     <div
                       style={{
-                        background: 'rgba(74,124,111,0.08)',
-                        border: '1px solid rgba(74,124,111,0.25)',
-                        borderRadius: '6px',
+                        background: 'rgba(16,185,129,0.08)',
+                        border: '1px solid rgba(16,185,129,0.2)',
+                        borderRadius: '12px',
                         padding: '10px 14px',
                         marginBottom: '20px',
                       }}
                     >
                       <p style={{
-                        fontFamily: 'var(--font-sans)', fontWeight: 500,
-                        fontSize: '13px', color: '#4a7c6f',
-                        margin: 0, lineHeight: 1.5,
+                        fontFamily: 'Inter, sans-serif',
+                        fontWeight: 500,
+                        fontSize: '13px',
+                        color: '#10b981',
+                        margin: 0,
+                        lineHeight: 1.5,
                       }}>
                         They don&apos;t need an account to join — just the code or link.
                       </p>
@@ -1185,12 +1282,15 @@ export default function HomePage() {
                         style={{
                           display: 'flex', alignItems: 'center',
                           justifyContent: 'center', gap: '10px',
-                          width: '100%', height: '50px',
+                          width: '100%', height: '52px',
                           background: '#25d366',
-                          borderRadius: '4px',
-                          fontFamily: 'var(--font-sans)', fontWeight: 500,
-                          fontSize: '15px', color: '#fff',
-                          textDecoration: 'none', marginBottom: '10px',
+                          borderRadius: '9999px',
+                          fontFamily: 'Inter, sans-serif',
+                          fontWeight: 600,
+                          fontSize: '15px',
+                          color: '#fff',
+                          textDecoration: 'none',
+                          marginBottom: '10px',
                         }}
                       >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -1206,16 +1306,17 @@ export default function HomePage() {
                         handleCopy(createdSess?.joinUrl ?? '', 'link')
                       }
                       style={{
-                        width: '100%', height: '44px',
-                        background: 'transparent',
-                        border: '1px solid #332e28',
-                        borderRadius: '4px',
-                        fontFamily: 'var(--font-sans)', fontWeight: 500,
+                        width: '100%', height: '48px',
+                        background: 'rgba(255,255,255,0.04)',
+                        border: '1px solid rgba(255,255,255,0.14)',
+                        borderRadius: '9999px',
+                        fontFamily: 'Inter, sans-serif',
+                        fontWeight: 500,
                         fontSize: '14px',
-                        color: copiedLink ? '#4a7c6f' : '#7a7060',
+                        color: copiedLink ? '#10b981' : 'rgba(248,248,255,0.6)',
                         cursor: 'pointer',
                         transition: 'color 0.2s, border-color 0.2s',
-                        marginBottom: '24px',
+                        marginBottom: '12px',
                       }}
                     >
                       {copiedLink ? '✓ Link copied!' : 'Copy Link'}
@@ -1228,12 +1329,16 @@ export default function HomePage() {
                           router.push(`/session/${createdSess.sessionId}`)
                         }
                         style={{
-                          width: '100%', height: '50px',
-                          background: '#c9622a',
-                          border: 'none', borderRadius: '4px',
-                          fontFamily: 'var(--font-sans)', fontWeight: 500,
-                          fontSize: '15px', color: '#f0e8d8',
+                          width: '100%', height: '52px',
+                          background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+                          border: 'none',
+                          borderRadius: '9999px',
+                          fontFamily: 'Inter, sans-serif',
+                          fontWeight: 600,
+                          fontSize: '15px',
+                          color: '#fff',
                           cursor: 'pointer',
+                          boxShadow: '0 4px 20px rgba(255,107,53,0.35)',
                         }}
                       >
                         Begin swiping →
@@ -1262,16 +1367,18 @@ function ChipBtn({
       onClick={onClick}
       style={{
         flexShrink: 0,
-        padding: '6px 14px',
-        background: active ? 'rgba(201,98,42,0.12)' : '#221e1a',
-        border: `1px solid ${active ? '#c9622a' : '#332e28'}`,
-        borderRadius: '4px',
-        fontFamily: 'var(--font-sans)', fontWeight: 500,
+        padding: '6px 16px',
+        background: active ? 'rgba(255,107,53,0.12)' : 'rgba(255,255,255,0.04)',
+        border: `1px solid ${active ? '#ff6b35' : 'rgba(255,255,255,0.08)'}`,
+        borderRadius: '9999px',
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: 500,
         fontSize: '13px',
-        color: active ? '#c9622a' : '#7a7060',
+        color: active ? '#ff6b35' : 'rgba(248,248,255,0.5)',
         cursor: 'pointer',
         transition: 'all 0.15s',
         whiteSpace: 'nowrap',
+        boxShadow: active ? '0 0 12px rgba(255,107,53,0.2)' : 'none',
       }}
     >
       {label}
@@ -1288,17 +1395,19 @@ function FilterPill({
     <button
       onClick={onClick}
       style={{
-        padding: '8px 18px',
-        background: active ? 'rgba(201,98,42,0.10)' : '#221e1a',
-        border: `${active ? 2 : 1}px solid ${active ? '#c9622a' : '#332e28'}`,
-        borderRadius: '4px',
-        fontFamily: 'var(--font-mono)',
+        padding: '8px 20px',
+        background: active ? 'rgba(255,107,53,0.10)' : 'rgba(255,255,255,0.04)',
+        border: `${active ? 2 : 1}px solid ${active ? '#ff6b35' : 'rgba(255,255,255,0.08)'}`,
+        borderRadius: '9999px',
+        fontFamily: 'Inter, sans-serif',
         fontSize: '12px',
+        fontWeight: 500,
         letterSpacing: '0.04em',
-        color: active ? '#c9622a' : '#7a7060',
+        color: active ? '#ff6b35' : 'rgba(248,248,255,0.45)',
         cursor: 'pointer',
         transition: 'all 0.15s',
         whiteSpace: 'nowrap',
+        boxShadow: active ? '0 0 10px rgba(255,107,53,0.15)' : 'none',
       }}
     >
       {label}
@@ -1319,14 +1428,22 @@ function EmberButton({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        width: '100%', height: '52px',
-        background: disabled ? '#2a2520' : hovered ? '#e07840' : '#c9622a',
-        border: 'none', borderRadius: '4px',
-        fontFamily: 'var(--font-sans)', fontWeight: 500,
+        width: '100%',
+        height: '52px',
+        background: disabled
+          ? 'rgba(255,255,255,0.06)'
+          : hovered
+            ? 'linear-gradient(135deg, #ff7f50, #ffb300)'
+            : 'linear-gradient(135deg, #ff6b35, #ffa500)',
+        border: 'none',
+        borderRadius: '9999px',
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: 600,
         fontSize: '16px',
-        color: disabled ? '#7a7060' : '#f0e8d8',
+        color: disabled ? 'rgba(248,248,255,0.25)' : '#fff',
         cursor: disabled ? 'not-allowed' : 'pointer',
-        transition: 'background 0.2s',
+        transition: 'all 0.2s',
+        boxShadow: disabled ? 'none' : hovered ? '0 6px 24px rgba(255,107,53,0.5)' : '0 4px 16px rgba(255,107,53,0.35)',
       }}
     >
       {label}

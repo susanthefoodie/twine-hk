@@ -33,53 +33,9 @@ function GoogleIcon() {
 function MailIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="1.5" y="3.5" width="15" height="11" rx="1.5" stroke="#7a7060" strokeWidth="1.4" />
-      <path d="M1.5 5.5L9 10.5l7.5-5" stroke="#7a7060" strokeWidth="1.4" strokeLinecap="round" />
+      <rect x="1.5" y="3.5" width="15" height="11" rx="1.5" stroke="rgba(248,248,255,0.6)" strokeWidth="1.4" />
+      <path d="M1.5 5.5L9 10.5l7.5-5" stroke="rgba(248,248,255,0.6)" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
-  );
-}
-
-// ─── Auth button component ────────────────────────────────────────────────────
-
-function AuthButton({
-  onClick,
-  icon,
-  label,
-  disabled = false,
-}: {
-  onClick: () => void;
-  icon: React.ReactNode;
-  label: string;
-  disabled?: boolean;
-}) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        width: '100%',
-        height: '44px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '10px',
-        background: '#221e1a',
-        border: `1px solid ${hovered ? '#c9622a' : '#332e28'}`,
-        borderRadius: '4px',
-        fontFamily: 'var(--font-sans)',
-        fontWeight: 500,
-        fontSize: '15px',
-        color: '#f0e8d8',
-        cursor: 'pointer',
-        transition: 'border-color 0.2s',
-      }}
-    >
-      {icon}
-      {label}
-    </button>
   );
 }
 
@@ -168,7 +124,7 @@ function AuthContent() {
     <div
       style={{
         minHeight: '100vh',
-        background: '#12100e',
+        background: '#0a0a0f',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -185,8 +141,7 @@ function AuthContent() {
           transform: 'translateX(-50%)',
           width: '600px',
           height: '400px',
-          background:
-            'radial-gradient(ellipse, rgba(201,98,42,0.08) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse, rgba(255,107,53,0.12) 0%, transparent 60%)',
           pointerEvents: 'none',
         }}
       />
@@ -201,33 +156,40 @@ function AuthContent() {
           zIndex: 1,
           width: '100%',
           maxWidth: '420px',
-          background: '#1a1714',
-          border: '1px solid #332e28',
-          borderRadius: '8px',
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: '20px',
           padding: '48px',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
         }}
       >
         {/* Logo */}
         <p
           style={{
-            fontFamily: 'var(--font-serif)',
-            fontStyle: 'italic',
-            fontSize: '28px',
-            color: '#e07840',
+            fontSize: '32px',
+            fontWeight: 800,
+            letterSpacing: '-0.03em',
             textAlign: 'center',
             margin: '0 0 24px',
+            background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
           }}
         >
-          ✦ Twine
+          twine <span style={{ WebkitTextFillColor: '#ff6b35' }}>HK</span>
         </p>
 
         {/* Headline */}
         <h1
           style={{
-            fontFamily: 'var(--font-serif)',
+            fontFamily: 'var(--font-sans)',
             fontWeight: 700,
-            fontSize: '26px',
-            color: '#f0e8d8',
+            fontSize: '24px',
+            letterSpacing: '-0.02em',
+            color: '#f8f8ff',
             textAlign: 'center',
             margin: '0 0 32px',
             lineHeight: 1.3,
@@ -240,14 +202,13 @@ function AuthContent() {
         {urlError && (
           <div
             style={{
-              background: 'rgba(201,98,42,0.08)',
-              border: '1px solid rgba(201,98,42,0.25)',
-              borderRadius: '4px',
+              background: 'rgba(255,107,53,0.1)',
+              border: '1px solid rgba(255,107,53,0.3)',
+              borderRadius: '14px',
               padding: '10px 14px',
               marginBottom: '20px',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
-              color: '#c9622a',
+              fontSize: '12px',
+              color: '#ff6b35',
               letterSpacing: '0.03em',
             }}
           >
@@ -257,16 +218,66 @@ function AuthContent() {
 
         {/* Google */}
         <div style={{ marginBottom: '10px' }}>
-          <AuthButton onClick={handleGoogle} icon={<GoogleIcon />} label="Continue with Google" />
+          <button
+            onClick={handleGoogle}
+            style={{
+              width: '100%',
+              height: '52px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              background: '#fff',
+              border: 'none',
+              borderRadius: '9999px',
+              fontFamily: 'var(--font-sans)',
+              fontWeight: 600,
+              fontSize: '15px',
+              color: '#111',
+              cursor: 'pointer',
+              transition: 'opacity 0.2s',
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = '0.9'; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
+          >
+            <GoogleIcon />
+            Continue with Google
+          </button>
         </div>
 
         {/* Email */}
         <div style={{ marginBottom: '16px' }}>
-          <AuthButton
+          <button
             onClick={() => setShowEmail(true)}
-            icon={<MailIcon />}
-            label="Continue with Email"
-          />
+            style={{
+              width: '100%',
+              height: '52px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              borderRadius: '9999px',
+              fontFamily: 'var(--font-sans)',
+              fontWeight: 500,
+              fontSize: '15px',
+              color: 'rgba(248,248,255,0.6)',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.07)';
+              (e.currentTarget as HTMLElement).style.color = '#f8f8ff';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.04)';
+              (e.currentTarget as HTMLElement).style.color = 'rgba(248,248,255,0.6)';
+            }}
+          >
+            <MailIcon />
+            Continue with Email
+          </button>
         </div>
 
         {/* Animated email section */}
@@ -299,33 +310,32 @@ function AuthContent() {
                         autoFocus
                         style={{
                           width: '100%',
-                          height: '44px',
-                          background: '#221e1a',
-                          border: '1px solid #3d3730',
-                          borderRadius: '4px',
-                          color: '#f0e8d8',
+                          height: '48px',
+                          background: 'rgba(255,255,255,0.05)',
+                          border: '1px solid rgba(255,255,255,0.08)',
+                          borderRadius: '14px',
+                          color: '#f8f8ff',
                           fontFamily: 'var(--font-sans)',
                           fontSize: '15px',
-                          padding: '0 14px',
+                          padding: '0 16px',
                           marginBottom: error ? '8px' : '10px',
                           outline: 'none',
                           boxSizing: 'border-box',
                           transition: 'border-color 0.2s',
                         }}
                         onFocus={(e) =>
-                          (e.currentTarget.style.borderColor = '#c9622a')
+                          (e.currentTarget.style.borderColor = '#ff6b35')
                         }
                         onBlur={(e) =>
-                          (e.currentTarget.style.borderColor = '#3d3730')
+                          (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')
                         }
                       />
 
                       {error && (
                         <p
                           style={{
-                            fontFamily: 'var(--font-mono)',
-                            fontSize: '11px',
-                            color: '#c9622a',
+                            fontSize: '12px',
+                            color: '#ff6b35',
                             margin: '0 0 10px',
                             letterSpacing: '0.03em',
                           }}
@@ -341,23 +351,24 @@ function AuthContent() {
                         onMouseLeave={() => setSendHover(false)}
                         style={{
                           width: '100%',
-                          height: '44px',
-                          background:
-                            !loading && email.trim() && sendHover
-                              ? '#e07840'
-                              : !loading && email.trim()
-                              ? '#c9622a'
-                              : '#2a2520',
+                          height: '48px',
+                          background: !loading && email.trim()
+                            ? 'linear-gradient(135deg, #ff6b35, #ffa500)'
+                            : 'rgba(255,255,255,0.05)',
                           border: 'none',
-                          borderRadius: '4px',
+                          borderRadius: '9999px',
                           fontFamily: 'var(--font-sans)',
-                          fontWeight: 500,
+                          fontWeight: 600,
                           fontSize: '15px',
-                          color:
-                            !loading && email.trim() ? '#f0e8d8' : '#7a7060',
-                          cursor:
-                            !loading && email.trim() ? 'pointer' : 'not-allowed',
-                          transition: 'background 0.2s',
+                          color: !loading && email.trim() ? '#fff' : 'rgba(248,248,255,0.35)',
+                          cursor: !loading && email.trim() ? 'pointer' : 'not-allowed',
+                          transition: 'all 0.2s',
+                          boxShadow: !loading && email.trim() && sendHover
+                            ? '0 0 20px rgba(255,107,53,0.4)'
+                            : !loading && email.trim()
+                            ? '0 0 12px rgba(255,107,53,0.25)'
+                            : 'none',
+                          letterSpacing: '0.02em',
                         }}
                       >
                         {loading ? 'Sending…' : 'Send Magic Link'}
@@ -370,14 +381,14 @@ function AuthContent() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.2 }}
                       style={{
-                        background: 'rgba(74,124,111,0.08)',
-                        border: '1px solid rgba(74,124,111,0.25)',
-                        borderRadius: '4px',
+                        background: 'rgba(16,185,129,0.08)',
+                        border: '1px solid rgba(16,185,129,0.25)',
+                        borderRadius: '14px',
                         padding: '14px 16px',
                         fontFamily: 'var(--font-sans)',
-                        fontWeight: 300,
+                        fontWeight: 400,
                         fontSize: '14px',
-                        color: '#4a7c6f',
+                        color: '#10b981',
                         lineHeight: 1.6,
                       }}
                     >
@@ -399,9 +410,9 @@ function AuthContent() {
             margin: '4px 0 14px',
           }}
         >
-          <div style={{ flex: 1, height: '1px', background: '#332e28' }} />
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#3d3730', letterSpacing: '0.06em' }}>or</span>
-          <div style={{ flex: 1, height: '1px', background: '#332e28' }} />
+          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+          <span style={{ fontSize: '11px', color: 'rgba(248,248,255,0.2)', letterSpacing: '0.06em' }}>or</span>
+          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
         </div>
 
         {/* Guest button */}
@@ -410,24 +421,26 @@ function AuthContent() {
             onClick={() => router.push('/guest')}
             style={{
               width: '100%',
-              height: '44px',
-              background: 'transparent',
-              border: '1px solid #332e28',
-              borderRadius: '4px',
+              height: '48px',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              borderRadius: '9999px',
               fontFamily: 'var(--font-sans)',
               fontWeight: 400,
               fontSize: '14px',
-              color: '#7a7060',
+              color: 'rgba(248,248,255,0.6)',
               cursor: 'pointer',
-              transition: 'border-color 0.2s, color 0.2s',
+              transition: 'border-color 0.2s, color 0.2s, background 0.2s',
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = '#7a7060';
-              (e.currentTarget as HTMLElement).style.color = '#9a8f7e';
+              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.25)';
+              (e.currentTarget as HTMLElement).style.color = '#f8f8ff';
+              (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.07)';
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = '#332e28';
-              (e.currentTarget as HTMLElement).style.color = '#7a7060';
+              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.14)';
+              (e.currentTarget as HTMLElement).style.color = 'rgba(248,248,255,0.6)';
+              (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.04)';
             }}
           >
             Try as Guest — no sign up needed
@@ -437,9 +450,8 @@ function AuthContent() {
         {/* Privacy note */}
         <p
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '10px',
-            color: '#7a7060',
+            fontSize: '11px',
+            color: 'rgba(248,248,255,0.35)',
             textAlign: 'center',
             margin: 0,
             letterSpacing: '0.03em',
@@ -449,7 +461,7 @@ function AuthContent() {
           By continuing you agree to our{' '}
           <a
             href="/privacy"
-            style={{ color: '#c9622a', textDecoration: 'none' }}
+            style={{ color: '#ff6b35', textDecoration: 'none' }}
           >
             Privacy Policy
           </a>

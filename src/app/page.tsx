@@ -19,7 +19,7 @@ const MODES = [
     title: 'Date Night.',
     body: 'Both of you swipe the same hidden gems. The app reveals only where you both said yes.',
     badge: 'Most Popular',
-    accent: '#c9622a',
+    accent: '#ff6b35',
   },
   {
     icon: '👯',
@@ -27,7 +27,7 @@ const MODES = [
     title: 'Group Dinner.',
     body: "Share a link. Everyone swipes independently. The app finds the consensus — no more endless WhatsApp debates.",
     badge: undefined,
-    accent: '#c4922a',
+    accent: '#ffa500',
   },
   {
     icon: '🙋',
@@ -35,7 +35,7 @@ const MODES = [
     title: 'Just Me.',
     body: "Exploring the city alone? Swipe through gems you'd never find on Google Maps.",
     badge: undefined,
-    accent: '#4a7c6f',
+    accent: '#10b981',
   },
 ];
 
@@ -80,14 +80,15 @@ function DistrictPill({ label }: { label: string }) {
         fontFamily: 'var(--font-mono)',
         fontSize: '11px',
         letterSpacing: '0.05em',
-        color: hovered ? '#c9622a' : '#7a7060',
-        border: `1px solid ${hovered ? '#c9622a' : '#332e28'}`,
-        borderRadius: '4px',
+        color: hovered ? '#ff6b35' : 'rgba(248,248,255,0.35)',
+        border: `1px solid ${hovered ? 'rgba(255,107,53,0.4)' : 'rgba(255,255,255,0.08)'}`,
+        borderRadius: '9999px',
         padding: '5px 14px',
         whiteSpace: 'nowrap',
         cursor: 'default',
         transition: 'color 0.2s, border-color 0.2s',
         userSelect: 'none',
+        background: hovered ? 'rgba(255,107,53,0.08)' : 'rgba(255,255,255,0.04)',
       }}
     >
       {label}
@@ -104,11 +105,14 @@ function ModeCard({
   return (
     <div
       style={{
-        background: '#1a1714',
-        border: '1px solid #332e28',
-        borderLeft: `4px solid ${accent}`,
+        background: 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: '20px',
         padding: '32px',
         position: 'relative',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        boxShadow: `0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), -4px 0 20px ${accent}22`,
       }}
     >
       {badge && (
@@ -117,39 +121,40 @@ function ModeCard({
             position: 'absolute',
             top: 16,
             right: 16,
-            fontFamily: 'var(--font-mono)',
-            fontSize: '9px',
-            letterSpacing: '0.08em',
-            color: accent,
-            border: `1px solid ${accent}`,
-            borderRadius: '4px',
-            padding: '3px 8px',
-            opacity: 0.85,
+            fontSize: '11px',
+            fontWeight: 600,
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            color: '#ff6b35',
+            background: 'rgba(255,107,53,0.15)',
+            border: '1px solid rgba(255,107,53,0.3)',
+            borderRadius: '9999px',
+            padding: '3px 10px',
           }}
         >
           {badge}
         </span>
       )}
-      <div style={{ fontSize: '26px', marginBottom: '14px' }}>{icon}</div>
+      <div style={{ fontSize: '32px', marginBottom: '16px' }}>{icon}</div>
       <div
         style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '9px',
-          letterSpacing: '0.12em',
+          fontSize: '11px',
+          fontWeight: 600,
+          letterSpacing: '0.1em',
           textTransform: 'uppercase',
           color: accent,
-          marginBottom: '8px',
-          opacity: 0.8,
+          marginBottom: '10px',
         }}
       >
         {label}
       </div>
       <h3
         style={{
-          fontFamily: 'var(--font-serif)',
+          fontFamily: 'var(--font-sans)',
           fontSize: '22px',
           fontWeight: 700,
-          color: '#f0e8d8',
+          letterSpacing: '-0.02em',
+          color: '#f8f8ff',
           margin: '0 0 12px',
         }}
       >
@@ -158,10 +163,10 @@ function ModeCard({
       <p
         style={{
           fontFamily: 'var(--font-sans)',
-          fontWeight: 300,
+          fontWeight: 400,
           fontSize: '15px',
           lineHeight: 1.7,
-          color: '#7a7060',
+          color: 'rgba(248,248,255,0.6)',
           margin: 0,
         }}
       >
@@ -176,19 +181,20 @@ function StepCard({ num, title, desc, last }: { num: string; title: string; desc
     <div
       style={{
         padding: '0 40px 0 0',
-        borderRight: last ? 'none' : '1px dashed #332e28',
+        borderRight: last ? 'none' : '1px dashed rgba(255,255,255,0.08)',
         minWidth: 0,
       }}
     >
       <div
         style={{
-          fontFamily: 'var(--font-serif)',
           fontSize: '52px',
-          fontWeight: 700,
-          color: '#c9622a',
+          fontWeight: 800,
+          background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
           lineHeight: 1,
           marginBottom: '16px',
-          opacity: 0.85,
         }}
       >
         {num}
@@ -196,9 +202,10 @@ function StepCard({ num, title, desc, last }: { num: string; title: string; desc
       <h4
         style={{
           fontFamily: 'var(--font-sans)',
-          fontWeight: 600,
+          fontWeight: 700,
           fontSize: '16px',
-          color: '#f0e8d8',
+          letterSpacing: '-0.01em',
+          color: '#f8f8ff',
           margin: '0 0 10px',
         }}
       >
@@ -207,10 +214,10 @@ function StepCard({ num, title, desc, last }: { num: string; title: string; desc
       <p
         style={{
           fontFamily: 'var(--font-sans)',
-          fontWeight: 300,
+          fontWeight: 400,
           fontSize: '14px',
           lineHeight: 1.7,
-          color: '#7a7060',
+          color: 'rgba(248,248,255,0.6)',
           margin: 0,
         }}
       >
@@ -246,8 +253,8 @@ export default function LandingPage() {
   return (
     <div
       style={{
-        background: '#12100e',
-        color: '#f0e8d8',
+        background: '#0a0a0f',
+        color: '#f8f8ff',
         fontFamily: 'var(--font-sans)',
         overflowX: 'hidden',
       }}
@@ -262,30 +269,33 @@ export default function LandingPage() {
           top: 0,
           left: 0,
           right: 0,
-          height: '52px',
+          height: '56px',
           zIndex: 100,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 clamp(20px, 5vw, 80px)',
-          background: scrolled ? 'rgba(18,16,14,0.88)' : '#12100e',
-          backdropFilter: scrolled ? 'blur(14px)' : 'none',
-          borderBottom: `1px solid ${scrolled ? '#3d3730' : '#332e28'}`,
+          background: scrolled ? 'rgba(10,10,15,0.85)' : '#0a0a0f',
+          backdropFilter: scrolled ? 'blur(20px)' : 'none',
+          WebkitBackdropFilter: scrolled ? 'blur(20px)' : 'none',
+          borderBottom: `1px solid ${scrolled ? 'rgba(255,255,255,0.08)' : 'transparent'}`,
           transition: 'background 0.3s, border-color 0.3s, backdrop-filter 0.3s',
         }}
       >
         {/* Logo */}
         <span
           style={{
-            fontFamily: 'var(--font-serif)',
-            fontStyle: 'italic',
             fontSize: '22px',
-            color: '#e07840',
+            fontWeight: 800,
+            letterSpacing: '-0.03em',
+            background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
             userSelect: 'none',
-            letterSpacing: '-0.01em',
           }}
         >
-          ✦ Twine
+          twine HK
         </span>
 
         {/* Nav actions */}
@@ -302,7 +312,7 @@ export default function LandingPage() {
       <section
         style={{
           minHeight: '100vh',
-          paddingTop: '52px',
+          paddingTop: '56px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -310,15 +320,15 @@ export default function LandingPage() {
           overflow: 'hidden',
         }}
       >
-        {/* Warm amber glow behind hero */}
+        {/* Hero glow */}
         <div
           style={{
             position: 'absolute',
-            top: '5%',
-            left: '-5%',
-            width: '65%',
-            height: '70%',
-            background: 'radial-gradient(ellipse, rgba(201,98,42,0.12) 0%, transparent 60%)',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '60%',
+            background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,107,53,0.12), transparent)',
             pointerEvents: 'none',
             zIndex: 0,
           }}
@@ -342,28 +352,32 @@ export default function LandingPage() {
             {/* Eyebrow */}
             <div
               style={{
-                fontFamily: 'var(--font-mono)',
                 fontSize: '11px',
+                fontWeight: 600,
                 letterSpacing: '0.12em',
-                color: '#c9622a',
+                color: '#ff6b35',
                 marginBottom: '20px',
                 textTransform: 'uppercase',
-                opacity: 0.9,
+                background: 'rgba(255,107,53,0.15)',
+                border: '1px solid rgba(255,107,53,0.3)',
+                borderRadius: '9999px',
+                padding: '4px 14px',
+                display: 'inline-block',
               }}
             >
               ✦ Hong Kong Restaurant Discovery
             </div>
 
             {/* Headline */}
-            <h1 style={{ margin: '0 0 6px', lineHeight: 1.02 }}>
+            <h1 style={{ margin: '0 0 6px', lineHeight: 1.08, letterSpacing: '-0.03em' }}>
               <span
                 style={{
                   display: 'block',
-                  fontFamily: 'var(--font-serif)',
-                  fontSize: 'clamp(48px, 7vw, 96px)',
-                  fontWeight: 700,
-                  color: '#f0e8d8',
-                  letterSpacing: '-0.02em',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: 'clamp(48px, 7vw, 80px)',
+                  fontWeight: 800,
+                  color: '#f8f8ff',
+                  letterSpacing: '-0.03em',
                 }}
               >
                 The city holds
@@ -371,15 +385,17 @@ export default function LandingPage() {
               <span
                 style={{
                   display: 'block',
-                  fontFamily: 'var(--font-serif)',
-                  fontSize: 'clamp(48px, 7vw, 96px)',
-                  fontWeight: 700,
-                  fontStyle: 'italic',
-                  color: '#e07840',
-                  letterSpacing: '-0.02em',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: 'clamp(48px, 7vw, 80px)',
+                  fontWeight: 800,
+                  letterSpacing: '-0.03em',
+                  background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
                 }}
               >
-                secrets worth sharing.
+                Hidden Gems.
               </span>
             </h1>
 
@@ -387,10 +403,10 @@ export default function LandingPage() {
             <p
               style={{
                 fontFamily: 'var(--font-sans)',
-                fontWeight: 300,
+                fontWeight: 400,
                 fontSize: 'clamp(15px, 1.5vw, 18px)',
                 lineHeight: 1.7,
-                color: '#7a7060',
+                color: 'rgba(248,248,255,0.6)',
                 maxWidth: '480px',
                 margin: '24px 0 36px',
               }}
@@ -452,7 +468,7 @@ export default function LandingPage() {
               right: 0,
               width: '80px',
               height: '100%',
-              background: 'linear-gradient(90deg, transparent, #12100e)',
+              background: 'linear-gradient(90deg, transparent, #0a0a0f)',
               pointerEvents: 'none',
             }}
           />
@@ -466,30 +482,30 @@ export default function LandingPage() {
       <section
         style={{
           padding: 'clamp(72px, 10vw, 120px) clamp(24px, 6vw, 100px)',
-          borderTop: '1px solid #332e28',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
+          background: '#111118',
         }}
       >
         <p
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '10px',
+            fontSize: '11px',
+            fontWeight: 600,
             letterSpacing: '0.12em',
             textTransform: 'uppercase',
-            color: '#c9622a',
+            color: '#ff6b35',
             textAlign: 'center',
             marginBottom: '12px',
-            opacity: 0.8,
           }}
         >
           Modes
         </p>
         <h2
           style={{
-            fontFamily: 'var(--font-serif)',
-            fontStyle: 'italic',
-            fontWeight: 400,
+            fontFamily: 'var(--font-sans)',
+            fontWeight: 800,
             fontSize: 'clamp(22px, 3vw, 38px)',
-            color: '#f0e8d8',
+            letterSpacing: '-0.03em',
+            color: '#f8f8ff',
             textAlign: 'center',
             margin: '0 auto 48px',
             maxWidth: '680px',
@@ -521,30 +537,30 @@ export default function LandingPage() {
         id="how-it-works"
         style={{
           padding: 'clamp(72px, 10vw, 120px) clamp(24px, 6vw, 100px)',
-          background: '#1a1714',
-          borderTop: '1px solid #332e28',
-          borderBottom: '1px solid #332e28',
+          background: '#0a0a0f',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
         }}
       >
         <p
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '10px',
+            fontSize: '11px',
+            fontWeight: 600,
             letterSpacing: '0.12em',
             textTransform: 'uppercase',
-            color: '#c9622a',
+            color: '#ff6b35',
             marginBottom: '12px',
-            opacity: 0.8,
           }}
         >
           The process
         </p>
         <h2
           style={{
-            fontFamily: 'var(--font-serif)',
-            fontWeight: 700,
+            fontFamily: 'var(--font-sans)',
+            fontWeight: 800,
             fontSize: 'clamp(24px, 3vw, 40px)',
-            color: '#f0e8d8',
+            letterSpacing: '-0.03em',
+            color: '#f8f8ff',
             margin: '0 0 56px',
           }}
         >
@@ -574,6 +590,7 @@ export default function LandingPage() {
           padding: 'clamp(72px, 10vw, 120px) clamp(24px, 6vw, 100px)',
           position: 'relative',
           overflow: 'hidden',
+          background: '#111118',
         }}
       >
         {/* Centre glow */}
@@ -585,7 +602,7 @@ export default function LandingPage() {
             transform: 'translate(-50%, -50%)',
             width: '900px',
             height: '500px',
-            background: 'radial-gradient(ellipse, rgba(201,98,42,0.09) 0%, transparent 60%)',
+            background: 'radial-gradient(ellipse, rgba(255,107,53,0.08) 0%, transparent 60%)',
             pointerEvents: 'none',
           }}
         />
@@ -606,14 +623,15 @@ export default function LandingPage() {
           <div>
             <blockquote
               style={{
-                fontFamily: 'var(--font-serif)',
+                fontFamily: 'var(--font-sans)',
                 fontStyle: 'italic',
-                fontWeight: 400,
-                fontSize: 'clamp(20px, 2.4vw, 30px)',
+                fontWeight: 600,
+                fontSize: 'clamp(20px, 2.4vw, 28px)',
                 lineHeight: 1.55,
-                color: '#f0e8d8',
+                letterSpacing: '-0.02em',
+                color: '#f8f8ff',
                 margin: 0,
-                borderLeft: '3px solid #c9622a',
+                borderLeft: '3px solid #ff6b35',
                 paddingLeft: '28px',
               }}
             >
@@ -622,8 +640,8 @@ export default function LandingPage() {
             <p
               style={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: '10px',
-                color: '#7a7060',
+                fontSize: '11px',
+                color: 'rgba(248,248,255,0.35)',
                 letterSpacing: '0.06em',
                 marginTop: '20px',
                 paddingLeft: '28px',
@@ -641,10 +659,10 @@ export default function LandingPage() {
                 <span
                   style={{
                     fontFamily: 'var(--font-sans)',
-                    fontWeight: 300,
+                    fontWeight: 400,
                     fontSize: '15px',
                     lineHeight: 1.7,
-                    color: '#7a7060',
+                    color: 'rgba(248,248,255,0.6)',
                   }}
                 >
                   {text}
@@ -661,8 +679,8 @@ export default function LandingPage() {
       ══════════════════════════════════════════════════ */}
       <section
         style={{
-          background: '#1a1714',
-          borderTop: '1px solid #332e28',
+          background: '#0a0a0f',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
           padding: 'clamp(64px, 10vw, 100px) clamp(24px, 6vw, 100px)',
           textAlign: 'center',
           position: 'relative',
@@ -678,30 +696,30 @@ export default function LandingPage() {
             transform: 'translate(-50%, -50%)',
             width: '600px',
             height: '300px',
-            background: 'radial-gradient(ellipse, rgba(201,98,42,0.08) 0%, transparent 65%)',
+            background: 'radial-gradient(ellipse, rgba(255,107,53,0.1) 0%, transparent 65%)',
             pointerEvents: 'none',
           }}
         />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <p
             style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '10px',
+              fontSize: '11px',
+              fontWeight: 600,
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
-              color: '#c9622a',
+              color: '#ff6b35',
               marginBottom: '16px',
-              opacity: 0.8,
             }}
           >
             Get started
           </p>
           <h2
             style={{
-              fontFamily: 'var(--font-serif)',
-              fontWeight: 700,
+              fontFamily: 'var(--font-sans)',
+              fontWeight: 800,
               fontSize: 'clamp(24px, 3.5vw, 36px)',
-              color: '#f0e8d8',
+              letterSpacing: '-0.03em',
+              color: '#f8f8ff',
               margin: '0 0 36px',
             }}
           >
@@ -720,8 +738,8 @@ export default function LandingPage() {
       ══════════════════════════════════════════════════ */}
       <footer
         style={{
-          background: '#12100e',
-          borderTop: '1px solid #332e28',
+          background: '#0a0a0f',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
           padding: '20px clamp(24px, 6vw, 100px)',
           display: 'flex',
           alignItems: 'center',
@@ -746,9 +764,9 @@ export default function LandingPage() {
 
 const footerText: React.CSSProperties = {
   fontFamily: 'var(--font-mono)',
-  fontSize: '10px',
+  fontSize: '11px',
   letterSpacing: '0.05em',
-  color: '#7a7060',
+  color: 'rgba(248,248,255,0.35)',
 };
 
 function NavLink({ href, label }: { href: string; label: string }) {
@@ -761,7 +779,8 @@ function NavLink({ href, label }: { href: string; label: string }) {
       style={{
         fontFamily: 'var(--font-sans)',
         fontSize: '14px',
-        color: hovered ? '#f0e8d8' : '#7a7060',
+        fontWeight: 500,
+        color: hovered ? '#f8f8ff' : 'rgba(248,248,255,0.6)',
         textDecoration: 'none',
         transition: 'color 0.2s',
       }}
@@ -781,17 +800,20 @@ function EmberButton({ href, label, size }: { href: string; label: string; size:
       style={{
         display: 'inline-block',
         fontFamily: 'var(--font-sans)',
-        fontWeight: 500,
+        fontWeight: 600,
         fontSize: size === 'lg' ? '15px' : '13px',
-        color: '#f0e8d8',
-        background: hovered ? '#e07840' : '#c9622a',
-        borderRadius: '4px',
+        color: '#fff',
+        background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+        borderRadius: '9999px',
         padding: size === 'lg' ? '14px 28px' : '8px 18px',
         textDecoration: 'none',
-        transition: 'background 0.2s',
-        letterSpacing: '0.01em',
+        transition: 'all 0.2s ease',
+        letterSpacing: '0.02em',
         cursor: 'pointer',
         whiteSpace: 'nowrap',
+        boxShadow: hovered
+          ? '0 0 28px rgba(255,107,53,0.5), 0 4px 16px rgba(0,0,0,0.4)'
+          : '0 0 20px rgba(255,107,53,0.3), 0 4px 12px rgba(0,0,0,0.4)',
       }}
     >
       {label}
@@ -811,10 +833,10 @@ function GhostButton({ href, label }: { href: string; label: string }) {
         fontFamily: 'var(--font-sans)',
         fontWeight: 500,
         fontSize: '15px',
-        color: hovered ? '#e07840' : '#c9622a',
-        background: hovered ? 'rgba(201,98,42,0.08)' : 'transparent',
-        border: `1px solid ${hovered ? '#e07840' : '#c9622a'}`,
-        borderRadius: '4px',
+        color: hovered ? '#f8f8ff' : 'rgba(248,248,255,0.6)',
+        background: hovered ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.14)',
+        borderRadius: '9999px',
         padding: '14px 28px',
         textDecoration: 'none',
         transition: 'all 0.2s',
@@ -836,9 +858,9 @@ function FooterLink({ href, label }: { href: string; label: string }) {
       onMouseLeave={() => setHovered(false)}
       style={{
         fontFamily: 'var(--font-mono)',
-        fontSize: '10px',
+        fontSize: '11px',
         letterSpacing: '0.05em',
-        color: hovered ? '#f0e8d8' : '#7a7060',
+        color: hovered ? '#f8f8ff' : 'rgba(248,248,255,0.35)',
         textDecoration: 'none',
         transition: 'color 0.2s',
       }}

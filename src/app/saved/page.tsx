@@ -59,7 +59,7 @@ function Stars({ value, onChange }: { value: number; onChange?: (n: number) => v
           onClick={() => onChange?.(n)}
           style={{
             fontSize: '22px', lineHeight: 1,
-            color: value >= n ? '#c4922a' : '#3d3730',
+            color: value >= n ? '#ffa500' : 'rgba(255,255,255,0.12)',
             cursor: onChange ? 'pointer' : 'default',
           }}
         >
@@ -105,31 +105,32 @@ function VisitSheet({
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
         style={{
           position: 'fixed', bottom: 0, left: 0, right: 0,
-          background: '#1a1714', borderRadius: '12px 12px 0 0',
-          borderTop: '1px solid #332e28',
+          background: '#111118',
+          borderRadius: '24px 24px 0 0',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
           padding: '20px 24px 44px', zIndex: 201,
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-          <div style={{ width: '36px', height: '4px', background: '#3d3730', borderRadius: '2px' }} />
+          <div style={{ width: '36px', height: '4px', background: 'rgba(255,255,255,0.2)', borderRadius: '2px' }} />
         </div>
 
-        <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '18px', color: '#f0e8d8', margin: '0 0 4px' }}>
+        <h3 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '18px', letterSpacing: '-0.01em', color: '#f8f8ff', margin: '0 0 4px' }}>
           {saved.place_data?.name ?? 'Unknown Restaurant'}
         </h3>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#c9622a', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 24px' }}>
+        <p style={{ fontSize: '11px', fontWeight: 600, color: '#ff6b35', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 24px' }}>
           Mark as Visited
         </p>
 
         <div style={{ marginBottom: '20px' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#7a7060', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 10px' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(248,248,255,0.35)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 10px' }}>
             Your rating
           </p>
           <Stars value={rating} onChange={setRating} />
         </div>
 
         <div style={{ marginBottom: '20px' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#7a7060', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 8px' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(248,248,255,0.35)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 8px' }}>
             Leave a note
           </p>
           <textarea
@@ -138,16 +139,22 @@ function VisitSheet({
             placeholder="How was it? What would you order again?"
             rows={3}
             style={{
-              width: '100%', background: '#221e1a', border: '1px solid #332e28',
-              borderRadius: '4px', color: '#f0e8d8', padding: '10px 12px',
-              fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '14px',
+              width: '100%',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: '14px',
+              color: '#f8f8ff',
+              padding: '12px 16px',
+              fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px',
               resize: 'none', outline: 'none', boxSizing: 'border-box', lineHeight: 1.55,
             }}
+            onFocus={(e) => { (e.currentTarget as HTMLElement).style.borderColor = '#ff6b35'; }}
+            onBlur={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'; }}
           />
         </div>
 
         <div style={{ marginBottom: '28px' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#7a7060', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 8px' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(248,248,255,0.35)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 8px' }}>
             Add to list (optional)
           </p>
           <input
@@ -156,12 +163,17 @@ function VisitSheet({
             onChange={(e) => setListName(e.target.value)}
             placeholder='"Date Night", "Work Lunch"…'
             style={{
-              width: '100%', height: '42px', background: '#221e1a',
-              border: '1px solid #332e28', borderRadius: '4px',
-              color: '#f0e8d8', padding: '0 12px',
-              fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '14px',
+              width: '100%', height: '48px',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: '14px',
+              color: '#f8f8ff', padding: '0 16px',
+              fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px',
               outline: 'none', boxSizing: 'border-box',
+              transition: 'border-color 0.2s',
             }}
+            onFocus={(e) => { (e.currentTarget as HTMLElement).style.borderColor = '#ff6b35'; }}
+            onBlur={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'; }}
           />
         </div>
 
@@ -169,10 +181,15 @@ function VisitSheet({
           onClick={handleSave}
           disabled={saving}
           style={{
-            width: '100%', height: '50px',
-            background: saving ? '#2a2520' : '#c9622a', border: 'none', borderRadius: '4px',
-            fontFamily: 'var(--font-sans)', fontWeight: 500, fontSize: '15px',
-            color: saving ? '#7a7060' : '#f0e8d8', cursor: saving ? 'not-allowed' : 'pointer',
+            width: '100%', height: '52px',
+            background: saving ? 'rgba(255,255,255,0.05)' : 'linear-gradient(135deg, #ff6b35, #ffa500)',
+            border: 'none',
+            borderRadius: '9999px',
+            fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '15px',
+            letterSpacing: '0.02em',
+            color: saving ? 'rgba(248,248,255,0.35)' : '#fff',
+            cursor: saving ? 'not-allowed' : 'pointer',
+            boxShadow: saving ? 'none' : '0 0 20px rgba(255,107,53,0.3)',
           }}
         >
           {saving ? 'Saving…' : 'Save ✓'}
@@ -203,40 +220,46 @@ function SavedCard({
     <div
       onClick={() => router.push(`/place/${encodeURIComponent(place.id)}`)}
       style={{
-        background: '#1a1714', border: '1px solid #332e28',
-        borderRadius: '8px', overflow: 'hidden',
-        cursor: 'pointer', breakInside: 'avoid',
+        background: 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: '20px',
+        overflow: 'hidden',
+        cursor: 'pointer',
+        breakInside: 'avoid',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
       }}
     >
       {/* Photo */}
-      <div style={{ position: 'relative', height: '160px', background: '#0e0c0a' }}>
+      <div style={{ position: 'relative', height: '160px', background: '#111118' }}>
         {src ? (
           <Image src={src} alt={place.name ?? ''} fill unoptimized sizes="280px" style={{ objectFit: 'cover' }} />
         ) : (
           <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px' }}>🍜</div>
         )}
         {/* Gradient */}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 60%, rgba(10,8,6,0.72) 100%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 60%, rgba(10,10,15,0.72) 100%)', pointerEvents: 'none' }} />
         {/* Visited pill */}
         {saved.is_visited && (
-          <div style={{ position: 'absolute', top: '8px', left: '8px', background: 'rgba(18,16,14,0.82)', border: '1px solid #332e28', borderRadius: '4px', padding: '3px 7px', backdropFilter: 'blur(4px)' }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#4a7c6f', letterSpacing: '0.06em' }}>Visited ✓</span>
+          <div style={{ position: 'absolute', top: '8px', left: '8px', background: 'rgba(10,10,15,0.82)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '9999px', padding: '3px 9px', backdropFilter: 'blur(4px)' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#10b981', letterSpacing: '0.06em', fontWeight: 600 }}>Visited ✓</span>
           </div>
         )}
         {/* Gem badge */}
         {place.hidden_gem && (
-          <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(18,16,14,0.82)', border: '1px solid rgba(196,146,42,0.5)', borderRadius: '4px', padding: '3px 7px', backdropFilter: 'blur(4px)' }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#c4922a' }}>✦</span>
+          <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(10,10,15,0.82)', border: '1px solid rgba(255,107,53,0.4)', borderRadius: '9999px', padding: '3px 9px', backdropFilter: 'blur(4px)' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', color: '#ff6b35', fontWeight: 600 }}>✦</span>
           </div>
         )}
       </div>
 
       {/* Body */}
       <div style={{ padding: '12px 14px' }}>
-        <p style={{ fontFamily: 'var(--font-serif)', fontWeight: 600, fontSize: '14px', color: '#f0e8d8', margin: '0 0 4px', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '14px', letterSpacing: '-0.01em', color: '#f8f8ff', margin: '0 0 4px', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {place.name ?? 'Unknown Restaurant'}
         </p>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#7a7060', margin: '0 0 10px' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(248,248,255,0.35)', margin: '0 0 10px' }}>
           {[district, place.priceLabel ?? null].filter(Boolean).join(' · ')}
         </p>
         {/* Actions (stop propagation so they don't open the sheet) */}
@@ -246,21 +269,21 @@ function SavedCard({
             target="_blank"
             rel="noopener noreferrer"
             title="Directions"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '28px', background: '#221e1a', border: '1px solid #332e28', borderRadius: '4px', textDecoration: 'none', fontSize: '14px' }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '28px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', textDecoration: 'none', fontSize: '14px' }}
           >
             🗺
           </a>
           <button
             onClick={() => onVisitTap(saved)}
             title="Rate visit"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '28px', background: '#221e1a', border: '1px solid #332e28', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '28px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}
           >
             ★
           </button>
           <button
             onClick={() => onDelete(saved)}
             title="Remove"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '28px', background: '#221e1a', border: '1px solid #332e28', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '28px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}
           >
             🗑
           </button>
@@ -287,10 +310,10 @@ function ListSection({
         onClick={() => setOpen((v) => !v)}
         style={{ width: '100%', background: 'none', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', padding: '0 0 12px' }}
       >
-        <span style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '16px', color: '#f0e8d8' }}>
-          {name} <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#7a7060', fontWeight: 400 }}>({items.length})</span>
+        <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '16px', letterSpacing: '-0.01em', color: '#f8f8ff' }}>
+          {name} <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(248,248,255,0.35)', fontWeight: 400 }}>({items.length})</span>
         </span>
-        <motion.span animate={{ rotate: open ? 180 : 0 }} style={{ color: '#7a7060', fontSize: '14px' }}>▾</motion.span>
+        <motion.span animate={{ rotate: open ? 180 : 0 }} style={{ color: 'rgba(248,248,255,0.35)', fontSize: '14px' }}>▾</motion.span>
       </button>
       <AnimatePresence>
         {open && (
@@ -317,19 +340,42 @@ function ListSection({
 function EmptyState({ onCta, isFiltered }: { onCta: () => void; isFiltered: boolean }) {
   return (
     <div style={{ textAlign: 'center', padding: '64px 0' }}>
-      <div style={{ fontFamily: 'var(--font-serif)', fontSize: '96px', color: '#c9622a', opacity: 0.2, lineHeight: 1, marginBottom: '24px', userSelect: 'none' }}>✦</div>
-      <h2 style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontWeight: 400, fontSize: '20px', color: '#7a7060', margin: '0 0 8px' }}>
+      <div
+        style={{
+          fontSize: '96px',
+          background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          opacity: 0.2,
+          lineHeight: 1,
+          marginBottom: '24px',
+          userSelect: 'none',
+        }}
+      >
+        ✦
+      </div>
+      <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '20px', letterSpacing: '-0.02em', color: 'rgba(248,248,255,0.6)', margin: '0 0 8px' }}>
         {isFiltered ? 'No places match this filter.' : 'Your gem collection is empty.'}
       </h2>
       {!isFiltered && (
-        <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '14px', color: '#3d3730', margin: '0 0 28px' }}>
+        <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(248,248,255,0.35)', margin: '0 0 28px' }}>
           Start a session to save places you love.
         </p>
       )}
       {!isFiltered && (
         <button
           onClick={onCta}
-          style={{ height: '48px', padding: '0 28px', background: '#c9622a', border: 'none', borderRadius: '4px', fontFamily: 'var(--font-sans)', fontWeight: 500, fontSize: '15px', color: '#f0e8d8', cursor: 'pointer' }}
+          style={{
+            height: '52px', padding: '0 28px',
+            background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+            border: 'none',
+            borderRadius: '9999px',
+            fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '15px',
+            letterSpacing: '0.02em',
+            color: '#fff', cursor: 'pointer',
+            boxShadow: '0 0 20px rgba(255,107,53,0.3)',
+          }}
         >
           Find a Hidden Gem →
         </button>
@@ -461,8 +507,8 @@ export default function SavedPage() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: '#12100e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#7a7060', letterSpacing: '0.06em' }}>
+      <div style={{ minHeight: '100vh', background: '#0a0a0f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'rgba(248,248,255,0.35)', letterSpacing: '0.06em' }}>
           Loading your collection…
         </span>
       </div>
@@ -470,26 +516,26 @@ export default function SavedPage() {
   }
 
   return (
-    <div style={{ background: '#12100e', minHeight: '100vh', color: '#f0e8d8', fontFamily: 'var(--font-sans)', paddingBottom: '56px' }}>
+    <div style={{ background: '#0a0a0f', minHeight: '100vh', color: '#f8f8ff', fontFamily: 'var(--font-sans)', paddingBottom: '56px' }}>
 
       {/* ── Header ── */}
       <div style={{ maxWidth: '680px', margin: '0 auto', padding: '32px clamp(16px, 4vw, 40px) 0' }}>
         <button
           onClick={() => router.push('/home')}
-          style={{ background: 'none', border: 'none', color: '#7a7060', cursor: 'pointer', fontSize: '18px', padding: '0 0 16px', display: 'block', lineHeight: 1 }}
+          style={{ background: 'none', border: 'none', color: 'rgba(248,248,255,0.35)', cursor: 'pointer', fontSize: '18px', padding: '0 0 16px', display: 'block', lineHeight: 1 }}
         >
           ←
         </button>
-        <h1 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '32px', color: '#f0e8d8', margin: '0 0 6px' }}>
-          Your Gem Collection
+        <h1 style={{ fontFamily: 'var(--font-sans)', fontWeight: 800, fontSize: '28px', letterSpacing: '-0.03em', color: '#f8f8ff', margin: '0 0 6px' }}>
+          Saved Gems 💎
         </h1>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#7a7060', margin: '0 0 28px', letterSpacing: '0.06em' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(248,248,255,0.35)', margin: '0 0 28px', letterSpacing: '0.06em' }}>
           {places.length} place{places.length !== 1 ? 's' : ''} saved · {visitedCount} visited
         </p>
 
         {/* Tabs + Sort row */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', gap: '8px' }}>
-          <div style={{ display: 'flex', gap: '0', borderBottom: '1px solid #332e28' }}>
+          <div style={{ display: 'flex', gap: '6px', background: 'rgba(255,255,255,0.04)', borderRadius: '9999px', padding: '4px', border: '1px solid rgba(255,255,255,0.08)' }}>
             {(['all', 'visited', 'lists'] as Tab[]).map((tab) => {
               const label = tab === 'all' ? 'All Saved' : tab === 'visited' ? 'Visited ✓' : 'Lists';
               const active = activeTab === tab;
@@ -498,11 +544,15 @@ export default function SavedPage() {
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   style={{
-                    background: 'none', border: 'none', padding: '0 16px 10px 0',
-                    fontFamily: 'var(--font-sans)', fontWeight: 500, fontSize: '14px',
-                    color: active ? '#f0e8d8' : '#7a7060', cursor: 'pointer',
-                    borderBottom: active ? '2px solid #c9622a' : '2px solid transparent',
-                    marginBottom: '-1px', transition: 'color 0.15s, border-color 0.15s',
+                    padding: '6px 14px',
+                    background: active ? 'linear-gradient(135deg, #ff6b35, #ffa500)' : 'transparent',
+                    border: 'none',
+                    borderRadius: '9999px',
+                    fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '13px',
+                    color: active ? '#fff' : 'rgba(248,248,255,0.5)',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                    boxShadow: active ? '0 0 12px rgba(255,107,53,0.3)' : 'none',
                   }}
                 >
                   {label}
@@ -514,13 +564,16 @@ export default function SavedPage() {
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             style={{
-              background: '#221e1a', border: '1px solid #332e28', borderRadius: '4px',
-              color: '#7a7060', fontFamily: 'var(--font-mono)', fontSize: '11px',
-              padding: '6px 10px', cursor: 'pointer', outline: 'none', flexShrink: 0,
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: '9999px',
+              color: 'rgba(248,248,255,0.6)',
+              fontFamily: 'var(--font-mono)', fontSize: '11px',
+              padding: '6px 12px', cursor: 'pointer', outline: 'none', flexShrink: 0,
             }}
           >
             {SORT_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value} style={{ background: '#221e1a' }}>{o.label}</option>
+              <option key={o.value} value={o.value} style={{ background: '#111118' }}>{o.label}</option>
             ))}
           </select>
         </div>
@@ -540,11 +593,14 @@ export default function SavedPage() {
                   onClick={() => setDistrict(d)}
                   style={{
                     flexShrink: 0, padding: '6px 14px',
-                    background: active ? 'rgba(201,98,42,0.1)' : '#221e1a',
-                    border: `1px solid ${active ? '#c9622a' : '#332e28'}`,
-                    borderRadius: '4px', fontFamily: 'var(--font-sans)', fontWeight: 500, fontSize: '12px',
-                    color: active ? '#c9622a' : '#7a7060', cursor: 'pointer', whiteSpace: 'nowrap',
+                    background: active ? 'rgba(255,107,53,0.15)' : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${active ? 'rgba(255,107,53,0.35)' : 'rgba(255,255,255,0.08)'}`,
+                    borderRadius: '9999px',
+                    fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '12px',
+                    color: active ? '#ff6b35' : 'rgba(248,248,255,0.5)',
+                    cursor: 'pointer', whiteSpace: 'nowrap',
                     transition: 'all 0.15s',
+                    boxShadow: active ? '0 0 8px rgba(255,107,53,0.2)' : 'none',
                   }}
                 >
                   {d}
@@ -574,21 +630,27 @@ export default function SavedPage() {
                       if (e.key === 'Escape') setListInput(false);
                     }}
                     style={{
-                      height: '36px', background: '#221e1a', border: '1px solid #c9622a',
-                      borderRadius: '4px', color: '#f0e8d8', padding: '0 12px',
+                      height: '36px',
+                      background: 'rgba(255,255,255,0.05)',
+                      border: '1px solid #ff6b35',
+                      borderRadius: '9999px',
+                      color: '#f8f8ff', padding: '0 14px',
                       fontFamily: 'var(--font-sans)', fontSize: '13px', outline: 'none', width: '160px',
                     }}
                   />
-                  <button onClick={() => setListInput(false)} style={{ background: 'none', border: 'none', color: '#7a7060', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>
+                  <button onClick={() => setListInput(false)} style={{ background: 'none', border: 'none', color: 'rgba(248,248,255,0.35)', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>
                 </div>
               ) : (
                 <button
                   onClick={() => setListInput(true)}
                   style={{
-                    height: '36px', padding: '0 14px', background: '#221e1a',
-                    border: '1px solid #332e28', borderRadius: '4px',
-                    fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.06em',
-                    color: '#c9622a', cursor: 'pointer',
+                    height: '36px', padding: '0 16px',
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.14)',
+                    borderRadius: '9999px',
+                    fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em',
+                    color: '#ff6b35', cursor: 'pointer',
+                    transition: 'all 0.15s',
                   }}
                 >
                   Create List +
@@ -636,17 +698,22 @@ export default function SavedPage() {
             transition={{ type: 'spring', damping: 28, stiffness: 280 }}
             style={{
               position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
-              background: '#221e1a', border: '1px solid #332e28', borderRadius: '8px',
+              background: 'rgba(17,17,24,0.95)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: '14px',
               padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '16px',
-              zIndex: 300, whiteSpace: 'nowrap', boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+              zIndex: 300, whiteSpace: 'nowrap',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
             }}
           >
-            <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '13px', color: '#9a8f7e' }}>
-              Removed <strong style={{ color: '#f0e8d8', fontWeight: 500 }}>{toast.name}</strong>
+            <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '13px', color: 'rgba(248,248,255,0.6)' }}>
+              Removed <strong style={{ color: '#f8f8ff', fontWeight: 600 }}>{toast.name}</strong>
             </span>
             <button
               onClick={handleUndo}
-              style={{ background: 'none', border: 'none', fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '13px', color: '#c9622a', cursor: 'pointer', padding: 0 }}
+              style={{ background: 'none', border: 'none', fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '13px', color: '#ff6b35', cursor: 'pointer', padding: 0 }}
             >
               Undo
             </button>

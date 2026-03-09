@@ -33,21 +33,37 @@ function BigAvatar({ url, name }: { url: string | null; name: string }) {
 
   return (
     <div style={{
-      width: '80px', height: '80px',
+      width: '84px', height: '84px',
       borderRadius: '50%',
-      border: '2px solid #332e28',
-      overflow: 'hidden',
-      background: '#221e1a',
+      background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       flexShrink: 0,
+      padding: '2px',
     }}>
-      {url ? (
-        <Image src={url} alt={name} width={80} height={80} style={{ borderRadius: '50%', objectFit: 'cover' }} />
-      ) : (
-        <span style={{ fontFamily: 'var(--font-serif)', fontSize: '26px', fontStyle: 'italic', color: '#c9622a' }}>
-          {initials || '?'}
-        </span>
-      )}
+      <div style={{
+        width: '80px', height: '80px',
+        borderRadius: '50%',
+        background: '#111118',
+        overflow: 'hidden',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        {url ? (
+          <Image src={url} alt={name} width={80} height={80} style={{ borderRadius: '50%', objectFit: 'cover' }} />
+        ) : (
+          <span
+            style={{
+              fontSize: '26px',
+              fontWeight: 700,
+              background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            {initials || '?'}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
@@ -58,21 +74,34 @@ function StatTile({ value, label }: { value: number; label: string }) {
   return (
     <div style={{
       flex: 1,
-      background: '#1a1714',
-      border: '1px solid #332e28',
-      borderRadius: '8px',
+      background: 'rgba(255,255,255,0.04)',
+      border: '1px solid rgba(255,255,255,0.08)',
+      borderRadius: '14px',
       padding: '16px 12px',
       textAlign: 'center',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      boxShadow: '0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)',
     }}>
-      <div style={{
-        fontFamily: 'var(--font-serif)', fontWeight: 700,
-        fontSize: '28px', color: '#f0e8d8', lineHeight: 1, marginBottom: '6px',
-      }}>
+      <div
+        style={{
+          fontWeight: 800,
+          fontSize: '28px',
+          letterSpacing: '-0.03em',
+          lineHeight: 1,
+          marginBottom: '6px',
+          background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+        }}
+      >
         {value}
       </div>
       <div style={{
         fontFamily: 'var(--font-mono)', fontSize: '9px',
-        letterSpacing: '0.1em', textTransform: 'uppercase', color: '#7a7060',
+        letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(248,248,255,0.35)',
+        fontWeight: 600,
       }}>
         {label}
       </div>
@@ -98,7 +127,7 @@ function SettingsRow({
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         width: '100%', padding: '16px 0',
         background: 'none', border: 'none',
-        borderBottom: noBorder ? 'none' : '1px solid #221e1a',
+        borderBottom: noBorder ? 'none' : '1px solid rgba(255,255,255,0.06)',
         cursor: onClick ? 'pointer' : 'default',
         textAlign: 'left',
         opacity: hovered && onClick ? 0.8 : 1,
@@ -109,12 +138,12 @@ function SettingsRow({
         <span style={{ fontSize: '18px', width: '24px', textAlign: 'center' }}>{icon}</span>
         <span style={{
           fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '15px',
-          color: destructive ? '#c9622a' : '#f0e8d8',
+          color: destructive ? '#ef4444' : '#f8f8ff',
         }}>
           {label}
         </span>
       </div>
-      {right !== undefined ? right : (onClick && <span style={{ color: '#3d3730', fontSize: '18px' }}>›</span>)}
+      {right !== undefined ? right : (onClick && <span style={{ color: 'rgba(248,248,255,0.2)', fontSize: '18px' }}>›</span>)}
     </button>
   );
 }
@@ -127,9 +156,10 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
       onClick={() => onChange(!on)}
       style={{
         width: '44px', height: '24px', borderRadius: '12px',
-        background: on ? '#c9622a' : '#332e28',
+        background: on ? '#ff6b35' : 'rgba(255,255,255,0.12)',
         border: 'none', cursor: 'pointer',
         position: 'relative', transition: 'background 0.2s', flexShrink: 0,
+        boxShadow: on ? '0 0 8px rgba(255,107,53,0.4)' : 'none',
       }}
     >
       <motion.div
@@ -138,7 +168,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
         style={{
           position: 'absolute', top: '2px', left: 0,
           width: '20px', height: '20px',
-          borderRadius: '50%', background: '#f0e8d8',
+          borderRadius: '50%', background: '#f8f8ff',
         }}
       />
     </button>
@@ -169,28 +199,34 @@ function ProUpgradeCard({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       style={{
-        background: '#1a1714', border: '1px solid #c4922a55',
-        borderRadius: '12px', padding: '28px 24px', marginBottom: '24px',
+        background: 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,165,0,0.3)',
+        borderRadius: '20px',
+        padding: '28px 24px',
+        marginBottom: '24px',
         position: 'relative', overflow: 'hidden',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4), 0 0 40px rgba(255,165,0,0.05), inset 0 1px 0 rgba(255,255,255,0.06)',
       }}
     >
       {/* Gold glow */}
       <div style={{
         position: 'absolute', top: 0, right: 0,
         width: '200px', height: '200px', borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(196,146,42,0.06) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(255,165,0,0.08) 0%, transparent 70%)',
         pointerEvents: 'none',
       }} />
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-        <span style={{ color: '#c4922a', fontSize: '20px' }}>✦</span>
-        <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '20px', color: '#c4922a', margin: 0 }}>
+        <span style={{ color: '#ffa500', fontSize: '20px' }}>✦</span>
+        <h3 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '20px', letterSpacing: '-0.02em', color: '#ffa500', margin: 0 }}>
           Upgrade to Pro
         </h3>
       </div>
       <p style={{
-        fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '13px',
-        color: '#7a7060', margin: '0 0 20px', lineHeight: 1.6,
+        fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '13px',
+        color: 'rgba(248,248,255,0.6)', margin: '0 0 20px', lineHeight: 1.6,
       }}>
         Unlock the full Twine experience for hidden gem hunters.
       </p>
@@ -198,8 +234,8 @@ function ProUpgradeCard({
       <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {features.map((f) => (
           <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ color: '#c4922a', fontSize: '11px', flexShrink: 0 }}>✦</span>
-            <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: '13px', color: '#9a8f7e' }}>{f}</span>
+            <span style={{ color: '#ffa500', fontSize: '11px', flexShrink: 0 }}>✦</span>
+            <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '13px', color: 'rgba(248,248,255,0.6)' }}>{f}</span>
           </li>
         ))}
       </ul>
@@ -209,11 +245,15 @@ function ProUpgradeCard({
           onClick={() => onUpgrade(monthlyId)}
           disabled={upgrading}
           style={{
-            flex: 1, padding: '14px 12px', background: '#c9622a', border: 'none',
-            borderRadius: '6px', fontFamily: 'var(--font-sans)', fontWeight: 600,
-            fontSize: '14px', color: '#f0e8d8',
+            flex: 1, padding: '14px 12px',
+            background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+            border: 'none',
+            borderRadius: '9999px',
+            fontFamily: 'var(--font-sans)', fontWeight: 600,
+            fontSize: '14px', letterSpacing: '0.02em', color: '#fff',
             cursor: upgrading ? 'not-allowed' : 'pointer',
             opacity: upgrading ? 0.6 : 1, transition: 'opacity 0.2s',
+            boxShadow: '0 0 16px rgba(255,107,53,0.3)',
           }}
         >
           HK$38 / month
@@ -222,9 +262,11 @@ function ProUpgradeCard({
           onClick={() => onUpgrade(annualId)}
           disabled={upgrading}
           style={{
-            flex: 1, padding: '14px 12px', background: 'transparent',
-            border: '1px solid #c4922a', borderRadius: '6px',
-            fontFamily: 'var(--font-sans)', fontWeight: 500, fontSize: '14px', color: '#c4922a',
+            flex: 1, padding: '14px 12px',
+            background: 'rgba(255,165,0,0.08)',
+            border: '1px solid rgba(255,165,0,0.4)',
+            borderRadius: '9999px',
+            fontFamily: 'var(--font-sans)', fontWeight: 500, fontSize: '14px', color: '#ffa500',
             cursor: upgrading ? 'not-allowed' : 'pointer',
             opacity: upgrading ? 0.6 : 1, transition: 'opacity 0.2s',
           }}
@@ -233,7 +275,7 @@ function ProUpgradeCard({
         </button>
       </div>
       <p style={{
-        fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#3d3730',
+        fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(248,248,255,0.2)',
         letterSpacing: '0.05em', textAlign: 'center', margin: '12px 0 0',
       }}>
         Cancel anytime · Billed via Stripe
@@ -264,14 +306,16 @@ function EditNameSheet({
         transition={{ type: 'spring', damping: 28, stiffness: 280 }}
         style={{
           position: 'fixed', bottom: 0, left: 0, right: 0,
-          background: '#1a1714', borderRadius: '12px 12px 0 0',
-          borderTop: '1px solid #332e28', padding: '24px 24px 40px', zIndex: 201,
+          background: '#111118',
+          borderRadius: '24px 24px 0 0',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
+          padding: '24px 24px 40px', zIndex: 201,
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-          <div style={{ width: '36px', height: '4px', background: '#3d3730', borderRadius: '2px' }} />
+          <div style={{ width: '36px', height: '4px', background: 'rgba(255,255,255,0.2)', borderRadius: '2px' }} />
         </div>
-        <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '18px', color: '#f0e8d8', margin: '0 0 20px' }}>
+        <h3 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '18px', letterSpacing: '-0.01em', color: '#f8f8ff', margin: '0 0 20px' }}>
           Edit display name
         </h3>
         <input
@@ -281,18 +325,27 @@ function EditNameSheet({
           placeholder="Your name"
           style={{
             width: '100%', height: '48px',
-            background: '#221e1a', border: '1px solid #332e28', borderRadius: '6px',
-            padding: '0 14px', fontFamily: 'var(--font-sans)', fontSize: '15px',
-            color: '#f0e8d8', outline: 'none', boxSizing: 'border-box',
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '14px',
+            padding: '0 16px', fontFamily: 'var(--font-sans)', fontSize: '15px',
+            color: '#f8f8ff', outline: 'none', boxSizing: 'border-box',
+            transition: 'border-color 0.2s',
           }}
+          onFocus={(e) => { (e.currentTarget as HTMLElement).style.borderColor = '#ff6b35'; }}
+          onBlur={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'; }}
         />
         <button
           onClick={() => { if (value.trim()) { onSave(value.trim()); onClose(); } }}
           style={{
-            marginTop: '16px', width: '100%', height: '50px',
-            background: '#c9622a', border: 'none', borderRadius: '6px',
-            fontFamily: 'var(--font-sans)', fontWeight: 500, fontSize: '15px',
-            color: '#f0e8d8', cursor: 'pointer',
+            marginTop: '16px', width: '100%', height: '52px',
+            background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+            border: 'none',
+            borderRadius: '9999px',
+            fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '15px',
+            letterSpacing: '0.02em',
+            color: '#fff', cursor: 'pointer',
+            boxShadow: '0 0 20px rgba(255,107,53,0.3)',
           }}
         >
           Save →
@@ -404,8 +457,8 @@ function ProfileContent() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: '#12100e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#7a7060', letterSpacing: '0.06em' }}>
+      <div style={{ minHeight: '100vh', background: '#0a0a0f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'rgba(248,248,255,0.35)', letterSpacing: '0.06em' }}>
           Loading…
         </span>
       </div>
@@ -413,25 +466,37 @@ function ProfileContent() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#12100e', color: '#f0e8d8', fontFamily: 'var(--font-sans)' }}>
+    <div style={{ minHeight: '100vh', background: '#0a0a0f', color: '#f8f8ff', fontFamily: 'var(--font-sans)' }}>
 
       {/* Header */}
       <header style={{
         position: 'sticky', top: 0, zIndex: 50,
-        height: '52px',
-        background: 'rgba(18,16,14,0.92)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid #332e28',
+        height: '60px',
+        background: 'rgba(10,10,15,0.9)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
         display: 'flex', alignItems: 'center', padding: '0 20px', gap: '12px',
       }}>
         <button
           onClick={() => router.push('/home')}
-          style={{ background: 'none', border: 'none', color: '#7a7060', cursor: 'pointer', fontSize: '20px', padding: 0 }}
+          style={{ background: 'none', border: 'none', color: 'rgba(248,248,255,0.35)', cursor: 'pointer', fontSize: '20px', padding: 0 }}
         >
           ←
         </button>
-        <span style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', fontSize: '18px', color: '#e07840', flex: 1 }}>
-          ✦ Twine
+        <span
+          style={{
+            fontSize: '18px',
+            fontWeight: 800,
+            letterSpacing: '-0.02em',
+            background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            flex: 1,
+          }}
+        >
+          ✦ twine
         </span>
       </header>
 
@@ -442,11 +507,11 @@ function ProfileContent() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            style={{ background: 'rgba(74,124,111,0.12)', borderBottom: '1px solid #4a7c6f44', overflow: 'hidden' }}
+            style={{ background: 'rgba(16,185,129,0.1)', borderBottom: '1px solid rgba(16,185,129,0.25)', overflow: 'hidden' }}
           >
             <p style={{
               padding: '12px 20px', margin: 0,
-              fontFamily: 'var(--font-sans)', fontSize: '14px', color: '#4a7c6f',
+              fontFamily: 'var(--font-sans)', fontSize: '14px', color: '#10b981',
             }}>
               ✓ You&apos;re now a Pro member. Welcome to the full experience!
             </p>
@@ -462,24 +527,27 @@ function ProfileContent() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
               <h1 style={{
-                fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '24px',
-                color: '#f0e8d8', margin: 0, lineHeight: 1.2,
+                fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '22px',
+                letterSpacing: '-0.02em',
+                color: '#f8f8ff', margin: 0, lineHeight: 1.2,
               }}>
                 {displayName}
               </h1>
               {profile?.is_pro && (
                 <span style={{
-                  background: 'rgba(196,146,42,0.12)', border: '1px solid #c4922a55',
-                  borderRadius: '4px', padding: '2px 8px',
+                  background: 'linear-gradient(135deg, rgba(255,165,0,0.2), rgba(255,107,53,0.2))',
+                  border: '1px solid rgba(255,165,0,0.4)',
+                  borderRadius: '9999px', padding: '2px 10px',
                   fontFamily: 'var(--font-mono)', fontSize: '9px',
-                  letterSpacing: '0.12em', textTransform: 'uppercase', color: '#c4922a', flexShrink: 0,
+                  fontWeight: 600,
+                  letterSpacing: '0.12em', textTransform: 'uppercase', color: '#ffa500', flexShrink: 0,
                 }}>
                   ✦ Pro
                 </span>
               )}
             </div>
             <p style={{
-              fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#7a7060',
+              fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(248,248,255,0.35)',
               letterSpacing: '0.04em', margin: '6px 0 0',
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>
@@ -501,7 +569,7 @@ function ProfileContent() {
             <ProUpgradeCard onUpgrade={handleUpgrade} upgrading={upgrading} />
             {upgradeError && (
               <p style={{
-                fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#c9622a',
+                fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#ff6b35',
                 margin: '-16px 0 20px', letterSpacing: '0.03em',
               }}>
                 {upgradeError}
@@ -514,18 +582,19 @@ function ProfileContent() {
         <div style={{ marginBottom: '24px' }}>
           <p style={{
             fontFamily: 'var(--font-mono)', fontSize: '9px',
-            letterSpacing: '0.12em', textTransform: 'uppercase', color: '#3d3730', margin: '0 0 4px',
+            fontWeight: 600,
+            letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(248,248,255,0.35)', margin: '0 0 8px',
           }}>
             Account
           </p>
-          <div style={{ background: '#1a1714', border: '1px solid #332e28', borderRadius: '8px', padding: '0 16px' }}>
+          <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '0 16px' }}>
             <SettingsRow icon="✏️" label="Edit display name" onClick={() => setEditOpen(true)} />
             <SettingsRow icon="🍜" label="Edit preferences" onClick={() => router.push('/onboarding')} />
             <SettingsRow
               icon="🌐" label="Language"
               right={
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: langZh ? '#c4922a' : '#7a7060' }}>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: langZh ? '#ffa500' : 'rgba(248,248,255,0.35)' }}>
                     {langZh ? '繁中' : 'EN'}
                   </span>
                   <Toggle on={langZh} onChange={setLangZh} />
@@ -540,18 +609,19 @@ function ProfileContent() {
         <div style={{ marginBottom: '32px' }}>
           <p style={{
             fontFamily: 'var(--font-mono)', fontSize: '9px',
-            letterSpacing: '0.12em', textTransform: 'uppercase', color: '#3d3730', margin: '0 0 4px',
+            fontWeight: 600,
+            letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(248,248,255,0.35)', margin: '0 0 8px',
           }}>
             More
           </p>
-          <div style={{ background: '#1a1714', border: '1px solid #332e28', borderRadius: '8px', padding: '0 16px' }}>
+          <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '0 16px' }}>
             <SettingsRow icon="🔒" label="Privacy Policy" onClick={() => window.open('https://twine.hk/privacy', '_blank')} />
             <SettingsRow icon="📧" label="Contact support" onClick={() => window.open('mailto:hello@twine.hk', '_blank')} />
             <SettingsRow icon="🚪" label="Sign out" onClick={handleSignOut} destructive noBorder />
           </div>
         </div>
 
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#221e1a', textAlign: 'center', letterSpacing: '0.08em' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(255,255,255,0.08)', textAlign: 'center', letterSpacing: '0.08em' }}>
           Twine v0.1.0 · Hong Kong
         </p>
       </main>

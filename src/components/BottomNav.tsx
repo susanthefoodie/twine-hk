@@ -34,10 +34,11 @@ export default function BottomNav() {
         bottom: 0,
         left: 0,
         right: 0,
-        height: '60px',
-        background: 'rgba(18,16,14,0.96)',
-        backdropFilter: 'blur(12px)',
-        borderTop: '1px solid #332e28',
+        height: '64px',
+        background: 'rgba(10,10,15,0.9)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderTop: '1px solid rgba(255,255,255,0.08)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -60,11 +61,11 @@ export default function BottomNav() {
             <motion.button
               key={tab.id}
               onClick={() => router.push(tab.href)}
-              whileTap={{ scale: 0.88 }}
+              whileTap={{ scale: 0.92 }}
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
               style={{
                 flex: 1,
-                height: '60px',
+                height: '64px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -77,14 +78,24 @@ export default function BottomNav() {
                 position: 'relative',
               }}
             >
-              <span style={{ fontSize: '20px', lineHeight: 1 }}>{tab.icon}</span>
               <span
                 style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '9px',
-                  letterSpacing: '0.06em',
+                  fontSize: '20px',
+                  lineHeight: 1,
+                  filter: isActive ? 'none' : 'grayscale(0.3) opacity(0.6)',
+                  transition: 'filter 0.15s',
+                }}
+              >
+                {tab.icon}
+              </span>
+              <span
+                style={{
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '10px',
+                  fontWeight: 500,
+                  letterSpacing: '0.04em',
                   textTransform: 'uppercase',
-                  color: isActive ? '#c9622a' : '#7a7060',
+                  color: isActive ? '#ff6b35' : 'rgba(248,248,255,0.35)',
                   transition: 'color 0.15s',
                 }}
               >
@@ -101,7 +112,8 @@ export default function BottomNav() {
                     width: '4px',
                     height: '4px',
                     borderRadius: '50%',
-                    background: '#c9622a',
+                    background: '#ff6b35',
+                    boxShadow: '0 0 8px rgba(255,107,53,0.6)',
                   }}
                 />
               )}
