@@ -19,6 +19,10 @@ export async function POST(req: Request) {
 
     const normalizedDirection = ['right','like','yes'].includes(String(direction).toLowerCase()) ? 'right' : 'left'
 
+    // Validate userId is a proper UUID before using as FK (guests send non-UUID strings)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const validUserId = userId && uuidRegex.test(String(userId)) ? userId : null;
+
     // 1. Insert swipe
     const { error: swipeError } = await admin
       .from('swipes')
@@ -26,7 +30,7 @@ export async function POST(req: Request) {
         session_id: sessionId,
         place_id: placeId,
         direction: normalizedDirection,
-        user_id: userId ?? null,
+        user_id: validUserId,
         guest_participant_id: null,
         place_name: placeName ?? null,
       })
@@ -41,11 +45,11 @@ export async function POST(req: Request) {
     if (normalizedDirection === 'right') {
 
       // 2. Save to saved_places for authenticated users
-      if (userId && placeId) {
+      if (validUserId && placeId) {
         const { error: saveError } = await admin
           .from('saved_places')
           .upsert({
-            user_id: userId,
+            user_id: validUserId,
             place_id: placeId,
             place_data: placeData ?? { id: placeId, name: placeName ?? '' },
             list_name: 'Swiped Right',
@@ -58,29 +62,45 @@ export async function POST(req: Request) {
         }
       }
 
-      // 3. Count participants
+      // 3. Get participants
       const { data: participants } = await admin
         .from('session_participants')
-        .select('user_id')
+        .select('user_id, guest_name')
         .eq('session_id', sessionId)
 
-      const totalParticipants = participants?.length ?? 1
-      console.log('[swipe] totalParticipants:', totalParticipants)
+      console.log('[swipe] participants:', JSON.stringify(participants))
 
-      // Count unique users who swiped right on this place
+      // 4. Get unique right swipers for this place
       const { data: rightSwipeRows } = await admin
         .from('swipes')
         .select('user_id')
         .eq('session_id', sessionId)
         .eq('place_id', placeId)
         .eq('direction', 'right')
+
+      const uniqueRightSwipers = new Set(
+        (rightSwipeRows ?? []).map((r: any) => r.user_id).filter(Boolean)
+      )
+      const rightSwipeCount = uniqueRightSwipers.size
+
+      // 5. Count participants — fall back to unique swipers across the whole session
+      //    if the participants table has no rows (e.g. participant insert failed)
+      const { data: allSwipeUsers } = await admin
+        .from('swipes')
+        .select('user_id')
+        .eq('session_id', sessionId)
         .not('user_id', 'is', null)
 
-      const uniqueSwipers = new Set((rightSwipeRows ?? []).map((r: any) => r.user_id))
-      const rightSwipeCount = uniqueSwipers.size
-      console.log('[swipe] uniqueRightSwipers:', rightSwipeCount, 'needed:', totalParticipants)
+      const uniqueAllSwipers = new Set((allSwipeUsers ?? []).map((r: any) => r.user_id))
+      const totalFromSwipes = uniqueAllSwipers.size
 
-      // Match only when ALL participants have swiped right
+      const totalParticipants = (participants?.length ?? 0) > 0
+        ? participants!.length
+        : Math.max(totalFromSwipes, 1)
+
+      console.log('[swipe] totalParticipants:', totalParticipants, 'rightSwipeCount:', rightSwipeCount)
+
+      // 6. Match when ALL participants have swiped right
       if (rightSwipeCount >= totalParticipants) {
         isMatch = true
         const { error: matchError } = await admin
@@ -96,7 +116,7 @@ export async function POST(req: Request) {
         if (matchError) {
           console.error('[swipe] MATCH ERROR:', matchError.message, matchError.code)
         } else {
-          console.log('[swipe] MATCH CREATED:', placeId, 'swipers:', rightSwipeCount)
+          console.log('[swipe] MATCH CREATED:', placeId)
         }
       }
     }

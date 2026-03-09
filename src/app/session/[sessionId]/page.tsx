@@ -138,6 +138,23 @@ export default function SessionPage() {
   const router    = useRouter();
   const sessionId = params.sessionId as string;
 
+  // Guest mode — read ?guest=true from URL without useSearchParams (avoids Suspense requirement)
+  const [isGuest] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return new URLSearchParams(window.location.search).get('guest') === 'true';
+  });
+
+  // Stable guest ID persisted in localStorage
+  const [guestId] = useState(() => {
+    if (typeof window === 'undefined') return null;
+    let id = localStorage.getItem('guest_id');
+    if (!id) {
+      id = 'guest_' + Math.random().toString(36).slice(2, 11);
+      localStorage.setItem('guest_id', id);
+    }
+    return id;
+  });
+
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [session,     setSession]     = useState<SessionInfo | null>(null);
   const [sessionErr,  setSessionErr]  = useState<string | null>(null);
@@ -159,14 +176,33 @@ export default function SessionPage() {
 
   const fetchingRef = useRef(false);
 
-  // ── Load current user ────────────────────────────────────────────────────
+  // ── Load current user (auth user or guest ID) ────────────────────────────
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      console.log('[session] current user id:', data.user?.id)
-      setCurrentUserId(data.user?.id ?? null)
-    })
+      const uid = data.user?.id ?? null;
+      // Auth user takes priority; guests fall back to their guestId
+      setCurrentUserId(uid ?? (isGuest ? guestId : null));
+      console.log('[session] currentUserId:', uid ?? guestId ?? 'none');
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // ── Guest: register as participant on mount ───────────────────────────────
+
+  useEffect(() => {
+    if (!isGuest || !sessionId) return;
+    const guestName = localStorage.getItem('guest_name') ?? 'Guest';
+    fetch('/api/session/join', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId, guestId, guestName }),
+    })
+      .then((r) => r.json())
+      .then((d) => console.log('[session] guest joined:', d))
+      .catch((e) => console.error('[session] guest join failed:', e));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isGuest, sessionId]);
 
   // ── Load session info ────────────────────────────────────────────────────
 

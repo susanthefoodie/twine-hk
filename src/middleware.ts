@@ -10,9 +10,6 @@ const PROTECTED_PREFIXES = [
   '/results',
 ];
 
-// /session is protected UNLESS ?guest=true is present
-const SESSION_PREFIX = '/session';
-
 // Routes where a logged-in user should be bounced straight to /home
 const AUTH_ENTRY_ROUTES = ['/', '/auth'];
 
@@ -51,15 +48,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/home', request.url));
   }
 
-  // 2. /session is public if ?guest=true, otherwise requires auth
-  if (pathname.startsWith(SESSION_PREFIX) && !user) {
-    const isGuest = request.nextUrl.searchParams.get('guest') === 'true';
-    if (!isGuest) {
-      return NextResponse.redirect(new URL('/auth', request.url));
-    }
-  }
-
-  // 3. Other protected routes
+  // 2. Protected routes — require auth
+  // /session, /join, and all /api routes are intentionally PUBLIC
   const isProtected = PROTECTED_PREFIXES.some((prefix) =>
     pathname.startsWith(prefix)
   );
