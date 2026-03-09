@@ -88,7 +88,7 @@ function StepHeader({ title, sub }: { title: string; sub: string }) {
           fontWeight: 800,
           fontSize: 'clamp(24px, 5vw, 32px)',
           letterSpacing: '-0.03em',
-          color: '#f8f8ff',
+          color: '#0f0f0f',
           margin: '0 0 10px',
           lineHeight: 1.2,
         }}
@@ -100,7 +100,7 @@ function StepHeader({ title, sub }: { title: string; sub: string }) {
           fontFamily: 'var(--font-sans)',
           fontWeight: 400,
           fontSize: '15px',
-          color: 'rgba(248,248,255,0.6)',
+          color: 'rgba(15,15,15,0.55)',
           margin: 0,
           lineHeight: 1.6,
         }}
@@ -134,10 +134,10 @@ function Tile({
         background: selected
           ? 'rgba(255,107,53,0.1)'
           : hovered
-          ? 'rgba(255,255,255,0.07)'
-          : 'rgba(255,255,255,0.04)',
+          ? 'rgba(0,0,0,0.04)'
+          : '#ffffff',
         border: `${selected ? 2 : 1}px solid ${
-          selected ? 'rgba(255,107,53,0.5)' : hovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)'
+          selected ? 'rgba(255,107,53,0.5)' : hovered ? 'rgba(0,0,0,0.12)' : 'rgba(0,0,0,0.08)'
         }`,
         borderRadius: '14px',
         padding: '16px 12px',
@@ -160,7 +160,7 @@ function Tile({
           fontFamily: 'var(--font-sans)',
           fontWeight: 600,
           fontSize: '13px',
-          color: selected ? '#ff6b35' : '#f8f8ff',
+          color: selected ? '#ff6b35' : '#0f0f0f',
           lineHeight: 1.3,
           transition: 'color 0.15s',
         }}
@@ -194,10 +194,10 @@ function BudgetTile({
         background: selected
           ? 'rgba(255,107,53,0.1)'
           : hovered
-          ? 'rgba(255,255,255,0.07)'
-          : 'rgba(255,255,255,0.04)',
+          ? 'rgba(0,0,0,0.04)'
+          : '#ffffff',
         border: `${selected ? 2 : 1}px solid ${
-          selected ? 'rgba(255,107,53,0.5)' : hovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)'
+          selected ? 'rgba(255,107,53,0.5)' : hovered ? 'rgba(0,0,0,0.12)' : 'rgba(0,0,0,0.08)'
         }`,
         borderRadius: '14px',
         padding: '20px',
@@ -231,7 +231,7 @@ function BudgetTile({
           fontWeight: 700,
           fontSize: '15px',
           letterSpacing: '-0.01em',
-          color: selected ? '#ff6b35' : '#f8f8ff',
+          color: selected ? '#ff6b35' : '#0f0f0f',
           transition: 'color 0.15s',
         }}
       >
@@ -242,7 +242,7 @@ function BudgetTile({
           fontFamily: 'var(--font-sans)',
           fontWeight: 400,
           fontSize: '12px',
-          color: 'rgba(248,248,255,0.5)',
+          color: 'rgba(15,15,15,0.5)',
           lineHeight: 1.5,
         }}
       >
@@ -276,10 +276,10 @@ function RadiusPill({
         background: selected
           ? 'rgba(255,107,53,0.1)'
           : hovered
-          ? 'rgba(255,255,255,0.07)'
-          : 'rgba(255,255,255,0.04)',
+          ? 'rgba(0,0,0,0.04)'
+          : '#ffffff',
         border: `${selected ? 2 : 1}px solid ${
-          selected ? 'rgba(255,107,53,0.5)' : hovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)'
+          selected ? 'rgba(255,107,53,0.5)' : hovered ? 'rgba(0,0,0,0.12)' : 'rgba(0,0,0,0.08)'
         }`,
         borderRadius: '14px',
         padding: '20px 24px',
@@ -299,7 +299,7 @@ function RadiusPill({
           fontFamily: 'var(--font-mono)',
           fontSize: '15px',
           fontWeight: 600,
-          color: selected ? '#ff6b35' : '#f8f8ff',
+          color: selected ? '#ff6b35' : '#0f0f0f',
           letterSpacing: '0.03em',
           transition: 'color 0.15s',
         }}
@@ -311,7 +311,7 @@ function RadiusPill({
           fontFamily: 'var(--font-sans)',
           fontWeight: 400,
           fontSize: '11px',
-          color: 'rgba(248,248,255,0.5)',
+          color: 'rgba(15,15,15,0.5)',
         }}
       >
         {sub}
@@ -562,13 +562,13 @@ export default function OnboardingPage() {
                     style={{
                       background: selections.mealTimes.includes(m.id)
                         ? 'rgba(255,107,53,0.1)'
-                        : 'rgba(255,255,255,0.04)',
+                        : '#ffffff',
                       border: `${
                         selections.mealTimes.includes(m.id) ? 2 : 1
                       }px solid ${
                         selections.mealTimes.includes(m.id)
                           ? 'rgba(255,107,53,0.5)'
-                          : 'rgba(255,255,255,0.08)'
+                          : 'rgba(0,0,0,0.08)'
                       }`,
                       borderRadius: '14px',
                       padding: '16px',
@@ -593,7 +593,7 @@ export default function OnboardingPage() {
                           fontSize: '13px',
                           color: selections.mealTimes.includes(m.id)
                             ? '#ff6b35'
-                            : '#f8f8ff',
+                            : '#0f0f0f',
                           transition: 'color 0.15s',
                         }}
                       >
@@ -604,7 +604,7 @@ export default function OnboardingPage() {
                           style={{
                             fontFamily: 'var(--font-mono)',
                             fontSize: '10px',
-                            color: 'rgba(248,248,255,0.35)',
+                            color: 'rgba(15,15,15,0.35)',
                             letterSpacing: '0.03em',
                             marginTop: '2px',
                           }}
@@ -660,13 +660,13 @@ export default function OnboardingPage() {
               style={{
                 marginTop: '28px',
                 padding: '16px',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                background: '#ffffff',
+                border: '1px solid rgba(0,0,0,0.08)',
                 borderRadius: '14px',
                 fontFamily: 'var(--font-sans)',
                 fontWeight: 400,
                 fontSize: '13px',
-                color: 'rgba(248,248,255,0.5)',
+                color: 'rgba(15,15,15,0.5)',
                 lineHeight: 1.6,
               }}
             >
@@ -688,8 +688,8 @@ export default function OnboardingPage() {
     <div
       style={{
         height: '100dvh',
-        background: '#0a0a0f',
-        color: '#f8f8ff',
+        background: '#faf9f7',
+        color: '#0f0f0f',
         fontFamily: 'var(--font-sans)',
         display: 'flex',
         flexDirection: 'column',
@@ -697,7 +697,7 @@ export default function OnboardingPage() {
       }}
     >
       {/* ── Progress bar ── */}
-      <div style={{ height: '3px', background: 'rgba(255,255,255,0.08)', flexShrink: 0 }}>
+      <div style={{ height: '3px', background: 'rgba(0,0,0,0.08)', flexShrink: 0 }}>
         <motion.div
           style={{ height: '100%', background: 'linear-gradient(90deg, #ff6b35, #ffa500)', transformOrigin: 'left' }}
           animate={{ width: `${((step + 1) / TOTAL) * 100}%` }}
@@ -727,7 +727,7 @@ export default function OnboardingPage() {
               style={{
                 background: 'none',
                 border: 'none',
-                color: 'rgba(248,248,255,0.35)',
+                color: 'rgba(15,15,15,0.35)',
                 cursor: 'pointer',
                 fontSize: '22px',
                 padding: '4px 8px 4px 0',
@@ -748,7 +748,7 @@ export default function OnboardingPage() {
             fontFamily: 'var(--font-mono)',
             fontSize: '11px',
             fontWeight: 600,
-            color: 'rgba(248,248,255,0.35)',
+            color: 'rgba(15,15,15,0.35)',
             letterSpacing: '0.08em',
           }}
         >
@@ -792,8 +792,8 @@ export default function OnboardingPage() {
       <div
         style={{
           flexShrink: 0,
-          background: '#0a0a0f',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
+          background: '#faf9f7',
+          borderTop: '1px solid rgba(0,0,0,0.08)',
           padding: '16px 24px 20px',
         }}
       >
@@ -817,7 +817,7 @@ export default function OnboardingPage() {
             animate={{
               background: isReady
                 ? 'linear-gradient(135deg, #ff6b35, #ffa500)'
-                : 'rgba(255,255,255,0.05)',
+                : '#f8f8f8',
             }}
             whileHover={isReady ? { boxShadow: '0 0 28px rgba(255,107,53,0.5)' } : {}}
             transition={{ duration: 0.2 }}
@@ -830,7 +830,7 @@ export default function OnboardingPage() {
               fontWeight: 600,
               fontSize: '16px',
               letterSpacing: '0.02em',
-              color: isReady ? '#fff' : 'rgba(248,248,255,0.35)',
+              color: isReady ? '#fff' : 'rgba(15,15,15,0.35)',
               cursor: isReady ? 'pointer' : 'not-allowed',
               boxShadow: isReady ? '0 0 20px rgba(255,107,53,0.3)' : 'none',
             }}

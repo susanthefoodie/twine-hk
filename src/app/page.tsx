@@ -80,15 +80,15 @@ function DistrictPill({ label }: { label: string }) {
         fontFamily: 'var(--font-mono)',
         fontSize: '11px',
         letterSpacing: '0.05em',
-        color: hovered ? '#ff6b35' : 'rgba(248,248,255,0.35)',
-        border: `1px solid ${hovered ? 'rgba(255,107,53,0.4)' : 'rgba(255,255,255,0.08)'}`,
+        color: hovered ? '#ff6b35' : 'rgba(15,15,15,0.35)',
+        border: `1px solid ${hovered ? 'rgba(255,107,53,0.4)' : 'rgba(0,0,0,0.08)'}`,
         borderRadius: '9999px',
         padding: '5px 14px',
         whiteSpace: 'nowrap',
         cursor: 'default',
         transition: 'color 0.2s, border-color 0.2s',
         userSelect: 'none',
-        background: hovered ? 'rgba(255,107,53,0.08)' : 'rgba(255,255,255,0.04)',
+        background: hovered ? 'rgba(255,107,53,0.08)' : '#ffffff',
       }}
     >
       {label}
@@ -105,14 +105,12 @@ function ModeCard({
   return (
     <div
       style={{
-        background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.08)',
+        background: '#ffffff',
+        border: '1px solid rgba(0,0,0,0.08)',
         borderRadius: '20px',
         padding: '32px',
         position: 'relative',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        boxShadow: `0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), -4px 0 20px ${accent}22`,
+        boxShadow: 'var(--shadow-md)',
       }}
     >
       {badge && (
@@ -154,7 +152,7 @@ function ModeCard({
           fontSize: '22px',
           fontWeight: 700,
           letterSpacing: '-0.02em',
-          color: '#f8f8ff',
+          color: '#0f0f0f',
           margin: '0 0 12px',
         }}
       >
@@ -166,7 +164,7 @@ function ModeCard({
           fontWeight: 400,
           fontSize: '15px',
           lineHeight: 1.7,
-          color: 'rgba(248,248,255,0.6)',
+          color: 'rgba(15,15,15,0.55)',
           margin: 0,
         }}
       >
@@ -181,7 +179,7 @@ function StepCard({ num, title, desc, last }: { num: string; title: string; desc
     <div
       style={{
         padding: '0 40px 0 0',
-        borderRight: last ? 'none' : '1px dashed rgba(255,255,255,0.08)',
+        borderRight: last ? 'none' : '1px dashed rgba(0,0,0,0.08)',
         minWidth: 0,
       }}
     >
@@ -205,7 +203,7 @@ function StepCard({ num, title, desc, last }: { num: string; title: string; desc
           fontWeight: 700,
           fontSize: '16px',
           letterSpacing: '-0.01em',
-          color: '#f8f8ff',
+          color: '#0f0f0f',
           margin: '0 0 10px',
         }}
       >
@@ -217,7 +215,7 @@ function StepCard({ num, title, desc, last }: { num: string; title: string; desc
           fontWeight: 400,
           fontSize: '14px',
           lineHeight: 1.7,
-          color: 'rgba(248,248,255,0.6)',
+          color: 'rgba(15,15,15,0.55)',
           margin: 0,
         }}
       >
@@ -253,8 +251,8 @@ export default function LandingPage() {
   return (
     <div
       style={{
-        background: '#0a0a0f',
-        color: '#f8f8ff',
+        background: '#faf9f7',
+        color: '#0f0f0f',
         fontFamily: 'var(--font-sans)',
         overflowX: 'hidden',
       }}
@@ -275,10 +273,10 @@ export default function LandingPage() {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 clamp(20px, 5vw, 80px)',
-          background: scrolled ? 'rgba(10,10,15,0.85)' : '#0a0a0f',
+          background: scrolled ? 'rgba(255,255,255,0.92)' : '#faf9f7',
           backdropFilter: scrolled ? 'blur(20px)' : 'none',
           WebkitBackdropFilter: scrolled ? 'blur(20px)' : 'none',
-          borderBottom: `1px solid ${scrolled ? 'rgba(255,255,255,0.08)' : 'transparent'}`,
+          borderBottom: `1px solid ${scrolled ? 'rgba(0,0,0,0.08)' : 'transparent'}`,
           transition: 'background 0.3s, border-color 0.3s, backdrop-filter 0.3s',
         }}
       >
@@ -376,7 +374,7 @@ export default function LandingPage() {
                   fontFamily: 'var(--font-sans)',
                   fontSize: 'clamp(48px, 7vw, 80px)',
                   fontWeight: 800,
-                  color: '#f8f8ff',
+                  color: '#0f0f0f',
                   letterSpacing: '-0.03em',
                 }}
               >
@@ -406,7 +404,7 @@ export default function LandingPage() {
                 fontWeight: 400,
                 fontSize: 'clamp(15px, 1.5vw, 18px)',
                 lineHeight: 1.7,
-                color: 'rgba(248,248,255,0.6)',
+                color: 'rgba(15,15,15,0.55)',
                 maxWidth: '480px',
                 margin: '24px 0 36px',
               }}
@@ -468,7 +466,7 @@ export default function LandingPage() {
               right: 0,
               width: '80px',
               height: '100%',
-              background: 'linear-gradient(90deg, transparent, #0a0a0f)',
+              background: 'linear-gradient(90deg, transparent, #faf9f7)',
               pointerEvents: 'none',
             }}
           />
@@ -482,8 +480,8 @@ export default function LandingPage() {
       <section
         style={{
           padding: 'clamp(72px, 10vw, 120px) clamp(24px, 6vw, 100px)',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
-          background: '#111118',
+          borderTop: '1px solid rgba(0,0,0,0.08)',
+          background: '#f5f5f3',
         }}
       >
         <p
@@ -505,7 +503,7 @@ export default function LandingPage() {
             fontWeight: 800,
             fontSize: 'clamp(22px, 3vw, 38px)',
             letterSpacing: '-0.03em',
-            color: '#f8f8ff',
+            color: '#0f0f0f',
             textAlign: 'center',
             margin: '0 auto 48px',
             maxWidth: '680px',
@@ -537,9 +535,9 @@ export default function LandingPage() {
         id="how-it-works"
         style={{
           padding: 'clamp(72px, 10vw, 120px) clamp(24px, 6vw, 100px)',
-          background: '#0a0a0f',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          background: '#faf9f7',
+          borderTop: '1px solid rgba(0,0,0,0.08)',
+          borderBottom: '1px solid rgba(0,0,0,0.08)',
         }}
       >
         <p
@@ -560,7 +558,7 @@ export default function LandingPage() {
             fontWeight: 800,
             fontSize: 'clamp(24px, 3vw, 40px)',
             letterSpacing: '-0.03em',
-            color: '#f8f8ff',
+            color: '#0f0f0f',
             margin: '0 0 56px',
           }}
         >
@@ -590,7 +588,7 @@ export default function LandingPage() {
           padding: 'clamp(72px, 10vw, 120px) clamp(24px, 6vw, 100px)',
           position: 'relative',
           overflow: 'hidden',
-          background: '#111118',
+          background: '#f5f5f3',
         }}
       >
         {/* Centre glow */}
@@ -629,7 +627,7 @@ export default function LandingPage() {
                 fontSize: 'clamp(20px, 2.4vw, 28px)',
                 lineHeight: 1.55,
                 letterSpacing: '-0.02em',
-                color: '#f8f8ff',
+                color: '#0f0f0f',
                 margin: 0,
                 borderLeft: '3px solid #ff6b35',
                 paddingLeft: '28px',
@@ -641,7 +639,7 @@ export default function LandingPage() {
               style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '11px',
-                color: 'rgba(248,248,255,0.35)',
+                color: 'rgba(15,15,15,0.35)',
                 letterSpacing: '0.06em',
                 marginTop: '20px',
                 paddingLeft: '28px',
@@ -662,7 +660,7 @@ export default function LandingPage() {
                     fontWeight: 400,
                     fontSize: '15px',
                     lineHeight: 1.7,
-                    color: 'rgba(248,248,255,0.6)',
+                    color: 'rgba(15,15,15,0.55)',
                   }}
                 >
                   {text}
@@ -679,8 +677,8 @@ export default function LandingPage() {
       ══════════════════════════════════════════════════ */}
       <section
         style={{
-          background: '#0a0a0f',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
+          background: '#faf9f7',
+          borderTop: '1px solid rgba(0,0,0,0.08)',
           padding: 'clamp(64px, 10vw, 100px) clamp(24px, 6vw, 100px)',
           textAlign: 'center',
           position: 'relative',
@@ -719,7 +717,7 @@ export default function LandingPage() {
               fontWeight: 800,
               fontSize: 'clamp(24px, 3.5vw, 36px)',
               letterSpacing: '-0.03em',
-              color: '#f8f8ff',
+              color: '#0f0f0f',
               margin: '0 0 36px',
             }}
           >
@@ -738,8 +736,8 @@ export default function LandingPage() {
       ══════════════════════════════════════════════════ */}
       <footer
         style={{
-          background: '#0a0a0f',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
+          background: '#faf9f7',
+          borderTop: '1px solid rgba(0,0,0,0.08)',
           padding: '20px clamp(24px, 6vw, 100px)',
           display: 'flex',
           alignItems: 'center',
@@ -766,7 +764,7 @@ const footerText: React.CSSProperties = {
   fontFamily: 'var(--font-mono)',
   fontSize: '11px',
   letterSpacing: '0.05em',
-  color: 'rgba(248,248,255,0.35)',
+  color: 'rgba(15,15,15,0.35)',
 };
 
 function NavLink({ href, label }: { href: string; label: string }) {
@@ -780,7 +778,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
         fontFamily: 'var(--font-sans)',
         fontSize: '14px',
         fontWeight: 500,
-        color: hovered ? '#f8f8ff' : 'rgba(248,248,255,0.6)',
+        color: hovered ? '#0f0f0f' : 'rgba(15,15,15,0.55)',
         textDecoration: 'none',
         transition: 'color 0.2s',
       }}
@@ -833,9 +831,9 @@ function GhostButton({ href, label }: { href: string; label: string }) {
         fontFamily: 'var(--font-sans)',
         fontWeight: 500,
         fontSize: '15px',
-        color: hovered ? '#f8f8ff' : 'rgba(248,248,255,0.6)',
-        background: hovered ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.14)',
+        color: hovered ? '#0f0f0f' : 'rgba(15,15,15,0.55)',
+        background: hovered ? 'rgba(0,0,0,0.04)' : '#ffffff',
+        border: '1px solid rgba(0,0,0,0.12)',
         borderRadius: '9999px',
         padding: '14px 28px',
         textDecoration: 'none',
@@ -860,7 +858,7 @@ function FooterLink({ href, label }: { href: string; label: string }) {
         fontFamily: 'var(--font-mono)',
         fontSize: '11px',
         letterSpacing: '0.05em',
-        color: hovered ? '#f8f8ff' : 'rgba(248,248,255,0.35)',
+        color: hovered ? '#0f0f0f' : 'rgba(15,15,15,0.35)',
         textDecoration: 'none',
         transition: 'color 0.2s',
       }}

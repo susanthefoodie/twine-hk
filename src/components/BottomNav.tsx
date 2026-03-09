@@ -35,10 +35,10 @@ export default function BottomNav() {
         left: 0,
         right: 0,
         height: '64px',
-        background: 'rgba(10,10,15,0.9)',
+        background: 'rgba(255,255,255,0.92)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderTop: '1px solid rgba(255,255,255,0.08)',
+        borderTop: '1px solid rgba(0,0,0,0.08)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -95,7 +95,7 @@ export default function BottomNav() {
                   fontWeight: 500,
                   letterSpacing: '0.04em',
                   textTransform: 'uppercase',
-                  color: isActive ? '#ff6b35' : 'rgba(248,248,255,0.35)',
+                  color: isActive ? '#ff6b35' : 'rgba(15,15,15,0.35)',
                   transition: 'color 0.15s',
                 }}
               >

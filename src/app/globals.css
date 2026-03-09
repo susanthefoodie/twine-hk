@@ -3,40 +3,59 @@
 @tailwind utilities;
 
 :root {
-  --bg-base: #0a0a0f;
-  --bg-surface: #111118;
-  --bg-elevated: #16161f;
-  --bg-card: rgba(255,255,255,0.04);
-  --bg-card-hover: rgba(255,255,255,0.07);
-  --border: rgba(255,255,255,0.08);
-  --border-strong: rgba(255,255,255,0.14);
+  /* Backgrounds — warm cream like Vibecode */
+  --bg-base: #faf9f7;
+  --bg-surface: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fdf8f5;
+
+  /* Borders — very subtle warm gray */
+  --border: rgba(0,0,0,0.07);
+  --border-strong: rgba(0,0,0,0.12);
+
+  /* Accents — Vibecode orange */
   --accent-primary: #ff6b35;
-  --accent-secondary: #ffa500;
-  --accent-purple: #8b5cf6;
-  --accent-green: #10b981;
-  --accent-glow: rgba(255,107,53,0.15);
-  --accent-glow-strong: rgba(255,107,53,0.3);
-  --text-primary: #f8f8ff;
-  --text-secondary: rgba(248,248,255,0.6);
-  --text-muted: rgba(248,248,255,0.35);
+  --accent-primary-light: #ff8c5a;
+  --accent-secondary: #ff9a6c;
+  --accent-glow: rgba(255,107,53,0.12);
+  --accent-glow-strong: rgba(255,107,53,0.25);
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+  --accent-amber: #f59e0b;
+
+  /* Text — near black hierarchy */
+  --text-primary: #0f0f0f;
+  --text-secondary: rgba(15,15,15,0.55);
+  --text-muted: rgba(15,15,15,0.35);
+
+  /* Radius — iOS-style generous rounding */
   --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
   --radius-full: 9999px;
-  /* Backward compat mappings */
-  --bg: #0a0a0f;
-  --surface: #111118;
-  --surface2: #16161f;
-  --surface3: #1e1e2a;
+
+  /* Shadows — warm and subtle like iOS */
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 20px rgba(255,107,53,0.25);
+
+  /* Legacy variable names remapped to new light values */
+  --bg: #faf9f7;
+  --surface: #ffffff;
+  --surface2: #f5f5f5;
+  --surface3: #f0f0f0;
   --ember: #ff6b35;
-  --ember2: #ffa500;
-  --gold: #ffa500;
-  --sage: #10b981;
-  --text: #f8f8ff;
-  --muted: rgba(248,248,255,0.4);
-  --dim: rgba(255,255,255,0.08);
-  --cream: #f8f8ff;
+  --ember2: #ff8c5a;
+  --gold: #f59e0b;
+  --sage: #22c55e;
+  --text: #0f0f0f;
+  --muted: rgba(15,15,15,0.4);
+  --dim: rgba(0,0,0,0.08);
+  --cream: #faf9f7;
+  --border2: rgba(0,0,0,0.1);
   --font-display: 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-sans: 'Inter', sans-serif;
@@ -47,6 +66,6 @@
 body {
   background: var(--bg-base);
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }

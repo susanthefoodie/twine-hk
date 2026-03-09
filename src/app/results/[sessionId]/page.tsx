@@ -52,7 +52,7 @@ function Stars({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((n) => (
         <span
           key={n}
-          style={{ color: rating >= n - 0.5 ? '#ffa500' : 'rgba(255,255,255,0.12)', fontSize: '11px' }}
+          style={{ color: rating >= n - 0.5 ? '#ffa500' : 'rgba(0,0,0,0.12)', fontSize: '11px' }}
         >
           ★
         </span>
@@ -75,15 +75,15 @@ function VisitedToggle({
       onClick={(e) => { e.stopPropagation(); onChange(!visited); }}
       style={{
         flexShrink: 0,
-        background: visited ? 'rgba(16,185,129,0.12)' : 'rgba(255,255,255,0.04)',
-        border: `1px solid ${visited ? 'rgba(16,185,129,0.35)' : 'rgba(255,255,255,0.08)'}`,
+        background: visited ? 'rgba(16,185,129,0.12)' : 'rgba(0,0,0,0.04)',
+        border: `1px solid ${visited ? 'rgba(16,185,129,0.35)' : 'rgba(0,0,0,0.08)'}`,
         borderRadius: '9999px',
         padding: '4px 12px',
         fontFamily: 'var(--font-mono)',
         fontSize: '10px',
         letterSpacing: '0.06em',
         fontWeight: 600,
-        color: visited ? '#10b981' : 'rgba(248,248,255,0.35)',
+        color: visited ? '#10b981' : 'rgba(15,15,15,0.35)',
         cursor: 'pointer',
         transition: 'all 0.2s',
         whiteSpace: 'nowrap',
@@ -118,19 +118,19 @@ function MatchCard({
         highlighted
           ? {
               boxShadow: [
-                '0 4px 24px rgba(0,0,0,0.4)',
+                '0 4px 24px rgba(0,0,0,0.1)',
                 '0 0 30px rgba(255,107,53,0.5)',
                 '0 0 30px rgba(255,107,53,0.5)',
-                '0 4px 24px rgba(0,0,0,0.4)',
+                '0 4px 24px rgba(0,0,0,0.1)',
               ],
-              borderColor: ['rgba(255,255,255,0.08)', 'rgba(255,107,53,0.5)', 'rgba(255,107,53,0.5)', 'rgba(255,255,255,0.08)'],
+              borderColor: ['rgba(0,0,0,0.08)', 'rgba(255,107,53,0.5)', 'rgba(255,107,53,0.5)', 'rgba(0,0,0,0.08)'],
             }
           : {}
       }
       transition={highlighted ? { duration: 3, times: [0, 0.15, 0.85, 1] } : {}}
       style={{
-        background: match.is_visited ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.08)',
+        background: match.is_visited ? 'rgba(0,0,0,0.02)' : '#ffffff',
+        border: '1px solid rgba(0,0,0,0.08)',
         borderRadius: '20px',
         padding: '16px',
         display: 'flex',
@@ -138,9 +138,7 @@ function MatchCard({
         alignItems: 'flex-start',
         opacity: match.is_visited ? 0.5 : 1,
         transition: 'opacity 0.3s',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        boxShadow: '0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
+        boxShadow: 'var(--shadow-md)',
       }}
     >
       {/* Photo */}
@@ -151,7 +149,7 @@ function MatchCard({
           height: '120px',
           borderRadius: '14px',
           overflow: 'hidden',
-          background: '#111118',
+          background: '#ffffff',
           position: 'relative',
         }}
       >
@@ -198,7 +196,7 @@ function MatchCard({
               fontWeight: 700,
               fontSize: '16px',
               letterSpacing: '-0.01em',
-              color: match.is_visited ? 'rgba(248,248,255,0.35)' : '#f8f8ff',
+              color: match.is_visited ? 'rgba(15,15,15,0.35)' : '#0f0f0f',
               margin: 0,
               lineHeight: 1.25,
               flex: 1,
@@ -227,9 +225,9 @@ function MatchCard({
               style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '10px',
-                color: 'rgba(248,248,255,0.35)',
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                color: 'rgba(15,15,15,0.35)',
+                background: '#f8f8f8',
+                border: '1px solid rgba(0,0,0,0.08)',
                 borderRadius: '9999px',
                 padding: '2px 8px',
                 fontWeight: 600,
@@ -282,7 +280,7 @@ function MatchCard({
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '10px',
-              color: 'rgba(248,248,255,0.35)',
+              color: 'rgba(15,15,15,0.35)',
             }}
           >
             {(place.rating ?? 0).toFixed(1)}
@@ -313,7 +311,7 @@ function MatchCard({
               fontFamily: 'var(--font-sans)',
               fontWeight: 400,
               fontSize: '12px',
-              color: 'rgba(248,248,255,0.35)',
+              color: 'rgba(15,15,15,0.35)',
               textDecoration: 'none',
             }}
           >
@@ -335,8 +333,8 @@ function AlmostCard({ am }: { am: AlmostMatch }) {
   return (
     <div
       style={{
-        background: 'rgba(255,255,255,0.02)',
-        border: '1px solid rgba(255,255,255,0.06)',
+        background: 'rgba(0,0,0,0.02)',
+        border: '1px solid rgba(0,0,0,0.05)',
         borderRadius: '14px',
         padding: '12px',
         display: 'flex',
@@ -352,7 +350,7 @@ function AlmostCard({ am }: { am: AlmostMatch }) {
           height: '56px',
           borderRadius: '10px',
           overflow: 'hidden',
-          background: '#111118',
+          background: '#ffffff',
           position: 'relative',
           filter: 'grayscale(0.5)',
         }}
@@ -388,7 +386,7 @@ function AlmostCard({ am }: { am: AlmostMatch }) {
             fontFamily: 'var(--font-sans)',
             fontWeight: 600,
             fontSize: '13px',
-            color: 'rgba(248,248,255,0.5)',
+            color: 'rgba(15,15,15,0.5)',
             margin: '0 0 2px',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
@@ -401,7 +399,7 @@ function AlmostCard({ am }: { am: AlmostMatch }) {
           style={{
             fontFamily: 'var(--font-mono)',
             fontSize: '10px',
-            color: 'rgba(248,248,255,0.2)',
+            color: 'rgba(15,15,15,0.2)',
             margin: 0,
           }}
         >
@@ -503,7 +501,7 @@ export default function ResultsPage() {
   if (loading) {
     return (
       <div style={centreStyle}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'rgba(248,248,255,0.35)', letterSpacing: '0.06em' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'rgba(15,15,15,0.35)', letterSpacing: '0.06em' }}>
           Loading matches…
         </span>
       </div>
@@ -514,7 +512,7 @@ export default function ResultsPage() {
     return (
       <div style={centreStyle}>
         <div style={{ textAlign: 'center', padding: '0 24px' }}>
-          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '20px', color: 'rgba(248,248,255,0.6)', marginBottom: '24px' }}>
+          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '20px', color: 'rgba(15,15,15,0.55)', marginBottom: '24px' }}>
             {error}
           </p>
           <button
@@ -544,9 +542,9 @@ export default function ResultsPage() {
   return (
     <div
       style={{
-        background: '#0a0a0f',
+        background: '#faf9f7',
         minHeight: '100vh',
-        color: '#f8f8ff',
+        color: '#0f0f0f',
         fontFamily: 'var(--font-sans)',
         paddingBottom: matches.length > 0 ? '90px' : '48px',
       }}
@@ -558,10 +556,10 @@ export default function ResultsPage() {
           top: 0,
           zIndex: 50,
           height: '60px',
-          background: 'rgba(10,10,15,0.9)',
+          background: 'rgba(255,255,255,0.92)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          borderBottom: '1px solid rgba(0,0,0,0.08)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -574,7 +572,7 @@ export default function ResultsPage() {
           style={{
             background: 'none',
             border: 'none',
-            color: 'rgba(248,248,255,0.35)',
+            color: 'rgba(15,15,15,0.35)',
             cursor: 'pointer',
             fontSize: '20px',
             padding: 0,
@@ -591,7 +589,7 @@ export default function ResultsPage() {
             fontWeight: 600,
             fontSize: '15px',
             letterSpacing: '-0.01em',
-            color: '#f8f8ff',
+            color: '#0f0f0f',
           }}
         >
           Session Matches
@@ -645,7 +643,7 @@ export default function ResultsPage() {
                 fontWeight: 700,
                 fontSize: '22px',
                 letterSpacing: '-0.02em',
-                color: 'rgba(248,248,255,0.6)',
+                color: 'rgba(15,15,15,0.55)',
                 margin: '0 0 10px',
               }}
             >
@@ -656,7 +654,7 @@ export default function ResultsPage() {
                 fontFamily: 'var(--font-sans)',
                 fontWeight: 400,
                 fontSize: '14px',
-                color: 'rgba(248,248,255,0.35)',
+                color: 'rgba(15,15,15,0.35)',
                 margin: '0 0 32px',
               }}
             >
@@ -714,7 +712,7 @@ export default function ResultsPage() {
                     fontWeight: 800,
                     fontSize: 'clamp(18px, 4vw, 26px)',
                     letterSpacing: '-0.03em',
-                    color: '#f8f8ff',
+                    color: '#0f0f0f',
                     margin: 0,
                     lineHeight: 1.3,
                   }}
@@ -728,8 +726,8 @@ export default function ResultsPage() {
                     flexShrink: 0,
                     height: '38px',
                     padding: '0 14px',
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.14)',
+                    background: '#ffffff',
+                    border: '1px solid rgba(0,0,0,0.12)',
                     borderRadius: '9999px',
                     fontFamily: 'var(--font-mono)',
                     fontSize: '11px',
@@ -745,8 +743,8 @@ export default function ResultsPage() {
                     (e.currentTarget as HTMLElement).style.background = 'rgba(255,165,0,0.08)';
                   }}
                   onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.14)';
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.04)';
+                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(0,0,0,0.12)';
+                    (e.currentTarget as HTMLElement).style.background = '#ffffff';
                   }}
                 >
                   🎲 Pick One
@@ -799,7 +797,7 @@ export default function ResultsPage() {
                       fontFamily: 'var(--font-sans)',
                       fontWeight: 500,
                       fontSize: '14px',
-                      color: 'rgba(248,248,255,0.5)',
+                      color: 'rgba(15,15,15,0.5)',
                       textAlign: 'left',
                     }}
                   >
@@ -808,7 +806,7 @@ export default function ResultsPage() {
                   <motion.span
                     animate={{ rotate: almostOpen ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
-                    style={{ color: 'rgba(248,248,255,0.35)', fontSize: '14px', flexShrink: 0 }}
+                    style={{ color: 'rgba(15,15,15,0.35)', fontSize: '14px', flexShrink: 0 }}
                   >
                     ▾
                   </motion.span>
@@ -853,7 +851,7 @@ export default function ResultsPage() {
             left: 0,
             right: 0,
             padding: '12px clamp(16px, 4vw, 40px)',
-            background: 'linear-gradient(to top, #0a0a0f 65%, transparent)',
+            background: 'linear-gradient(to top, #faf9f7 65%, transparent)',
             zIndex: 40,
           }}
         >
@@ -897,7 +895,7 @@ export default function ResultsPage() {
 
 const centreStyle: React.CSSProperties = {
   minHeight: '100vh',
-  background: '#0a0a0f',
+  background: '#faf9f7',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',

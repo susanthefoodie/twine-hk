@@ -153,7 +153,7 @@ function Avatar({
         height: '38px',
         borderRadius: '50%',
         border: '2px solid transparent',
-        backgroundImage: 'linear-gradient(#111118, #111118), linear-gradient(135deg, #ff6b35, #ffa500)',
+        backgroundImage: 'linear-gradient(#ffffff, #ffffff), linear-gradient(135deg, #ff6b35, #ffa500)',
         backgroundOrigin: 'border-box',
         backgroundClip: 'padding-box, border-box',
         overflow: 'hidden',
@@ -184,7 +184,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
         width: '44px',
         height: '24px',
         borderRadius: '12px',
-        background: on ? '#ff6b35' : 'rgba(255,255,255,0.1)',
+        background: on ? '#ff6b35' : 'rgba(0,0,0,0.1)',
         border: 'none',
         cursor: 'pointer',
         position: 'relative',
@@ -203,7 +203,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
           width: '20px',
           height: '20px',
           borderRadius: '50%',
-          background: '#f8f8ff',
+          background: '#ffffff',
         }}
       />
     </button>
@@ -217,7 +217,7 @@ function FilterLabel({ children }: { children: React.ReactNode }) {
       fontSize: '10px',
       letterSpacing: '0.1em',
       textTransform: 'uppercase',
-      color: 'rgba(248,248,255,0.35)',
+      color: 'rgba(15,15,15,0.35)',
       margin: '0 0 10px',
       fontWeight: 500,
     }}>
@@ -230,9 +230,9 @@ function CopyIcon({ done }: { done: boolean }) {
   if (done) return <span style={{ fontSize: '16px', color: '#10b981' }}>✓</span>;
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-      <rect x="5.5" y="5.5" width="8" height="8" rx="1" stroke="rgba(248,248,255,0.4)" strokeWidth="1.3" />
+      <rect x="5.5" y="5.5" width="8" height="8" rx="1" stroke="rgba(15,15,15,0.4)" strokeWidth="1.3" />
       <path d="M10.5 5.5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v6.5a1 1 0 0 0 1 1H5.5"
-            stroke="rgba(248,248,255,0.4)" strokeWidth="1.3" strokeLinecap="round" />
+            stroke="rgba(15,15,15,0.4)" strokeWidth="1.3" strokeLinecap="round" />
     </svg>
   );
 }
@@ -254,17 +254,15 @@ function ModeCard({
   return (
     <div
       style={{
-        background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.08)',
+        background: '#ffffff',
+        border: '1px solid rgba(0,0,0,0.08)',
         borderRadius: '20px',
         padding: '28px',
         display: 'flex',
         flexDirection: 'column',
         gap: '12px',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
         transition: 'border-color 0.2s, box-shadow 0.2s',
-        boxShadow: `inset -4px 0 20px ${accent}11`,
+        boxShadow: 'var(--shadow-md)',
       }}
     >
       <div style={{ fontSize: '40px', lineHeight: 1 }}>{emoji}</div>
@@ -282,7 +280,7 @@ function ModeCard({
         fontFamily: 'Inter, sans-serif',
         fontWeight: 700,
         fontSize: '20px',
-        color: '#f8f8ff',
+        color: '#0f0f0f',
         margin: 0,
         lineHeight: 1.2,
         letterSpacing: '-0.02em',
@@ -293,7 +291,7 @@ function ModeCard({
         fontFamily: 'Inter, sans-serif',
         fontWeight: 400,
         fontSize: '14px',
-        color: 'rgba(248,248,255,0.55)',
+        color: 'rgba(15,15,15,0.55)',
         lineHeight: 1.7,
         margin: 0,
         flex: 1,
@@ -346,15 +344,14 @@ function SessionChip({
       style={{
         flexShrink: 0,
         width: '180px',
-        background: hovered ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.04)',
-        border: `1px solid ${hovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)'}`,
+        background: hovered ? 'rgba(0,0,0,0.04)' : '#ffffff',
+        border: `1px solid ${hovered ? 'rgba(0,0,0,0.12)' : 'rgba(0,0,0,0.08)'}`,
         borderRadius: '16px',
         padding: '16px',
         cursor: 'pointer',
         textAlign: 'left',
         transition: 'all 0.15s',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
+        boxShadow: 'var(--shadow-md)',
       }}
     >
       <div style={{ fontSize: '18px', marginBottom: '8px' }}>
@@ -364,7 +361,7 @@ function SessionChip({
         fontFamily: 'Inter, sans-serif',
         fontWeight: 600,
         fontSize: '13px',
-        color: '#f8f8ff',
+        color: '#0f0f0f',
         marginBottom: '4px',
       }}>
         {MODE_DISPLAY[session.mode] ?? session.mode}
@@ -372,7 +369,7 @@ function SessionChip({
       <div style={{
         fontFamily: 'Inter, sans-serif',
         fontSize: '10px',
-        color: 'rgba(248,248,255,0.35)',
+        color: 'rgba(15,15,15,0.35)',
         letterSpacing: '0.04em',
         marginBottom: '10px',
       }}>
@@ -624,9 +621,9 @@ export default function HomePage() {
   return (
     <div
       style={{
-        background: '#0a0a0f',
+        background: '#faf9f7',
         minHeight: '100vh',
-        color: '#f8f8ff',
+        color: '#0f0f0f',
         fontFamily: 'Inter, sans-serif',
       }}
     >
@@ -640,10 +637,10 @@ export default function HomePage() {
           top: 0,
           zIndex: 50,
           height: '60px',
-          background: 'rgba(10,10,15,0.9)',
+          background: 'rgba(255,255,255,0.92)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          borderBottom: '1px solid rgba(0,0,0,0.08)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -804,7 +801,7 @@ export default function HomePage() {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: 'rgba(248,248,255,0.35)',
+                  color: 'rgba(15,15,15,0.35)',
                   cursor: 'pointer',
                   fontSize: '18px',
                   padding: '4px',
@@ -836,7 +833,7 @@ export default function HomePage() {
               fontFamily: 'Inter, sans-serif',
               fontWeight: 700,
               fontSize: 'clamp(22px, 3.5vw, 32px)',
-              color: 'rgba(248,248,255,0.55)',
+              color: 'rgba(15,15,15,0.55)',
               margin: '0 0 6px',
               letterSpacing: '-0.02em',
             }}
@@ -848,7 +845,7 @@ export default function HomePage() {
               fontFamily: 'Inter, sans-serif',
               fontWeight: 400,
               fontSize: '14px',
-              color: 'rgba(248,248,255,0.3)',
+              color: 'rgba(15,15,15,0.3)',
               margin: 0,
             }}
           >
@@ -888,7 +885,7 @@ export default function HomePage() {
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: 700,
                 fontSize: '18px',
-                color: '#f8f8ff',
+                color: '#0f0f0f',
                 margin: '0 0 16px',
                 letterSpacing: '-0.02em',
               }}
@@ -953,9 +950,9 @@ export default function HomePage() {
               style={{
                 position: 'fixed',
                 bottom: 0, left: 0, right: 0,
-                background: '#111118',
+                background: '#ffffff',
                 borderRadius: '24px 24px 0 0',
-                borderTop: '1px solid rgba(255,255,255,0.08)',
+                borderTop: '1px solid rgba(0,0,0,0.08)',
                 maxHeight: '88vh',
                 overflowY: 'auto',
                 zIndex: 201,
@@ -966,7 +963,7 @@ export default function HomePage() {
               <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 0' }}>
                 <div style={{
                   width: '36px', height: '4px',
-                  background: 'rgba(255,255,255,0.2)',
+                  background: 'rgba(0,0,0,0.15)',
                   borderRadius: '2px',
                 }} />
               </div>
@@ -990,7 +987,7 @@ export default function HomePage() {
                         fontFamily: 'Inter, sans-serif',
                         fontWeight: 700,
                         fontSize: '20px',
-                        color: '#f8f8ff',
+                        color: '#0f0f0f',
                         margin: 0,
                         letterSpacing: '-0.02em',
                       }}>
@@ -1003,15 +1000,15 @@ export default function HomePage() {
                       <button
                         onClick={closeSheet}
                         style={{
-                          background: 'rgba(255,255,255,0.06)',
-                          border: '1px solid rgba(255,255,255,0.1)',
+                          background: 'rgba(0,0,0,0.05)',
+                          border: '1px solid rgba(0,0,0,0.08)',
                           borderRadius: '50%',
                           width: '32px',
                           height: '32px',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: 'rgba(248,248,255,0.5)',
+                          color: 'rgba(15,15,15,0.5)',
                           cursor: 'pointer',
                           fontSize: '18px',
                           lineHeight: 1,
@@ -1104,7 +1101,7 @@ export default function HomePage() {
                           fontFamily: 'Inter, sans-serif',
                           fontWeight: 500,
                           fontSize: '14px',
-                          color: '#f8f8ff',
+                          color: '#0f0f0f',
                           margin: '0 0 2px',
                         }}>
                           Open now only
@@ -1113,7 +1110,7 @@ export default function HomePage() {
                           fontFamily: 'Inter, sans-serif',
                           fontWeight: 400,
                           fontSize: '12px',
-                          color: 'rgba(248,248,255,0.35)',
+                          color: 'rgba(15,15,15,0.35)',
                           margin: 0,
                         }}>
                           Filter to places open right now in HK
@@ -1123,7 +1120,7 @@ export default function HomePage() {
                     </div>
 
                     {/* Divider */}
-                    <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', marginBottom: '20px' }} />
+                    <div style={{ borderTop: '1px solid rgba(0,0,0,0.08)', marginBottom: '20px' }} />
 
                     {createError && (
                       <p style={{
@@ -1176,7 +1173,7 @@ export default function HomePage() {
                           fontFamily: 'Inter, sans-serif',
                           fontWeight: 700,
                           fontSize: '20px',
-                          color: '#f8f8ff',
+                          color: '#0f0f0f',
                           margin: 0,
                           letterSpacing: '-0.02em',
                         }}>
@@ -1186,15 +1183,15 @@ export default function HomePage() {
                       <button
                         onClick={closeSheet}
                         style={{
-                          background: 'rgba(255,255,255,0.06)',
-                          border: '1px solid rgba(255,255,255,0.1)',
+                          background: 'rgba(0,0,0,0.05)',
+                          border: '1px solid rgba(0,0,0,0.08)',
                           borderRadius: '50%',
                           width: '32px',
                           height: '32px',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: 'rgba(248,248,255,0.5)',
+                          color: 'rgba(15,15,15,0.5)',
                           cursor: 'pointer',
                           fontSize: '18px',
                           lineHeight: 1,
@@ -1208,8 +1205,8 @@ export default function HomePage() {
                     {/* Code */}
                     <div
                       style={{
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.08)',
+                        background: '#ffffff',
+                        border: '1px solid rgba(0,0,0,0.08)',
                         borderRadius: '16px',
                         padding: '24px',
                         marginBottom: '16px',
@@ -1217,6 +1214,7 @@ export default function HomePage() {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         gap: '16px',
+                        boxShadow: 'var(--shadow-md)',
                       }}
                     >
                       <span
@@ -1307,13 +1305,13 @@ export default function HomePage() {
                       }
                       style={{
                         width: '100%', height: '48px',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.14)',
+                        background: '#ffffff',
+                        border: '1px solid rgba(0,0,0,0.12)',
                         borderRadius: '9999px',
                         fontFamily: 'Inter, sans-serif',
                         fontWeight: 500,
                         fontSize: '14px',
-                        color: copiedLink ? '#10b981' : 'rgba(248,248,255,0.6)',
+                        color: copiedLink ? '#10b981' : 'rgba(15,15,15,0.55)',
                         cursor: 'pointer',
                         transition: 'color 0.2s, border-color 0.2s',
                         marginBottom: '12px',
@@ -1368,13 +1366,13 @@ function ChipBtn({
       style={{
         flexShrink: 0,
         padding: '6px 16px',
-        background: active ? 'rgba(255,107,53,0.12)' : 'rgba(255,255,255,0.04)',
-        border: `1px solid ${active ? '#ff6b35' : 'rgba(255,255,255,0.08)'}`,
+        background: active ? 'rgba(255,107,53,0.12)' : 'rgba(0,0,0,0.04)',
+        border: `1px solid ${active ? '#ff6b35' : 'rgba(0,0,0,0.08)'}`,
         borderRadius: '9999px',
         fontFamily: 'Inter, sans-serif',
         fontWeight: 500,
         fontSize: '13px',
-        color: active ? '#ff6b35' : 'rgba(248,248,255,0.5)',
+        color: active ? '#ff6b35' : 'rgba(15,15,15,0.5)',
         cursor: 'pointer',
         transition: 'all 0.15s',
         whiteSpace: 'nowrap',
@@ -1396,14 +1394,14 @@ function FilterPill({
       onClick={onClick}
       style={{
         padding: '8px 20px',
-        background: active ? 'rgba(255,107,53,0.10)' : 'rgba(255,255,255,0.04)',
-        border: `${active ? 2 : 1}px solid ${active ? '#ff6b35' : 'rgba(255,255,255,0.08)'}`,
+        background: active ? 'rgba(255,107,53,0.10)' : 'rgba(0,0,0,0.04)',
+        border: `${active ? 2 : 1}px solid ${active ? '#ff6b35' : 'rgba(0,0,0,0.08)'}`,
         borderRadius: '9999px',
         fontFamily: 'Inter, sans-serif',
         fontSize: '12px',
         fontWeight: 500,
         letterSpacing: '0.04em',
-        color: active ? '#ff6b35' : 'rgba(248,248,255,0.45)',
+        color: active ? '#ff6b35' : 'rgba(15,15,15,0.45)',
         cursor: 'pointer',
         transition: 'all 0.15s',
         whiteSpace: 'nowrap',
@@ -1431,7 +1429,7 @@ function EmberButton({
         width: '100%',
         height: '52px',
         background: disabled
-          ? 'rgba(255,255,255,0.06)'
+          ? 'rgba(0,0,0,0.05)'
           : hovered
             ? 'linear-gradient(135deg, #ff7f50, #ffb300)'
             : 'linear-gradient(135deg, #ff6b35, #ffa500)',
@@ -1440,7 +1438,7 @@ function EmberButton({
         fontFamily: 'Inter, sans-serif',
         fontWeight: 600,
         fontSize: '16px',
-        color: disabled ? 'rgba(248,248,255,0.25)' : '#fff',
+        color: disabled ? 'rgba(15,15,15,0.25)' : '#fff',
         cursor: disabled ? 'not-allowed' : 'pointer',
         transition: 'all 0.2s',
         boxShadow: disabled ? 'none' : hovered ? '0 6px 24px rgba(255,107,53,0.5)' : '0 4px 16px rgba(255,107,53,0.35)',

@@ -43,7 +43,7 @@ function BigAvatar({ url, name }: { url: string | null; name: string }) {
       <div style={{
         width: '80px', height: '80px',
         borderRadius: '50%',
-        background: '#111118',
+        background: '#ffffff',
         overflow: 'hidden',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
@@ -74,14 +74,12 @@ function StatTile({ value, label }: { value: number; label: string }) {
   return (
     <div style={{
       flex: 1,
-      background: 'rgba(255,255,255,0.04)',
-      border: '1px solid rgba(255,255,255,0.08)',
+      background: '#ffffff',
+      border: '1px solid rgba(0,0,0,0.08)',
       borderRadius: '14px',
       padding: '16px 12px',
       textAlign: 'center',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
-      boxShadow: '0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)',
+      boxShadow: 'var(--shadow-md)',
     }}>
       <div
         style={{
@@ -100,7 +98,7 @@ function StatTile({ value, label }: { value: number; label: string }) {
       </div>
       <div style={{
         fontFamily: 'var(--font-mono)', fontSize: '9px',
-        letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(248,248,255,0.35)',
+        letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(15,15,15,0.35)',
         fontWeight: 600,
       }}>
         {label}
@@ -127,7 +125,7 @@ function SettingsRow({
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         width: '100%', padding: '16px 0',
         background: 'none', border: 'none',
-        borderBottom: noBorder ? 'none' : '1px solid rgba(255,255,255,0.06)',
+        borderBottom: noBorder ? 'none' : '1px solid rgba(0,0,0,0.06)',
         cursor: onClick ? 'pointer' : 'default',
         textAlign: 'left',
         opacity: hovered && onClick ? 0.8 : 1,
@@ -138,12 +136,12 @@ function SettingsRow({
         <span style={{ fontSize: '18px', width: '24px', textAlign: 'center' }}>{icon}</span>
         <span style={{
           fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '15px',
-          color: destructive ? '#ef4444' : '#f8f8ff',
+          color: destructive ? '#ef4444' : '#0f0f0f',
         }}>
           {label}
         </span>
       </div>
-      {right !== undefined ? right : (onClick && <span style={{ color: 'rgba(248,248,255,0.2)', fontSize: '18px' }}>›</span>)}
+      {right !== undefined ? right : (onClick && <span style={{ color: 'rgba(15,15,15,0.2)', fontSize: '18px' }}>›</span>)}
     </button>
   );
 }
@@ -156,7 +154,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
       onClick={() => onChange(!on)}
       style={{
         width: '44px', height: '24px', borderRadius: '12px',
-        background: on ? '#ff6b35' : 'rgba(255,255,255,0.12)',
+        background: on ? '#ff6b35' : 'rgba(0,0,0,0.1)',
         border: 'none', cursor: 'pointer',
         position: 'relative', transition: 'background 0.2s', flexShrink: 0,
         boxShadow: on ? '0 0 8px rgba(255,107,53,0.4)' : 'none',
@@ -168,7 +166,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
         style={{
           position: 'absolute', top: '2px', left: 0,
           width: '20px', height: '20px',
-          borderRadius: '50%', background: '#f8f8ff',
+          borderRadius: '50%', background: '#ffffff',
         }}
       />
     </button>
@@ -199,15 +197,13 @@ function ProUpgradeCard({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       style={{
-        background: 'rgba(255,255,255,0.04)',
+        background: '#ffffff',
         border: '1px solid rgba(255,165,0,0.3)',
         borderRadius: '20px',
         padding: '28px 24px',
         marginBottom: '24px',
         position: 'relative', overflow: 'hidden',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        boxShadow: '0 4px 24px rgba(0,0,0,0.4), 0 0 40px rgba(255,165,0,0.05), inset 0 1px 0 rgba(255,255,255,0.06)',
+        boxShadow: 'var(--shadow-md)',
       }}
     >
       {/* Gold glow */}
@@ -226,7 +222,7 @@ function ProUpgradeCard({
       </div>
       <p style={{
         fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '13px',
-        color: 'rgba(248,248,255,0.6)', margin: '0 0 20px', lineHeight: 1.6,
+        color: 'rgba(15,15,15,0.55)', margin: '0 0 20px', lineHeight: 1.6,
       }}>
         Unlock the full Twine experience for hidden gem hunters.
       </p>
@@ -235,7 +231,7 @@ function ProUpgradeCard({
         {features.map((f) => (
           <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ color: '#ffa500', fontSize: '11px', flexShrink: 0 }}>✦</span>
-            <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '13px', color: 'rgba(248,248,255,0.6)' }}>{f}</span>
+            <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '13px', color: 'rgba(15,15,15,0.55)' }}>{f}</span>
           </li>
         ))}
       </ul>
@@ -275,7 +271,7 @@ function ProUpgradeCard({
         </button>
       </div>
       <p style={{
-        fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(248,248,255,0.2)',
+        fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(15,15,15,0.2)',
         letterSpacing: '0.05em', textAlign: 'center', margin: '12px 0 0',
       }}>
         Cancel anytime · Billed via Stripe
@@ -306,16 +302,16 @@ function EditNameSheet({
         transition={{ type: 'spring', damping: 28, stiffness: 280 }}
         style={{
           position: 'fixed', bottom: 0, left: 0, right: 0,
-          background: '#111118',
+          background: '#ffffff',
           borderRadius: '24px 24px 0 0',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
+          borderTop: '1px solid rgba(0,0,0,0.08)',
           padding: '24px 24px 40px', zIndex: 201,
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-          <div style={{ width: '36px', height: '4px', background: 'rgba(255,255,255,0.2)', borderRadius: '2px' }} />
+          <div style={{ width: '36px', height: '4px', background: 'rgba(0,0,0,0.15)', borderRadius: '2px' }} />
         </div>
-        <h3 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '18px', letterSpacing: '-0.01em', color: '#f8f8ff', margin: '0 0 20px' }}>
+        <h3 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '18px', letterSpacing: '-0.01em', color: '#0f0f0f', margin: '0 0 20px' }}>
           Edit display name
         </h3>
         <input
@@ -325,15 +321,15 @@ function EditNameSheet({
           placeholder="Your name"
           style={{
             width: '100%', height: '48px',
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: '#f8f8f8',
+            border: '1px solid rgba(0,0,0,0.08)',
             borderRadius: '14px',
             padding: '0 16px', fontFamily: 'var(--font-sans)', fontSize: '15px',
-            color: '#f8f8ff', outline: 'none', boxSizing: 'border-box',
+            color: '#0f0f0f', outline: 'none', boxSizing: 'border-box',
             transition: 'border-color 0.2s',
           }}
           onFocus={(e) => { (e.currentTarget as HTMLElement).style.borderColor = '#ff6b35'; }}
-          onBlur={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'; }}
+          onBlur={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(0,0,0,0.08)'; }}
         />
         <button
           onClick={() => { if (value.trim()) { onSave(value.trim()); onClose(); } }}
@@ -457,8 +453,8 @@ function ProfileContent() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: '#0a0a0f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'rgba(248,248,255,0.35)', letterSpacing: '0.06em' }}>
+      <div style={{ minHeight: '100vh', background: '#faf9f7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'rgba(15,15,15,0.35)', letterSpacing: '0.06em' }}>
           Loading…
         </span>
       </div>
@@ -466,21 +462,21 @@ function ProfileContent() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0f', color: '#f8f8ff', fontFamily: 'var(--font-sans)' }}>
+    <div style={{ minHeight: '100vh', background: '#faf9f7', color: '#0f0f0f', fontFamily: 'var(--font-sans)' }}>
 
       {/* Header */}
       <header style={{
         position: 'sticky', top: 0, zIndex: 50,
         height: '60px',
-        background: 'rgba(10,10,15,0.9)',
+        background: 'rgba(255,255,255,0.92)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        borderBottom: '1px solid rgba(0,0,0,0.08)',
         display: 'flex', alignItems: 'center', padding: '0 20px', gap: '12px',
       }}>
         <button
           onClick={() => router.push('/home')}
-          style={{ background: 'none', border: 'none', color: 'rgba(248,248,255,0.35)', cursor: 'pointer', fontSize: '20px', padding: 0 }}
+          style={{ background: 'none', border: 'none', color: 'rgba(15,15,15,0.35)', cursor: 'pointer', fontSize: '20px', padding: 0 }}
         >
           ←
         </button>
@@ -529,7 +525,7 @@ function ProfileContent() {
               <h1 style={{
                 fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '22px',
                 letterSpacing: '-0.02em',
-                color: '#f8f8ff', margin: 0, lineHeight: 1.2,
+                color: '#0f0f0f', margin: 0, lineHeight: 1.2,
               }}>
                 {displayName}
               </h1>
@@ -547,7 +543,7 @@ function ProfileContent() {
               )}
             </div>
             <p style={{
-              fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(248,248,255,0.35)',
+              fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(15,15,15,0.35)',
               letterSpacing: '0.04em', margin: '6px 0 0',
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>
@@ -583,18 +579,18 @@ function ProfileContent() {
           <p style={{
             fontFamily: 'var(--font-mono)', fontSize: '9px',
             fontWeight: 600,
-            letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(248,248,255,0.35)', margin: '0 0 8px',
+            letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(15,15,15,0.35)', margin: '0 0 8px',
           }}>
             Account
           </p>
-          <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '0 16px' }}>
+          <div style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '14px', padding: '0 16px' }}>
             <SettingsRow icon="✏️" label="Edit display name" onClick={() => setEditOpen(true)} />
             <SettingsRow icon="🍜" label="Edit preferences" onClick={() => router.push('/onboarding')} />
             <SettingsRow
               icon="🌐" label="Language"
               right={
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: langZh ? '#ffa500' : 'rgba(248,248,255,0.35)' }}>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: langZh ? '#ffa500' : 'rgba(15,15,15,0.35)' }}>
                     {langZh ? '繁中' : 'EN'}
                   </span>
                   <Toggle on={langZh} onChange={setLangZh} />
@@ -610,18 +606,18 @@ function ProfileContent() {
           <p style={{
             fontFamily: 'var(--font-mono)', fontSize: '9px',
             fontWeight: 600,
-            letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(248,248,255,0.35)', margin: '0 0 8px',
+            letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(15,15,15,0.35)', margin: '0 0 8px',
           }}>
             More
           </p>
-          <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '0 16px' }}>
+          <div style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '14px', padding: '0 16px' }}>
             <SettingsRow icon="🔒" label="Privacy Policy" onClick={() => window.open('https://twine.hk/privacy', '_blank')} />
             <SettingsRow icon="📧" label="Contact support" onClick={() => window.open('mailto:hello@twine.hk', '_blank')} />
             <SettingsRow icon="🚪" label="Sign out" onClick={handleSignOut} destructive noBorder />
           </div>
         </div>
 
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(255,255,255,0.08)', textAlign: 'center', letterSpacing: '0.08em' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(0,0,0,0.08)', textAlign: 'center', letterSpacing: '0.08em' }}>
           Twine v0.1.0 · Hong Kong
         </p>
       </main>

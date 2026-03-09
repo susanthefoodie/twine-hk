@@ -63,7 +63,7 @@ function MatchPopup({ place, onDismiss }: { place: PlaceResult; onDismiss: () =>
       exit={{ opacity: 0 }}
       style={{
         position: 'fixed', inset: 0, zIndex: 100,
-        background: 'rgba(10,10,15,0.92)',
+        background: 'rgba(250,249,247,0.85)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -78,7 +78,7 @@ function MatchPopup({ place, onDismiss }: { place: PlaceResult; onDismiss: () =>
         transition={{ type: 'spring', damping: 22, stiffness: 260 }}
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: 'rgba(255,255,255,0.06)',
+          background: '#ffffff',
           border: '1px solid rgba(255,107,53,0.35)',
           borderRadius: '20px',
           padding: '40px 32px',
@@ -87,7 +87,7 @@ function MatchPopup({ place, onDismiss }: { place: PlaceResult; onDismiss: () =>
           textAlign: 'center',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 0 40px rgba(255,107,53,0.2), 0 8px 40px rgba(0,0,0,0.6)',
+          boxShadow: '0 0 40px rgba(255,107,53,0.2), 0 8px 40px rgba(0,0,0,0.15)',
         }}
       >
         <p style={{ fontSize: '32px', margin: '0 0 12px' }}>🎉</p>
@@ -106,14 +106,14 @@ function MatchPopup({ place, onDismiss }: { place: PlaceResult; onDismiss: () =>
         >
           ✦ It&apos;s a match!
         </p>
-        <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '26px', letterSpacing: '-0.02em', color: '#f8f8ff', margin: '0 0 8px' }}>
+        <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '26px', letterSpacing: '-0.02em', color: '#0f0f0f', margin: '0 0 8px' }}>
           {place.name}
         </h2>
-        <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(248,248,255,0.6)', margin: '0 0 28px' }}>
+        <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(15,15,15,0.55)', margin: '0 0 28px' }}>
           {place.address}
         </p>
         {place.editorialSummary && (
-          <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(248,248,255,0.5)', margin: '0 0 28px', lineHeight: 1.6 }}>
+          <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(15,15,15,0.5)', margin: '0 0 28px', lineHeight: 1.6 }}>
             {place.editorialSummary}
           </p>
         )}
@@ -141,10 +141,10 @@ function MatchPopup({ place, onDismiss }: { place: PlaceResult; onDismiss: () =>
             onClick={onDismiss}
             style={{
               flex: 1, height: '48px',
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.14)',
+              background: '#ffffff',
+              border: '1px solid rgba(0,0,0,0.12)',
               borderRadius: '9999px',
-              color: 'rgba(248,248,255,0.6)',
+              color: 'rgba(15,15,15,0.55)',
               fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '15px',
               cursor: 'pointer',
             }}
@@ -401,7 +401,7 @@ export default function SessionPage() {
     return (
       <div style={containerStyle}>
         <div style={{ textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '20px', color: '#f8f8ff', marginBottom: '12px' }}>
+          <p style={{ fontFamily: 'var(--font-sans)', fontSize: '20px', color: '#0f0f0f', marginBottom: '12px' }}>
             {sessionErr}
           </p>
           <a href="/home" style={{ color: '#ff6b35', fontFamily: 'var(--font-sans)', fontSize: '14px' }}>
@@ -421,23 +421,21 @@ export default function SessionPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: '#ffffff',
+            border: '1px solid rgba(0,0,0,0.08)',
             borderRadius: '20px',
             padding: '48px 36px',
             maxWidth: '380px',
             width: '100%',
             textAlign: 'center',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
+            boxShadow: 'var(--shadow-md)',
           }}
         >
           <p style={{ fontSize: '40px', margin: '0 0 20px' }}>📍</p>
-          <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '24px', letterSpacing: '-0.02em', color: '#f8f8ff', margin: '0 0 12px' }}>
+          <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '24px', letterSpacing: '-0.02em', color: '#0f0f0f', margin: '0 0 12px' }}>
             Share your location
           </h2>
-          <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(248,248,255,0.6)', margin: '0 0 32px', lineHeight: 1.6 }}>
+          <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(15,15,15,0.55)', margin: '0 0 32px', lineHeight: 1.6 }}>
             We&apos;ll find hidden gems near you. Your location is never stored or shared.
           </p>
           <button
@@ -457,7 +455,7 @@ export default function SessionPage() {
             Enable Location →
           </button>
           {locError && (
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(248,248,255,0.35)', marginTop: '16px' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(15,15,15,0.35)', marginTop: '16px' }}>
               {locError}
             </p>
           )}
@@ -471,7 +469,7 @@ export default function SessionPage() {
   if (locLoading || (loadingPlaces && places.length === 0)) {
     return (
       <div style={containerStyle}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'rgba(248,248,255,0.35)', letterSpacing: '0.06em' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'rgba(15,15,15,0.35)', letterSpacing: '0.06em' }}>
           Finding hidden gems…
         </span>
       </div>
@@ -490,10 +488,10 @@ export default function SessionPage() {
           style={{ textAlign: 'center', maxWidth: '320px' }}
         >
           <p style={{ fontSize: '48px', margin: '0 0 16px' }}>🍜</p>
-          <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '22px', letterSpacing: '-0.02em', color: '#f8f8ff', margin: '0 0 10px' }}>
+          <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '22px', letterSpacing: '-0.02em', color: '#0f0f0f', margin: '0 0 10px' }}>
             You&apos;ve seen them all!
           </h2>
-          <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(248,248,255,0.6)', margin: '0 0 28px' }}>
+          <p style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', color: 'rgba(15,15,15,0.55)', margin: '0 0 28px' }}>
             {matchHistory.length > 0
               ? `You matched ${matchHistory.length} place${matchHistory.length !== 1 ? 's' : ''}.`
               : 'Try expanding your filters to see more places.'}
@@ -521,10 +519,10 @@ export default function SessionPage() {
             onClick={() => router.push('/home')}
             style={{
               width: '100%', height: '48px',
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.14)',
+              background: '#ffffff',
+              border: '1px solid rgba(0,0,0,0.12)',
               borderRadius: '9999px',
-              color: 'rgba(248,248,255,0.6)',
+              color: 'rgba(15,15,15,0.55)',
               fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '14px', cursor: 'pointer',
             }}
           >
@@ -546,16 +544,16 @@ export default function SessionPage() {
         width: '100%', maxWidth: '480px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '16px 20px',
-        background: 'rgba(10,10,15,0.9)',
+        background: 'rgba(255,255,255,0.92)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        borderBottom: '1px solid rgba(0,0,0,0.08)',
         height: '60px',
         boxSizing: 'border-box',
       }}>
         <button
           onClick={() => router.push('/home')}
-          style={{ background: 'none', border: 'none', color: 'rgba(248,248,255,0.35)', cursor: 'pointer', fontSize: '20px', padding: 0 }}
+          style={{ background: 'none', border: 'none', color: 'rgba(15,15,15,0.35)', cursor: 'pointer', fontSize: '20px', padding: 0 }}
         >
           ←
         </button>
@@ -576,7 +574,7 @@ export default function SessionPage() {
           {nearestStation && (
             <span style={{
               fontFamily: 'var(--font-mono)', fontSize: '9px',
-              color: 'rgba(248,248,255,0.35)', letterSpacing: '0.06em',
+              color: 'rgba(15,15,15,0.35)', letterSpacing: '0.06em',
             }}>
               🚇 Near {nearestStation.name} MTR
             </span>
@@ -585,10 +583,10 @@ export default function SessionPage() {
         <button
           onClick={() => router.push(`/results/${sessionId}`)}
           style={{
-            background: matchCount > 0 ? 'rgba(255,107,53,0.12)' : 'rgba(255,255,255,0.04)',
-            border: matchCount > 0 ? '1px solid rgba(255,107,53,0.3)' : '1px solid rgba(255,255,255,0.08)',
+            background: matchCount > 0 ? 'rgba(255,107,53,0.12)' : 'rgba(0,0,0,0.04)',
+            border: matchCount > 0 ? '1px solid rgba(255,107,53,0.3)' : '1px solid rgba(0,0,0,0.08)',
             borderRadius: '9999px',
-            color: matchCount > 0 ? '#ff6b35' : 'rgba(248,248,255,0.35)',
+            color: matchCount > 0 ? '#ff6b35' : 'rgba(15,15,15,0.35)',
             fontFamily: 'var(--font-mono)', fontSize: '10px',
             fontWeight: 600,
             letterSpacing: '0.06em', padding: '5px 12px', cursor: 'pointer',
@@ -626,7 +624,7 @@ export default function SessionPage() {
           {loadingPlaces && remaining.length <= 5 && (
             <div style={{
               position: 'absolute', bottom: -20, left: '50%', transform: 'translateX(-50%)',
-              fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(248,248,255,0.35)', letterSpacing: '0.06em',
+              fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(15,15,15,0.35)', letterSpacing: '0.06em',
             }}>
               Loading more…
             </div>
@@ -635,7 +633,7 @@ export default function SessionPage() {
 
         {/* Counter */}
         <p style={{
-          fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(248,248,255,0.35)',
+          fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'rgba(15,15,15,0.35)',
           letterSpacing: '0.08em', textAlign: 'center', margin: '0 0 20px',
         }}>
           {Math.min(swiped.length + 1, places.length)} / {places.length} places
@@ -649,7 +647,7 @@ export default function SessionPage() {
         />
 
         <p style={{
-          fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '11px', color: 'rgba(248,248,255,0.35)',
+          fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '11px', color: 'rgba(15,15,15,0.35)',
           textAlign: 'center', margin: '16px 0 0',
         }}>
           Swipe right or tap ✓ if you&apos;re interested
@@ -697,8 +695,8 @@ export default function SessionPage() {
 
 const containerStyle: React.CSSProperties = {
   minHeight: '100vh',
-  background: '#0a0a0f',
-  color: '#f8f8ff',
+  background: '#faf9f7',
+  color: '#0f0f0f',
   fontFamily: 'var(--font-sans)',
   display: 'flex',
   alignItems: 'center',

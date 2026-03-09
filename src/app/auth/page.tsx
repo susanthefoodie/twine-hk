@@ -33,8 +33,8 @@ function GoogleIcon() {
 function MailIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="1.5" y="3.5" width="15" height="11" rx="1.5" stroke="rgba(248,248,255,0.6)" strokeWidth="1.4" />
-      <path d="M1.5 5.5L9 10.5l7.5-5" stroke="rgba(248,248,255,0.6)" strokeWidth="1.4" strokeLinecap="round" />
+      <rect x="1.5" y="3.5" width="15" height="11" rx="1.5" stroke="rgba(15,15,15,0.55)" strokeWidth="1.4" />
+      <path d="M1.5 5.5L9 10.5l7.5-5" stroke="rgba(15,15,15,0.55)" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   );
 }
@@ -124,7 +124,7 @@ function AuthContent() {
     <div
       style={{
         minHeight: '100vh',
-        background: '#0a0a0f',
+        background: '#faf9f7',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -156,13 +156,11 @@ function AuthContent() {
           zIndex: 1,
           width: '100%',
           maxWidth: '420px',
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.08)',
+          background: '#ffffff',
+          border: '1px solid rgba(0,0,0,0.08)',
           borderRadius: '20px',
           padding: '48px',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
+          boxShadow: 'var(--shadow-md)',
         }}
       >
         {/* Logo */}
@@ -189,7 +187,7 @@ function AuthContent() {
             fontWeight: 700,
             fontSize: '24px',
             letterSpacing: '-0.02em',
-            color: '#f8f8ff',
+            color: '#0f0f0f',
             textAlign: 'center',
             margin: '0 0 32px',
             lineHeight: 1.3,
@@ -256,23 +254,23 @@ function AuthContent() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '10px',
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.14)',
+              background: '#ffffff',
+              border: '1px solid rgba(0,0,0,0.12)',
               borderRadius: '9999px',
               fontFamily: 'var(--font-sans)',
               fontWeight: 500,
               fontSize: '15px',
-              color: 'rgba(248,248,255,0.6)',
+              color: 'rgba(15,15,15,0.55)',
               cursor: 'pointer',
               transition: 'all 0.2s',
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.07)';
-              (e.currentTarget as HTMLElement).style.color = '#f8f8ff';
+              (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.04)';
+              (e.currentTarget as HTMLElement).style.color = '#0f0f0f';
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.04)';
-              (e.currentTarget as HTMLElement).style.color = 'rgba(248,248,255,0.6)';
+              (e.currentTarget as HTMLElement).style.background = '#ffffff';
+              (e.currentTarget as HTMLElement).style.color = 'rgba(15,15,15,0.55)';
             }}
           >
             <MailIcon />
@@ -311,10 +309,10 @@ function AuthContent() {
                         style={{
                           width: '100%',
                           height: '48px',
-                          background: 'rgba(255,255,255,0.05)',
-                          border: '1px solid rgba(255,255,255,0.08)',
+                          background: '#f8f8f8',
+                          border: '1px solid rgba(0,0,0,0.08)',
                           borderRadius: '14px',
-                          color: '#f8f8ff',
+                          color: '#0f0f0f',
                           fontFamily: 'var(--font-sans)',
                           fontSize: '15px',
                           padding: '0 16px',
@@ -327,7 +325,7 @@ function AuthContent() {
                           (e.currentTarget.style.borderColor = '#ff6b35')
                         }
                         onBlur={(e) =>
-                          (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')
+                          (e.currentTarget.style.borderColor = 'rgba(0,0,0,0.08)')
                         }
                       />
 
@@ -354,13 +352,13 @@ function AuthContent() {
                           height: '48px',
                           background: !loading && email.trim()
                             ? 'linear-gradient(135deg, #ff6b35, #ffa500)'
-                            : 'rgba(255,255,255,0.05)',
+                            : '#f8f8f8',
                           border: 'none',
                           borderRadius: '9999px',
                           fontFamily: 'var(--font-sans)',
                           fontWeight: 600,
                           fontSize: '15px',
-                          color: !loading && email.trim() ? '#fff' : 'rgba(248,248,255,0.35)',
+                          color: !loading && email.trim() ? '#fff' : 'rgba(15,15,15,0.35)',
                           cursor: !loading && email.trim() ? 'pointer' : 'not-allowed',
                           transition: 'all 0.2s',
                           boxShadow: !loading && email.trim() && sendHover
@@ -410,9 +408,9 @@ function AuthContent() {
             margin: '4px 0 14px',
           }}
         >
-          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
-          <span style={{ fontSize: '11px', color: 'rgba(248,248,255,0.2)', letterSpacing: '0.06em' }}>or</span>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+          <div style={{ flex: 1, height: '1px', background: 'rgba(0,0,0,0.08)' }} />
+          <span style={{ fontSize: '11px', color: 'rgba(15,15,15,0.2)', letterSpacing: '0.06em' }}>or</span>
+          <div style={{ flex: 1, height: '1px', background: 'rgba(0,0,0,0.08)' }} />
         </div>
 
         {/* Guest button */}
@@ -422,25 +420,25 @@ function AuthContent() {
             style={{
               width: '100%',
               height: '48px',
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.14)',
+              background: '#ffffff',
+              border: '1px solid rgba(0,0,0,0.12)',
               borderRadius: '9999px',
               fontFamily: 'var(--font-sans)',
               fontWeight: 400,
               fontSize: '14px',
-              color: 'rgba(248,248,255,0.6)',
+              color: 'rgba(15,15,15,0.55)',
               cursor: 'pointer',
               transition: 'border-color 0.2s, color 0.2s, background 0.2s',
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.25)';
-              (e.currentTarget as HTMLElement).style.color = '#f8f8ff';
-              (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.07)';
+              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(0,0,0,0.15)';
+              (e.currentTarget as HTMLElement).style.color = '#0f0f0f';
+              (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.04)';
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.14)';
-              (e.currentTarget as HTMLElement).style.color = 'rgba(248,248,255,0.6)';
-              (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.04)';
+              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(0,0,0,0.12)';
+              (e.currentTarget as HTMLElement).style.color = 'rgba(15,15,15,0.55)';
+              (e.currentTarget as HTMLElement).style.background = '#ffffff';
             }}
           >
             Try as Guest — no sign up needed
@@ -451,7 +449,7 @@ function AuthContent() {
         <p
           style={{
             fontSize: '11px',
-            color: 'rgba(248,248,255,0.35)',
+            color: 'rgba(15,15,15,0.35)',
             textAlign: 'center',
             margin: 0,
             letterSpacing: '0.03em',
