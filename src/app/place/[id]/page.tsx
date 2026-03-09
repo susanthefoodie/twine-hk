@@ -416,7 +416,6 @@ export default function PlaceDetailPage() {
   }
 
   const district  = place.address.split(',')[0]?.trim() ?? '';
-  const chopeUrl  = `https://www.chope.co/singapore-restaurants/search?q=${encodeURIComponent(place.name)}&utm_source=twine&utm_medium=app`;
   const mapsUrl   = `https://www.google.com/maps/dir/?api=1&destination_place_id=${place.id}&travelmode=transit`;
   const openRice  = `https://www.openrice.com/en/hongkong/restaurants?where=${encodeURIComponent(place.name)}`;
 
@@ -540,17 +539,6 @@ export default function PlaceDetailPage() {
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#c9622a'; }}
           >
             Get Directions 🚇
-          </a>
-
-          <a
-            href={chopeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '44px', background: '#221e1a', border: '1px solid #c9622a', borderRadius: '4px', fontFamily: 'var(--font-sans)', fontWeight: 500, fontSize: '15px', color: '#c9622a', textDecoration: 'none', transition: 'background 0.15s' }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,98,42,0.08)'; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#221e1a'; }}
-          >
-            Book via Chope 🎟
           </a>
 
           <a

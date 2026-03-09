@@ -108,7 +108,6 @@ function MatchCard({
   const place     = match.place_data;
   const src       = photoUrl(place.photoName);
   const district  = place.address.split(',')[0]?.trim() ?? '';
-  const chopeUrl  = `https://www.chope.co/singapore-restaurants/search?q=${encodeURIComponent(place.name)}&utm_source=twine&utm_medium=app`;
   const mapsUrl   = `https://www.google.com/maps/dir/?api=1&destination_place_id=${place.id}&travelmode=transit`;
 
   return (
@@ -289,20 +288,6 @@ function MatchCard({
 
         {/* Action links */}
         <div style={{ display: 'flex', gap: '16px' }}>
-          <a
-            href={chopeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontWeight: 500,
-              fontSize: '12px',
-              color: '#ff6b35',
-              textDecoration: 'none',
-            }}
-          >
-            Book via Chope →
-          </a>
           <a
             href={mapsUrl}
             target="_blank"
@@ -496,8 +481,6 @@ export default function ResultsPage() {
   // ── Render ────────────────────────────────────────────────────────────────
 
   const meta     = session ? MODE_META[session.mode] : null;
-  const topMatch = matches[0];
-
   if (loading) {
     return (
       <div style={centreStyle}>
@@ -546,7 +529,7 @@ export default function ResultsPage() {
         minHeight: '100vh',
         color: '#0f0f0f',
         fontFamily: 'var(--font-sans)',
-        paddingBottom: matches.length > 0 ? '90px' : '48px',
+        paddingBottom: '48px',
       }}
     >
       {/* ── Top bar ── */}
@@ -842,53 +825,6 @@ export default function ResultsPage() {
         )}
       </main>
 
-      {/* ── Sticky bottom CTA ── */}
-      {matches.length > 0 && topMatch && (
-        <div
-          style={{
-            position: 'fixed',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding: '12px clamp(16px, 4vw, 40px)',
-            background: 'linear-gradient(to top, #faf9f7 65%, transparent)',
-            zIndex: 40,
-          }}
-        >
-          <a
-            href={`https://www.chope.co/singapore-restaurants/search?q=${encodeURIComponent(topMatch.place_data.name)}&utm_source=twine&utm_medium=app`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '52px',
-              width: '100%',
-              maxWidth: '680px',
-              margin: '0 auto',
-              background: 'linear-gradient(135deg, #ff6b35, #ffa500)',
-              borderRadius: '9999px',
-              fontFamily: 'var(--font-sans)',
-              fontWeight: 600,
-              fontSize: '15px',
-              letterSpacing: '0.02em',
-              color: '#fff',
-              textDecoration: 'none',
-              boxShadow: '0 0 24px rgba(255,107,53,0.35), 0 4px 16px rgba(0,0,0,0.4)',
-              transition: 'box-shadow 0.15s',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.boxShadow = '0 0 36px rgba(255,107,53,0.5), 0 4px 16px rgba(0,0,0,0.4)';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.boxShadow = '0 0 24px rgba(255,107,53,0.35), 0 4px 16px rgba(0,0,0,0.4)';
-            }}
-          >
-            Book the top gem via Chope →
-          </a>
-        </div>
-      )}
     </div>
   );
 }

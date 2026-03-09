@@ -13,7 +13,6 @@ export interface MatchPopupProps {
   sessionMode: 'couples' | 'friends' | 'solo';
   matchCount: number;
   onDismiss: () => void;
-  onBook: () => void;
 }
 
 // ── Confetti ──────────────────────────────────────────────────────────────────
@@ -160,7 +159,6 @@ export default function MatchPopup({
   sessionMode,
   matchCount,
   onDismiss,
-  onBook,
 }: MatchPopupProps) {
   // Lock body scroll while open
   useEffect(() => {
@@ -181,7 +179,6 @@ export default function MatchPopup({
   // district = first segment of address before first comma
   const district = place.address.split(',')[0]?.trim() ?? '';
 
-  const chopeUrl = `https://www.chope.co/singapore-restaurants/search?q=${encodeURIComponent(place.name)}&utm_source=twine&utm_medium=app`;
   const mapsUrl  = `https://www.google.com/maps/dir/?api=1&destination_place_id=${place.id}&travelmode=transit`;
   const waText   = encodeURIComponent(
     `We found a hidden gem! 🍜✨\n*${place.name}*\n${district}\n\nFound together on Twine — twine.hk/join`
@@ -420,36 +417,6 @@ export default function MatchPopup({
                 marginBottom: '18px',
               }}
             >
-              {/* Chope */}
-              <a
-                href={chopeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={onBook}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '48px',
-                  background: '#c9622a',
-                  borderRadius: '4px',
-                  fontFamily: 'var(--font-sans)',
-                  fontWeight: 600,
-                  fontSize: '15px',
-                  color: '#f0e8d8',
-                  textDecoration: 'none',
-                  transition: 'background 0.15s',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = '#e07840';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = '#c9622a';
-                }}
-              >
-                Reserve via Chope 🎟
-              </a>
-
               {/* Directions */}
               <a
                 href={mapsUrl}
